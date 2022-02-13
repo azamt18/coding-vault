@@ -1,0 +1,13 @@
+C:\Users\Fathulla\source\repos\Renamer\Renamer\bin\Debug\netcoreapp3.1\Renamer.exe
+C:\Users\Fathulla\source\repos\Renamer\Renamer\bin\Debug\netcoreapp3.1\Renamer.deps.json
+C:\Users\Fathulla\source\repos\Renamer\Renamer\bin\Debug\netcoreapp3.1\Renamer.runtimeconfig.json
+C:\Users\Fathulla\source\repos\Renamer\Renamer\bin\Debug\netcoreapp3.1\Renamer.runtimeconfig.dev.json
+C:\Users\Fathulla\source\repos\Renamer\Renamer\bin\Debug\netcoreapp3.1\Renamer.dll
+C:\Users\Fathulla\source\repos\Renamer\Renamer\bin\Debug\netcoreapp3.1\Renamer.pdb
+C:\Users\Fathulla\source\repos\Renamer\Renamer\obj\Debug\netcoreapp3.1\Renamer.csprojAssemblyReference.cache
+C:\Users\Fathulla\source\repos\Renamer\Renamer\obj\Debug\netcoreapp3.1\Renamer.AssemblyInfoInputs.cache
+C:\Users\Fathulla\source\repos\Renamer\Renamer\obj\Debug\netcoreapp3.1\Renamer.AssemblyInfo.cs
+C:\Users\Fathulla\source\repos\Renamer\Renamer\obj\Debug\netcoreapp3.1\Renamer.csproj.CoreCompileInputs.cache
+C:\Users\Fathulla\source\repos\Renamer\Renamer\obj\Debug\netcoreapp3.1\Renamer.dll
+C:\Users\Fathulla\source\repos\Renamer\Renamer\obj\Debug\netcoreapp3.1\Renamer.pdb
+C:\Users\Fathulla\source\repos\Renamer\Renamer\obj\Debug\netcoreapp3.1\Renamer.genruntimeconfig.cache
