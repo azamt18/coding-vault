@@ -1,0 +1,54 @@
+﻿html {
+    position: relative;
+    min-height: 100%;
+}
+body{
+    margin-bottom: 20px;
+}
+textarea {
+    margin-bottom: 0.5em;
+}
+.footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    /* Set the fixed height of the footer here */
+    height: 20px;
+}
+.navbar {
+    margin-bottom: 1em;
+}
+.task-list{
+    font-size: larger;
+    margin-bottom: 1em;
+}
+.task-margin{
+    margin-bottom: 1em;
+}
+.task{
+    background-color: #eee;
+    padding: 1em 1em 1em 1em;
+}
+.task-description{
+    font-size: 18px;
+}
+.task-inputoutput {
+    white-space: pre-wrap;
+    font-family: monospace;
+}
+.badge-text{
+    font-weight:lighter;
+}
+.get-back-link{
+    margin-top: 0.5em;
+    margin-bottom: 1em;
+}
+.bolder{
+    font-weight: 600;
+}
+.sortby{
+    margin-bottom: 1em;
+}
+#solution{
+    visibility: hidden;
+}

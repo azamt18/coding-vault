@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+
+<html>
+
+<!-- Mirrored from csharpexercises.com/strings/exercise/sort-characters-descending by HTTrack Website Copier/3.x [XR&CO'2014], Sun, 07 Feb 2021 12:33:47 GMT -->
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=utf-8" /><!-- /Added by HTTrack -->
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>C# programming exercises - examples with solutions</title>
+    <meta name="description" content="Increase your programming skills with dozens of C# programming exercises and tasks with sample solutions. Tasks are divided into different categories: arrays, loops, strings, conditional statements, etc.">
+    <link rel="stylesheet" href="../../Style/style.min.css" />
+    <link rel="stylesheet" href="../../Style/customstyle.css" />
+    <link rel="stylesheet" href="../../Style/sunlight.min.css" />
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-127816008-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'UA-127816008-1');
+    </script>
+    <link rel="stylesheet" type="text/css" href="../../../cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.1.0/cookieconsent.min.css" />
+    <script src="../../../cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.1.0/cookieconsent.min.js"></script>
+    <script>
+        window.addEventListener("load", function () {
+            window.cookieconsent.initialise({
+                "palette": {
+                    "popup": {
+                        "background": "#237afc"
+                    },
+                    "button": {
+                        "background": "#fff",
+                        "text": "#237afc"
+                    }
+                },
+                "theme": "classic"
+            })
+        });
+    </script>
+</head>
+<body>
+    <nav class="navbar navbar-expand-sm navbar-dark bg-dark">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#nav-content" aria-controls="nav-content" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <a class="navbar-brand text-light" href="../../index.html">C# exercises - www.CSharpExercises.com</a>
+        <div class="collapse navbar-collapse" id="nav-content">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="../../contact.html">Contact</a>
+                </li>
+            </ul>
+        </div>
+        <button class="btn btn-outline-success btn-sm mr-3">Newest exercise!</button>
+<a href="../../loops/exercise/draw-christmas-tree.html">
+    Draw Christmas tree</a>
+    </nav>
+    <div class="container fluid">
+        <div class="row content">
+            <div class="col-3">
+                
+<ul class="list-group">
+    <li class="list-group-item">
+        Category menu
+    </li>
+        <li class="list-group-item list-group-item-action ">
+            <a href="../../basics.html">
+                Basics
+            </a>
+        </li>
+        <li class="list-group-item list-group-item-action ">
+            <a href="../../conditional-statements.html">
+                Conditional statements
+            </a>
+        </li>
+        <li class="list-group-item list-group-item-action ">
+            <a href="../../loops.html">
+                Loops
+            </a>
+        </li>
+        <li class="list-group-item list-group-item-action font-weight-bold">
+            <a href="../../strings.html">
+                Strings
+            </a>
+        </li>
+        <li class="list-group-item list-group-item-action ">
+            <a href="../../recursion.html">
+                Recursion
+            </a>
+        </li>
+        <li class="list-group-item list-group-item-action ">
+            <a href="../../library-functions.html">
+                Library functions
+            </a>
+        </li>
+        <li class="list-group-item list-group-item-action ">
+            <a href="../../regular-expressions.html">
+                Regular expressions
+            </a>
+        </li>
+        <li class="list-group-item list-group-item-action ">
+            <a href="../../linq.html">
+                LINQ
+            </a>
+        </li>
+        <li class="list-group-item list-group-item-action ">
+            <a href="../../miscellaneous.html">
+                Miscellaneous
+            </a>
+        </li>
+</ul>
+            </div>
+            <div class="col-9">
+                
+
+<div class="container">
+    <div class="get-back-link">
+        <a class="small" href="../../strings.html">
+            &laquo; Get back to the list of exercises
+        </a>
+    </div>
+    <div class="task">
+        <div class="task-title task-margin"><h4>Sort characters descending</h4></div>
+        <div class="task-description task-margin">Given a string, write a method that returns array of chars (ASCII characters) sorted in descending order.</div>
+            <div class="bolder">
+                Expected input and output
+            </div>
+            <div class="task-margin task-inputoutput">SortCharactersDescending(&quot;onomatopoeia&quot;) &#x2192; tpoooonmieaa&#xD;&#xA;SortCharactersDescending(&quot;fohjwf42os&quot;) &#x2192; wsoojhff42</div>
+        <div>
+            <a href="#" id="showCode">
+                Click here to see example solution
+            </a>
+        </div>
+        <div id="solution"><pre class="sunlight-highlight-csharp">using System;&#xD;&#xA;&#xD;&#xA;namespace CSharpExercises.Exercises.Strings&#xD;&#xA;{&#xD;&#xA;    class SortCharactersDescendingTask&#xD;&#xA;    {&#xD;&#xA;        static char[] SortCharactersDescending(string str)&#xD;&#xA;        {&#xD;&#xA;            char[] charArray = str.ToCharArray();&#xD;&#xA;            char ch;&#xD;&#xA;&#xD;&#xA;            for (int i = 1; i &lt; str.Length; i&#x2B;&#x2B;)&#xD;&#xA;            {&#xD;&#xA;                for (int j = 0; j &lt; str.Length - 1; j&#x2B;&#x2B;)&#xD;&#xA;                {&#xD;&#xA;                    if (charArray[j] &lt; charArray[j &#x2B; 1])&#xD;&#xA;                    {&#xD;&#xA;                        ch = charArray[j];&#xD;&#xA;                        charArray[j] = charArray[j &#x2B; 1];&#xD;&#xA;                        charArray[j &#x2B; 1] = ch;&#xD;&#xA;                    }&#xD;&#xA;                }&#xD;&#xA;            }&#xD;&#xA;&#xD;&#xA;            return charArray;&#xD;&#xA;        }&#xD;&#xA;&#xD;&#xA;        static void Main(string[] args)&#xD;&#xA;        {&#xD;&#xA;            Console.WriteLine(SortCharactersDescending(&quot;Aliquam pulvinar aliquam libero, in fringilla erat.&quot;)); // vuuutrrrrqqponnnmmlllllliiiiiiigfeebaaaaaaA.,            &#xD;&#xA;            Console.WriteLine(SortCharactersDescending(&quot;Thi2 12  5@mpl3 Str!nG~&quot;));                             // ~trpnmlihTSG@53221!&#xD;&#xA;        }&#xD;&#xA;    }&#xD;&#xA;}</pre></div>
+    </div>
+</div>
+            </div>
+        </div>
+    </div>
+    <footer class="footer text-center bg-dark text-light text-small">
+        <small>2021 www.CSharpExercises.com</small>
+    </footer>
+    <script src="../../Style/style.min.js"></script>
+    <script type="text/javascript" src="../../Style/sunlight.min.js"></script>
+    <script type="text/javascript">
+        Sunlight.highlightAll();
+    </script>
+    <script src="../../Style/custom.js"></script>
+</body>
+
+<!-- Mirrored from csharpexercises.com/strings/exercise/sort-characters-descending by HTTrack Website Copier/3.x [XR&CO'2014], Sun, 07 Feb 2021 12:33:47 GMT -->
+</html>

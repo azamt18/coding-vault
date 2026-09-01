@@ -1,0 +1,5 @@
+# HTTrack Website Copier Cookie File
+# This file format is compatible with Netscape cookies
+csharpexercises.com	TRUE	/	FALSE	1999999999	.AspNetCore.Antiforgery.PD_fRaaq8y8	CfDJ8JH4ogDa_a1Om-SFBeUuwVA9tJ9OtyhDsofDStjqUMViNv3Lw5_KZwPBdK4z4YWdW8RX06eSbOOqxSKf0X4TN-L_8DOjzTCGeMuP6_8VmYJ_aQAwQ2XFmKjT6_6OFUmXXFEJTAE34-KMytz07rBCwIE
+csharpexercises.com	TRUE	/	FALSE	1999999999	samesite	lax
+

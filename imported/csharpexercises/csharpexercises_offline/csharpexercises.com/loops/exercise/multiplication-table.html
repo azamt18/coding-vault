@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+
+<html>
+
+<!-- Mirrored from csharpexercises.com/loops/exercise/multiplication-table by HTTrack Website Copier/3.x [XR&CO'2014], Sun, 07 Feb 2021 12:33:47 GMT -->
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=utf-8" /><!-- /Added by HTTrack -->
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>C# programming exercises - examples with solutions</title>
+    <meta name="description" content="Increase your programming skills with dozens of C# programming exercises and tasks with sample solutions. Tasks are divided into different categories: arrays, loops, strings, conditional statements, etc.">
+    <link rel="stylesheet" href="../../Style/style.min.css" />
+    <link rel="stylesheet" href="../../Style/customstyle.css" />
+    <link rel="stylesheet" href="../../Style/sunlight.min.css" />
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-127816008-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'UA-127816008-1');
+    </script>
+    <link rel="stylesheet" type="text/css" href="../../../cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.1.0/cookieconsent.min.css" />
+    <script src="../../../cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.1.0/cookieconsent.min.js"></script>
+    <script>
+        window.addEventListener("load", function () {
+            window.cookieconsent.initialise({
+                "palette": {
+                    "popup": {
+                        "background": "#237afc"
+                    },
+                    "button": {
+                        "background": "#fff",
+                        "text": "#237afc"
+                    }
+                },
+                "theme": "classic"
+            })
+        });
+    </script>
+</head>
+<body>
+    <nav class="navbar navbar-expand-sm navbar-dark bg-dark">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#nav-content" aria-controls="nav-content" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <a class="navbar-brand text-light" href="../../index.html">C# exercises - www.CSharpExercises.com</a>
+        <div class="collapse navbar-collapse" id="nav-content">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="../../contact.html">Contact</a>
+                </li>
+            </ul>
+        </div>
+        <button class="btn btn-outline-success btn-sm mr-3">Newest exercise!</button>
+<a href="draw-christmas-tree.html">
+    Draw Christmas tree</a>
+    </nav>
+    <div class="container fluid">
+        <div class="row content">
+            <div class="col-3">
+                
+<ul class="list-group">
+    <li class="list-group-item">
+        Category menu
+    </li>
+        <li class="list-group-item list-group-item-action ">
+            <a href="../../basics.html">
+                Basics
+            </a>
+        </li>
+        <li class="list-group-item list-group-item-action ">
+            <a href="../../conditional-statements.html">
+                Conditional statements
+            </a>
+        </li>
+        <li class="list-group-item list-group-item-action font-weight-bold">
+            <a href="../../loops.html">
+                Loops
+            </a>
+        </li>
+        <li class="list-group-item list-group-item-action ">
+            <a href="../../strings.html">
+                Strings
+            </a>
+        </li>
+        <li class="list-group-item list-group-item-action ">
+            <a href="../../recursion.html">
+                Recursion
+            </a>
+        </li>
+        <li class="list-group-item list-group-item-action ">
+            <a href="../../library-functions.html">
+                Library functions
+            </a>
+        </li>
+        <li class="list-group-item list-group-item-action ">
+            <a href="../../regular-expressions.html">
+                Regular expressions
+            </a>
+        </li>
+        <li class="list-group-item list-group-item-action ">
+            <a href="../../linq.html">
+                LINQ
+            </a>
+        </li>
+        <li class="list-group-item list-group-item-action ">
+            <a href="../../miscellaneous.html">
+                Miscellaneous
+            </a>
+        </li>
+</ul>
+            </div>
+            <div class="col-9">
+                
+
+<div class="container">
+    <div class="get-back-link">
+        <a class="small" href="../../loops.html">
+            &laquo; Get back to the list of exercises
+        </a>
+    </div>
+    <div class="task">
+        <div class="task-title task-margin"><h4>Multiplication table</h4></div>
+        <div class="task-description task-margin">Write a method that prints 10 by 10 multiplication table. Remember about readibility (spaces in the right place).</div>
+            <div class="bolder">
+                Expected input and output
+            </div>
+            <div class="task-margin task-inputoutput">1  2  3  4  5  6  7  8  9 10&#xD;&#xA;2  4  6  8 10 12 14 16 18 20&#xD;&#xA;3  6  9 12 15 18 21 24 27 30&#xD;&#xA;4  8 12 16 20 24 28 32 36 40&#xD;&#xA;5 10 15 20 25 30 35 40 45 50&#xD;&#xA;6 12 18 24 30 36 42 48 54 60&#xD;&#xA;7 14 21 28 35 42 49 56 63 70&#xD;&#xA;8 16 24 32 40 48 56 64 72 80&#xD;&#xA;9 18 27 36 45 54 63 72 81 90&#xD;&#xA;10 20 30 40 50 60 70 80 90 100</div>
+        <div>
+            <a href="#" id="showCode">
+                Click here to see example solution
+            </a>
+        </div>
+        <div id="solution"><pre class="sunlight-highlight-csharp">using System;&#xD;&#xA;&#xD;&#xA;namespace CSharpExercises.Exercises.Loops&#xD;&#xA;{&#xD;&#xA;    class MultiplicationTableTask&#xD;&#xA;    {&#xD;&#xA;        static void MultiplicationTable()&#xD;&#xA;        {&#xD;&#xA;            for (int i = 1; i &lt;= 10; i&#x2B;&#x2B;)&#xD;&#xA;            {&#xD;&#xA;                for (int j = 1; j &lt;= 10; j&#x2B;&#x2B;)&#xD;&#xA;                {&#xD;&#xA;                    if (i == 1)&#xD;&#xA;                    {&#xD;&#xA;                        if (i * j &lt; 10)&#xD;&#xA;                        {&#xD;&#xA;                            Console.Write($&quot; {i * j} &quot;);&#xD;&#xA;                        }&#xD;&#xA;                        else&#xD;&#xA;                        {&#xD;&#xA;                            Console.Write($&quot;{i * j} &quot;);&#xD;&#xA;                        }&#xD;&#xA;                    }&#xD;&#xA;                    else if (i &gt; 1 &amp;&amp; i &lt; 10)&#xD;&#xA;                    {&#xD;&#xA;                        if (i * j &lt; 10)&#xD;&#xA;                        {&#xD;&#xA;                            Console.Write($&quot; {i * j} &quot;);&#xD;&#xA;                        }&#xD;&#xA;                        else&#xD;&#xA;                        {&#xD;&#xA;                            Console.Write($&quot;{i * j} &quot;);&#xD;&#xA;                        }&#xD;&#xA;                    }&#xD;&#xA;                    else&#xD;&#xA;                    {&#xD;&#xA;                        Console.Write($&quot;{i * j} &quot;);&#xD;&#xA;                    }&#xD;&#xA;                }&#xD;&#xA;                Console.WriteLine();&#xD;&#xA;            }&#xD;&#xA;        }&#xD;&#xA;&#xD;&#xA;        static void Main(string[] args)&#xD;&#xA;        {&#xD;&#xA;            MultiplicationTable();&#xD;&#xA;            // 1  2  3  4  5  6  7  8  9 10&#xD;&#xA;            // 2  4  6  8 10 12 14 16 18 20&#xD;&#xA;            // 3  6  9 12 15 18 21 24 27 30&#xD;&#xA;            // 4  8 12 16 20 24 28 32 36 40&#xD;&#xA;            // 5 10 15 20 25 30 35 40 45 50&#xD;&#xA;            // 6 12 18 24 30 36 42 48 54 60&#xD;&#xA;            // 7 14 21 28 35 42 49 56 63 70&#xD;&#xA;            // 8 16 24 32 40 48 56 64 72 80&#xD;&#xA;            // 9 18 27 36 45 54 63 72 81 90&#xD;&#xA;            //10 20 30 40 50 60 70 80 90 100&#xD;&#xA;        }&#xD;&#xA;    }&#xD;&#xA;}</pre></div>
+    </div>
+</div>
+            </div>
+        </div>
+    </div>
+    <footer class="footer text-center bg-dark text-light text-small">
+        <small>2021 www.CSharpExercises.com</small>
+    </footer>
+    <script src="../../Style/style.min.js"></script>
+    <script type="text/javascript" src="../../Style/sunlight.min.js"></script>
+    <script type="text/javascript">
+        Sunlight.highlightAll();
+    </script>
+    <script src="../../Style/custom.js"></script>
+</body>
+
+<!-- Mirrored from csharpexercises.com/loops/exercise/multiplication-table by HTTrack Website Copier/3.x [XR&CO'2014], Sun, 07 Feb 2021 12:33:47 GMT -->
+</html>

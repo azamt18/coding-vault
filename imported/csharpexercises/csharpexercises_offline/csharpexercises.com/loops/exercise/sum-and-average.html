@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+
+<html>
+
+<!-- Mirrored from csharpexercises.com/loops/exercise/sum-and-average by HTTrack Website Copier/3.x [XR&CO'2014], Sun, 07 Feb 2021 12:33:47 GMT -->
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=utf-8" /><!-- /Added by HTTrack -->
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>C# programming exercises - examples with solutions</title>
+    <meta name="description" content="Increase your programming skills with dozens of C# programming exercises and tasks with sample solutions. Tasks are divided into different categories: arrays, loops, strings, conditional statements, etc.">
+    <link rel="stylesheet" href="../../Style/style.min.css" />
+    <link rel="stylesheet" href="../../Style/customstyle.css" />
+    <link rel="stylesheet" href="../../Style/sunlight.min.css" />
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-127816008-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'UA-127816008-1');
+    </script>
+    <link rel="stylesheet" type="text/css" href="../../../cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.1.0/cookieconsent.min.css" />
+    <script src="../../../cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.1.0/cookieconsent.min.js"></script>
+    <script>
+        window.addEventListener("load", function () {
+            window.cookieconsent.initialise({
+                "palette": {
+                    "popup": {
+                        "background": "#237afc"
+                    },
+                    "button": {
+                        "background": "#fff",
+                        "text": "#237afc"
+                    }
+                },
+                "theme": "classic"
+            })
+        });
+    </script>
+</head>
+<body>
+    <nav class="navbar navbar-expand-sm navbar-dark bg-dark">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#nav-content" aria-controls="nav-content" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <a class="navbar-brand text-light" href="../../index.html">C# exercises - www.CSharpExercises.com</a>
+        <div class="collapse navbar-collapse" id="nav-content">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="../../contact.html">Contact</a>
+                </li>
+            </ul>
+        </div>
+        <button class="btn btn-outline-success btn-sm mr-3">Newest exercise!</button>
+<a href="draw-christmas-tree.html">
+    Draw Christmas tree</a>
+    </nav>
+    <div class="container fluid">
+        <div class="row content">
+            <div class="col-3">
+                
+<ul class="list-group">
+    <li class="list-group-item">
+        Category menu
+    </li>
+        <li class="list-group-item list-group-item-action ">
+            <a href="../../basics.html">
+                Basics
+            </a>
+        </li>
+        <li class="list-group-item list-group-item-action ">
+            <a href="../../conditional-statements.html">
+                Conditional statements
+            </a>
+        </li>
+        <li class="list-group-item list-group-item-action font-weight-bold">
+            <a href="../../loops.html">
+                Loops
+            </a>
+        </li>
+        <li class="list-group-item list-group-item-action ">
+            <a href="../../strings.html">
+                Strings
+            </a>
+        </li>
+        <li class="list-group-item list-group-item-action ">
+            <a href="../../recursion.html">
+                Recursion
+            </a>
+        </li>
+        <li class="list-group-item list-group-item-action ">
+            <a href="../../library-functions.html">
+                Library functions
+            </a>
+        </li>
+        <li class="list-group-item list-group-item-action ">
+            <a href="../../regular-expressions.html">
+                Regular expressions
+            </a>
+        </li>
+        <li class="list-group-item list-group-item-action ">
+            <a href="../../linq.html">
+                LINQ
+            </a>
+        </li>
+        <li class="list-group-item list-group-item-action ">
+            <a href="../../miscellaneous.html">
+                Miscellaneous
+            </a>
+        </li>
+</ul>
+            </div>
+            <div class="col-9">
+                
+
+<div class="container">
+    <div class="get-back-link">
+        <a class="small" href="../../loops.html">
+            &laquo; Get back to the list of exercises
+        </a>
+    </div>
+    <div class="task">
+        <div class="task-title task-margin"><h4>Sum and average</h4></div>
+        <div class="task-description task-margin">Given two integers n and m (n &lt;= m), write a method that returns sum of all integers and average from range [n, m].</div>
+            <div class="bolder">
+                Expected input and output
+            </div>
+            <div class="task-margin task-inputoutput">SumAndAverage(11, 66) &#x2192; &quot;Sum: 2156, Average: 38.5&quot;&#xD;&#xA;SumAndAverage(-10, 0) &#x2192; &quot;Sum: -55, Average: -5&quot;</div>
+        <div>
+            <a href="#" id="showCode">
+                Click here to see example solution
+            </a>
+        </div>
+        <div id="solution"><pre class="sunlight-highlight-csharp">using System;&#xD;&#xA;&#xD;&#xA;namespace CSharpExercises.Exercises.Loops&#xD;&#xA;{&#xD;&#xA;    class SumAndAverageTask&#xD;&#xA;    {&#xD;&#xA;        static string SumAndAverage(int lowest, int highest)&#xD;&#xA;        {&#xD;&#xA;            int sum = 0;&#xD;&#xA;            int range = 0;&#xD;&#xA;            double average = 0.0;&#xD;&#xA;            for (int i = lowest; i &lt;= highest; i&#x2B;&#x2B;)&#xD;&#xA;            {&#xD;&#xA;                sum &#x2B;= i;&#xD;&#xA;                range&#x2B;&#x2B;;&#xD;&#xA;            }&#xD;&#xA;&#xD;&#xA;            average = sum / (double)range;&#xD;&#xA;&#xD;&#xA;            return string.Format($&quot;Sum: {sum}, Average: {average}&quot;);&#xD;&#xA;        }&#xD;&#xA;&#xD;&#xA;        static void Main(string[] args)&#xD;&#xA;        {&#xD;&#xA;            Console.WriteLine(SumAndAverage(20, 21)); // Sum: 41 Average: 20,5&#xD;&#xA;            Console.WriteLine(SumAndAverage(55, 55)); // Sum: 55 Average: 55&#xD;&#xA;            Console.WriteLine(SumAndAverage(0, 100)); // Sum: 5050 Average: 50&#xD;&#xA;        }&#xD;&#xA;    }&#xD;&#xA;}</pre></div>
+    </div>
+</div>
+            </div>
+        </div>
+    </div>
+    <footer class="footer text-center bg-dark text-light text-small">
+        <small>2021 www.CSharpExercises.com</small>
+    </footer>
+    <script src="../../Style/style.min.js"></script>
+    <script type="text/javascript" src="../../Style/sunlight.min.js"></script>
+    <script type="text/javascript">
+        Sunlight.highlightAll();
+    </script>
+    <script src="../../Style/custom.js"></script>
+</body>
+
+<!-- Mirrored from csharpexercises.com/loops/exercise/sum-and-average by HTTrack Website Copier/3.x [XR&CO'2014], Sun, 07 Feb 2021 12:33:47 GMT -->
+</html>
