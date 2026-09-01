@@ -27,6 +27,18 @@ coding-vault/
 │       ├── csharp-ci.yml                   # Automated dotnet test CI runner
 │       └── python-ci.yml                   # Automated pytest CI runner
 │
+├── dotnet-int/                             # .NET Intermediate Mentoring Program Modules
+│   ├── 01_help_module/
+│   ├── 02_multithreading_in_net/           # Multithreading, ThreadPool, Mutex, Monitor
+│   ├── 03_async_programming/              # Async/Await, Task Parallel Library (TPL)
+│   ├── 04_message_queues/                  # Producer-Consumer & Queue patterns
+│   ├── 05_analyzing_and_profiling_tools/   # Memory/CPU Profiling & Performance
+│   ├── 06_linq_iqueryable/                 # Custom LINQ providers & IQueryable
+│   ├── 07_expressions/                     # Expression Trees & Dynamic Queries
+│   ├── 08_rest_architecture/              # RESTful API Design & Best Practices
+│   ├── 09_hosting_and_deployment/          # Kestrel, Hosting Models, & Environments
+│   └── 10-14_gof_design_patterns/          # Creational, Structural, Behavioral GoF Patterns
+│
 ├── csharp/                                 # C# .NET 10 Solution
 │   ├── CodingTasks.sln
 │   ├── src/
