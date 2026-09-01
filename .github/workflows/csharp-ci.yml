@@ -3,14 +3,9 @@ name: .NET CI
 on:
   push:
     branches: [ main ]
-    paths:
-      - 'csharp/**'
-      - '.github/workflows/csharp-ci.yml'
   pull_request:
     branches: [ main ]
-    paths:
-      - 'csharp/**'
-      - '.github/workflows/csharp-ci.yml'
+  workflow_dispatch:
 
 jobs:
   build-and-test:

@@ -1,10 +1,20 @@
-# ⚡ Coding Vault: Algorithms, Low-Level Design & Concurrency in C# and Python
+<div align="center">
 
-[![.NET CI](https://github.com/azamt18/coding-vault/actions/workflows/csharp-ci.yml/badge.svg)](https://github.com/azamt18/coding-vault/actions/workflows/csharp-ci.yml)
-[![Python CI](https://github.com/azamt18/coding-vault/actions/workflows/python-ci.yml/badge.svg)](https://github.com/azamt18/coding-vault/actions/workflows/python-ci.yml)
-[![LeetCode Profile](https://img.shields.io/badge/LeetCode-azamt18-FFA116?style=flat&logo=leetcode&logoColor=black)](https://leetcode.com/u/azamt18/)
+# ⚡ Coding Vault
+### High-Performance Algorithms, Low-Level Design (LLD) & Concurrency in C# and Python
 
-A unified, high-performance polyglot monorepo dedicated to **Senior Software Engineering Interview Preparation**, **Algorithmic Problem Solving**, **Low-Level / Object-Oriented Design (LLD)**, and **Multithreading / Concurrency** in **C# (.NET 10)** and **Python 3**.
+[![.NET 10](https://img.shields.io/badge/.NET-10.0-512BD4?style=for-the-badge&logo=dotnet&logoColor=white)](https://dotnet.microsoft.com/)
+[![C#](https://img.shields.io/badge/C%23-13%2B-239120?style=for-the-badge&logo=csharp&logoColor=white)](https://docs.microsoft.com/en-us/dotnet/csharp/)
+[![Python 3.12](https://img.shields.io/badge/Python-3.12-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
+[![NUnit Tested](https://img.shields.io/badge/NUnit-Tested-25A162?style=for-the-badge&logo=nunit&logoColor=white)](https://nunit.org/)
+[![Pytest](https://img.shields.io/badge/Pytest-Passing-0A9EDC?style=for-the-badge&logo=pytest&logoColor=white)](https://pytest.org/)
+[![LeetCode Profile](https://img.shields.io/badge/LeetCode-600%2B%20Solved-FFA116?style=for-the-badge&logo=leetcode&logoColor=white)](https://leetcode.com/u/azamt18/)
+
+</div>
+
+---
+
+A unified, high-performance polyglot repository dedicated to **Senior Software Engineering Interview Preparation**, **Algorithmic Problem Solving**, **Low-Level Object-Oriented Design (LLD)**, and **Multithreading / Concurrency** in **C# (.NET 10)** and **Python 3.12**.
 
 ---
 
