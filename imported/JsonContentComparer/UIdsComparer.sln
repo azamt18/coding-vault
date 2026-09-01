@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31105.61
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UIdsComparer", "UIdsComparer\UIdsComparer.csproj", "{F4B81835-3523-494B-A7ED-8E144A5158CA}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F4B81835-3523-494B-A7ED-8E144A5158CA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F4B81835-3523-494B-A7ED-8E144A5158CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F4B81835-3523-494B-A7ED-8E144A5158CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F4B81835-3523-494B-A7ED-8E144A5158CA}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {95C7385D-3BA1-4843-BF33-C642A6EC45DA}
+	EndGlobalSection
+EndGlobal
