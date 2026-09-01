@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
@@ -22,7 +22,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Algorithmics\Algorithmics.csproj" />
+    <ProjectReference Include="..\..\src\CodingTasks.DSA\CodingTasks.DSA.csproj" />
+    <ProjectReference Include="..\..\src\CodingTasks.DataStructures\CodingTasks.DataStructures.csproj" />
+    <ProjectReference Include="..\..\src\CodingTasks.Design\CodingTasks.Design.csproj" />
+    <ProjectReference Include="..\..\src\CodingTasks.Concurrency\CodingTasks.Concurrency.csproj" />
+    <ProjectReference Include="..\..\src\CodingTasks.Utilities\CodingTasks.Utilities.csproj" />
   </ItemGroup>
 
 </Project>
