@@ -10,6 +10,22 @@ obj/
 .idea/
 *.DotSettings.user
 
+## VS Code
+.vscode/
+
+## Secrets & Auth Tokens
+credentials.json
+token.json
+*.token.json
+.env
+.env.*
+*.key
+*.pem
+
+## Private Documents & Media
+pdp/parallelmuhit/essays/*.pdf
+pdp/parallelmuhit/essays/**/*.pdf
+
 ## Claude / Codemie local configs
 .claude/
 .codemie/

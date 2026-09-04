@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "learn": {
+      "type": "stdio",
+      "command": "codemie-mcp-proxy",
+      "args": [
+        "https://mcp.epam.com/mcp/learn"
+      ],
+      "env": {}
+    }
+  }
+}

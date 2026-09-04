@@ -12,9 +12,7 @@
 
 </div>
 
----
-
-A unified, high-performance polyglot repository dedicated to **Senior Software Engineering Interview Preparation**, **Algorithmic Problem Solving**, **Low-Level Object-Oriented Design (LLD)**, and **Multithreading / Concurrency** in **C# (.NET 10)** and **Python 3.12**.
+A unified, high-performance polyglot monorepo dedicated to **Senior Software Engineering Interview Preparation**, **Algorithmic Problem Solving**, **Low-Level / Object-Oriented Design (LLD)**, and **Multithreading / Concurrency** in **C# (.NET 10)** and **Python 3**.
 
 ---
 
@@ -36,6 +34,10 @@ coding-vault/
 │   └── workflows/
 │       ├── csharp-ci.yml                   # Automated dotnet test CI runner
 │       └── python-ci.yml                   # Automated pytest CI runner
+│
+│ ┌─────────────────────────────────────────────────────────────────────────┐
+│ │ INTERVIEW MASTERY & CORE DSA                                             │
+│ └─────────────────────────────────────────────────────────────────────────┘
 │
 ├── dotnet-int/                             # .NET Intermediate Mentoring Program Modules
 │   ├── 01_help_module/
@@ -88,8 +90,65 @@ coding-vault/
 │   ├── dsa/                                # Curated LeetCode & DSA Problem Solutions
 │   └── tests/                              # pytest Suite
 │
+│ ┌─────────────────────────────────────────────────────────────────────────┐
+│ │ AI & AGENT SYSTEMS                                                       │
+│ └─────────────────────────────────────────────────────────────────────────┘
+│
+├── agent-memory-system/                    # Federated Agent Memory (EPAM Hackathon)
+│   ├── adk_agent/                          # Google ADK 2.8 Agent Implementation
+│   │   ├── agent.py                        # Shop-ACME support agent persona
+│   │   └── memory.py                       # Memory injection callbacks
+│   ├── federated-memory-pipeline/          # Category tagging & memory storage
+│   ├── store.py                            # Firestore integration (fmp_sessions, fmp_serves)
+│   ├── ARCHITECTURE.md                     # Full system design & data flow
+│   ├── SYSTEM_DESIGN.md
+│   ├── INFRA.md                            # GCP Cloud Run, Vertex AI, ADC auth
+│   ├── GOLDEN_PATH.md
+│   └── README.md
+│
+├── aist/                                   # AI Summary Tool Ecosystem
+│   ├── aist-digest/                        # Knowledge synthesis & architecture docs
+│   ├── aist-tool-ui/                       # React/TypeScript frontend
+│   │   └── package.json
+│   └── aist-tool-survey/                   # Survey & feedback collection
+│
+│ ┌─────────────────────────────────────────────────────────────────────────┐
+│ │ PROFESSIONAL DEVELOPMENT & TOOLS                                         │
+│ └─────────────────────────────────────────────────────────────────────────┘
+│
+├── pdp/                                    # Professional Development Project
+│   ├── timebox/                            # Time-boxing & task management system
+│   └── parallelmuhit/                      # Parallel task orchestration
+│
 └── ROADMAP.md                              # Detailed Interview Milestones & Study Plan
 ```
+
+---
+
+## 🎯 Three Pillars
+
+### 1️⃣ Interview Mastery (DSA, LLD, Concurrency)
+- **Target**: Blind 75 / NeetCode 150 problem coverage
+- **Languages**: C# (.NET 10), Python 3
+- **Modules**: Data Structures, Algorithms, Low-Level Design, Thread-Safe Primitives
+- **Mentoring**: `dotnet-int/` — 14 modules covering async, LINQ, design patterns, REST API design
+
+### 2️⃣ AI & Agent Systems
+- **Agent Memory** (`agent-memory-system/`) — Federated memory layer for support agents
+  - Google ADK 2.8, Gemini 2.5 Flash on Vertex AI
+  - Deterministic category-based retrieval (no embeddings, one LLM call per session)
+  - Firestore storage, Cloud Run deployment, ADC authentication
+  - Shop-ACME retail support demo agent
+- **AIST** (`aist/`) — AI Summary Tool Ecosystem
+  - `aist-digest` — Knowledge synthesis & architecture documentation
+  - `aist-tool-ui` — React/TypeScript frontend
+  - `aist-tool-survey` — User feedback & survey collection
+
+### 3️⃣ Professional Development Tools
+- **PDP** (`pdp/`) — Professional Development Project
+  - `timebox/` — Time-boxing & task management
+  - `parallelmuhit/` — Parallel task orchestration & execution
+  - Integrated with EPAM ecosystem & enterprise workflows
 
 ---
 
