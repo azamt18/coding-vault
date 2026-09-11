@@ -14,7 +14,7 @@ namespace MultiThreading.Task1._100Tasks
         const int TaskAmount = 100;
         const int MaxIterationsCount = 1000;
 
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
             Console.WriteLine(".Net Mentoring Program. Multi threading V1.");
             Console.WriteLine("1.	Write a program, which creates an array of 100 Tasks, runs them and waits all of them are not finished.");
@@ -22,14 +22,15 @@ namespace MultiThreading.Task1._100Tasks
             Console.WriteLine("“Task #0 – {iteration number}”.");
             Console.WriteLine();
             
-            HundredTasks();
+            // HundredTasks();
+            
+            await HundredTasksUsingRangeAndWaitingSequentiallyWithConfirmation();
 
             Console.ReadLine();
         }
 
         static void HundredTasks()
         {
-            // feel free to add your code here
             Task[] tasks =  new Task[TaskAmount];
             for (int i = 0; i < tasks.Length; i++)
             {
@@ -44,6 +45,30 @@ namespace MultiThreading.Task1._100Tasks
             }
 
             Task.WaitAll(tasks);
+        }
+
+        static async Task HundredTasksUsingRangeAndWaitingSequentiallyWithConfirmation()
+        {
+            // basic iteration (alt to for loop)
+            for (int i = 0; i < TaskAmount; i++)
+            {
+                int taskIndex = i;
+                await Task.Run(() =>
+                {
+                    foreach (var iteration in Enumerable.Range(1, 10))
+                    {
+                        Console.WriteLine($"Task #{taskIndex} - {iteration}");
+                    }
+                    Console.ReadKey();
+                });
+            }
+            
+            /* tasks[i].Wait() does not guarantee order of execution */
+            // for (int i = 0; i < tasks.Length; i++)
+            // {
+            //     tasks[i].Wait();
+            //     Console.WriteLine($"task #{i} completed");
+            // }
         }
 
         static void Output(int taskNumber, int iterationNumber)
