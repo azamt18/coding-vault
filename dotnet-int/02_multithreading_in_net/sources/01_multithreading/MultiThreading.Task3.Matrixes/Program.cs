@@ -30,8 +30,8 @@ namespace MultiThreading.Task3.MatrixMultiplier
             Console.WriteLine("Multiplying...");
             Parallel.Invoke(() =>
             {
-                var firstMatrix = new Matrix(sizeOfMatrix, sizeOfMatrix);
-                var secondMatrix = new Matrix(sizeOfMatrix, sizeOfMatrix);
+                var firstMatrix = new Matrix(sizeOfMatrix, sizeOfMatrix, randomInit: true);
+                var secondMatrix = new Matrix(sizeOfMatrix, sizeOfMatrix, randomInit: true);
                 IMatrix resultMatrix = new MatricesMultiplierParallel().Multiply(firstMatrix, secondMatrix);
 
                 Console.WriteLine("firstMatrix:");

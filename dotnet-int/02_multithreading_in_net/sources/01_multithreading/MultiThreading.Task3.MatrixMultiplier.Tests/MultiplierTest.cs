@@ -19,40 +19,92 @@ namespace MultiThreading.Task3.MatrixMultiplier.Tests
         [TestMethod]
         public void ParallelEfficiencyTest()
         {
-            // todo: implement a test method to check the size of the matrix which makes parallel multiplication more effective than
-            var stopwatch = new Stopwatch();
-            
-            // 100x100
-            stopwatch.Start();
-            TestMatrixNOnN(new MatricesMultiplierParallel(), 200, 200);
-            var parallel200x200 = stopwatch.ElapsedMilliseconds;
-            stopwatch.Restart();
-            TestMatrixNOnN(new MatricesMultiplier(), 200, 200);
-            var sequential200x200 = stopwatch.ElapsedMilliseconds;
+            var sequentialMultiplier = new MatricesMultiplier();
+            var parallelMultiplier = new MatricesMultiplierParallel();
 
-            // 50x50
-            stopwatch.Restart();
-            TestMatrixNOnN(new MatricesMultiplierParallel(), 500, 500);
-            var parallel500x500 = stopwatch.ElapsedMilliseconds;
-            stopwatch.Restart();
-            TestMatrixNOnN(new MatricesMultiplier(), 500, 500);
-            var sequential500x500 = stopwatch.ElapsedMilliseconds;
-            
-            // 3x3
-            stopwatch.Restart();
-            TestMatrixNOnN(new MatricesMultiplierParallel(), 3, 3);
-            var parallel3x3 = stopwatch.ElapsedMilliseconds;
-            stopwatch.Restart();
-            TestMatrixNOnN(new MatricesMultiplier(), 3, 3);
-            var sequential3x3 = stopwatch.ElapsedMilliseconds;
-            stopwatch.Stop();
+            // warm-up to trigger JIT and ThreadPool initialization
+            MeasureExecutionTicks(sequentialMultiplier, 10, iterations: 5);
+            MeasureExecutionTicks(parallelMultiplier, 10, iterations: 5);
 
-            Assert.IsTrue(parallel200x200 < sequential200x200);
-            Assert.IsTrue(parallel500x500 < sequential500x500);
-            Assert.IsTrue(parallel3x3 >= sequential3x3);
+            // 1. Small matrix (3x3): Overhead of thread management makes sequential faster
+            long smallSequentialTicks = MeasureExecutionTicks(sequentialMultiplier, 3, iterations: 100); // 0
+            long smallParallelTicks = MeasureExecutionTicks(parallelMultiplier, 3, iterations: 100); // 4, 1
+
+            // 2. Matrix (100x100): Sequential can still win due to low per-thread workload
+            long largeSequentialTicks100 = MeasureExecutionTicks(sequentialMultiplier, 100, iterations: 3); // 45
+            long largeParallelTicks100 = MeasureExecutionTicks(parallelMultiplier, 100, iterations: 3); // 131, 184
+            Console.WriteLine($"{largeSequentialTicks100}, {largeParallelTicks100}");
+
+            // 3. Matrix (150x150): Approaching crossover threshold
+            long largeSequentialTicks150 = MeasureExecutionTicks(sequentialMultiplier, 150, iterations: 3); // 119
+            long largeParallelTicks150 = MeasureExecutionTicks(parallelMultiplier, 150, iterations: 3); // 38, 19
+            Console.WriteLine($"{largeSequentialTicks150}, {largeParallelTicks150}");
+
+            // 4. Matrix (200x200): Parallel starts gaining advantage
+            long largeSequentialTicks200 = MeasureExecutionTicks(sequentialMultiplier, 200, iterations: 3); // 293
+            long largeParallelTicks200 = MeasureExecutionTicks(parallelMultiplier, 200, iterations: 3); // 42, 90
+            Console.WriteLine($"{largeSequentialTicks200}, {largeParallelTicks200}");
+
+            // 5. Matrix (206x206): Fine-tuning search near pivot area
+            long largeSequentialTicks206 = MeasureExecutionTicks(sequentialMultiplier, 206, iterations: 3); // 304, 308
+            long largeParallelTicks206 = MeasureExecutionTicks(parallelMultiplier, 206, iterations: 3); // 92, 47
+            Console.WriteLine($"{largeSequentialTicks206}, {largeParallelTicks206}");
+
+            // 6. Matrix (212x212): Fine-tuning search near pivot area
+            long largeSequentialTicks212 = MeasureExecutionTicks(sequentialMultiplier, 212, iterations: 3); // 327
+            long largeParallelTicks212 = MeasureExecutionTicks(parallelMultiplier, 212, iterations: 3); // 100, 51
+            Console.WriteLine($"{largeSequentialTicks212}, {largeParallelTicks212}");
+
+            // 7. Matrix (218x218): Fine-tuning search near pivot area
+            long largeSequentialTicks218 = MeasureExecutionTicks(sequentialMultiplier, 218, iterations: 3); // 358
+            long largeParallelTicks218 = MeasureExecutionTicks(parallelMultiplier, 218, iterations: 3); // 52
+            Console.WriteLine($"{largeSequentialTicks218}, {largeParallelTicks218}");
+
+            // 8. Matrix (225x225): Parallel workload variation
+            long largeSequentialTicks225 = MeasureExecutionTicks(sequentialMultiplier, 225, iterations: 3); // 396
+            long largeParallelTicks225 = MeasureExecutionTicks(parallelMultiplier, 225, iterations: 3); // 623, 546
+            Console.WriteLine($"{largeSequentialTicks225}, {largeParallelTicks225}");
+
+            // 9. Matrix (250x250): CPU-bound workload benefits from multi-core parallelization
+            long largeSequentialTicks250 = MeasureExecutionTicks(sequentialMultiplier, 250, iterations: 3); // 558
+            long largeParallelTicks250 = MeasureExecutionTicks(parallelMultiplier, 250, iterations: 3); // 132, 92
+            Console.WriteLine($"{largeSequentialTicks250}, {largeParallelTicks250}");
+
+            // Assertions:
+            // - For small workloads, sequential has less overhead.
+            // - For heavy workloads, parallel is faster.
+            Assert.IsTrue(smallSequentialTicks <= smallParallelTicks,
+                $"Expected sequential ({smallSequentialTicks} ticks) to be faster or equal to parallel ({smallParallelTicks} ticks) for 3x3 matrix.");
+
+            Assert.IsTrue(largeParallelTicks250 < largeSequentialTicks250,
+                $"Expected parallel ({largeParallelTicks250} ticks) to be faster than sequential ({largeSequentialTicks250} ticks) for 250x250 matrix.");
+
+            // Note: Tried to find the pivot point where both approaches run at the same time.
+            // Due to CPU spikes and OS thread scheduling, it is not realistic to expect
+            // two execution times to land on the exact same ms/tick.
+            
+            // key takeaways
+            // 1. evaluate complexity & operation cost of single operation
+            // 2. test the crossover threshold for informed decision 
+            
         }
 
         #region private methods
+
+        long MeasureExecutionTicks(IMatricesMultiplier matrixMultiplier, int size, int iterations = 1)
+        {
+            var first = new Matrix(size, size, randomInit: true);
+            var second = new Matrix(size, size, randomInit: true);
+
+            var stopwatch = Stopwatch.StartNew();
+            for (int i = 0; i < iterations; i++)
+            {
+                matrixMultiplier.Multiply(first, second);
+            }
+            stopwatch.Stop();
+
+            return stopwatch.ElapsedMilliseconds;
+        }
 
         IMatrix TestMatrixNOnN(IMatricesMultiplier matrixMultiplier, int rows, int cols)
         {

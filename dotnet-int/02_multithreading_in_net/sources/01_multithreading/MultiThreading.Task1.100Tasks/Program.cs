@@ -6,6 +6,8 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using BenchmarkDotNet.Attributes;
+using BenchmarkDotNet.Running;
 
 namespace MultiThreading.Task1._100Tasks
 {
@@ -24,27 +26,11 @@ namespace MultiThreading.Task1._100Tasks
             
             // HundredTasks();
             
-            await HundredTasksUsingRangeAndWaitingSequentiallyWithConfirmation();
+            // await HundredTasksUsingRangeAndWaitingSequentiallyWithConfirmation();
 
+            BenchmarkRunner.Run<TaskBenchmarks>();
+            
             Console.ReadLine();
-        }
-
-        static void HundredTasks()
-        {
-            Task[] tasks =  new Task[TaskAmount];
-            for (int i = 0; i < tasks.Length; i++)
-            {
-                int taskIndex = i;
-                tasks[taskIndex] = Task.Run(() =>
-                {
-                    for (int j = 1; j <= MaxIterationsCount; j++)
-                    {
-                        Output(taskIndex, j);
-                    }
-                });
-            }
-
-            Task.WaitAll(tasks);
         }
 
         static async Task HundredTasksUsingRangeAndWaitingSequentiallyWithConfirmation()
@@ -69,11 +55,6 @@ namespace MultiThreading.Task1._100Tasks
             //     tasks[i].Wait();
             //     Console.WriteLine($"task #{i} completed");
             // }
-        }
-
-        static void Output(int taskNumber, int iterationNumber)
-        {
-            Console.WriteLine($"Task #{taskNumber} – {iterationNumber}");
         }
     }
 }
