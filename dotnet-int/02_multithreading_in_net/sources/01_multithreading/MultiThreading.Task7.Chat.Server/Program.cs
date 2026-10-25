@@ -2,44 +2,82 @@ namespace MultiThreading.Task7.Chat.Server;
 
 internal static class Program
 {
-    private static void Main(string[] args)
+    private static async Task Main(string[] args)
     {
-        Console.WriteLine("=== Enterprise Chat Server (Task 1: Thread-Per-Client Model) ===");
+        Console.WriteLine("=================================================");
+        Console.WriteLine("    ENTERPRISE CHAT SERVER (.NET 9 / Sockets)    ");
+        Console.WriteLine("=================================================");
+
+        string mode = "async"; // Default to modern Task 2 async
         int port = 5050;
-        if (args.Length > 0 && int.TryParse(args[0], out int customPort))
+
+        if (args.Length > 0)
         {
-            port = customPort;
+            if (args[0].Equals("sync", StringComparison.OrdinalIgnoreCase) || args[0].Equals("1", StringComparison.OrdinalIgnoreCase))
+            {
+                mode = "sync";
+            }
+            else if (args[0].Equals("async", StringComparison.OrdinalIgnoreCase) || args[0].Equals("2", StringComparison.OrdinalIgnoreCase))
+            {
+                mode = "async";
+            }
+            else if (int.TryParse(args[0], out int parsedPort))
+            {
+                port = parsedPort;
+            }
         }
 
-        using var server = new ThreadPerClientChatServer(port);
-        server.Start();
+        if (args.Length > 1 && int.TryParse(args[1], out int parsedPort2))
+        {
+            port = parsedPort2;
+        }
 
-        var shutdownEvent = new ManualResetEventSlim(false);
+        using var cts = new CancellationTokenSource();
 
         Console.CancelKeyPress += (sender, eventArgs) =>
         {
-            Console.WriteLine("\n[Shutdown] Cancellation requested by user.");
-            eventArgs.Cancel = true; // Prevent immediate brutal process termination
-            shutdownEvent.Set();
+            Console.WriteLine("\n[Shutdown] Stopping server...");
+            eventArgs.Cancel = true;
+            cts.Cancel();
         };
 
-        Console.WriteLine("Server running. Press Ctrl+C or enter 'q' to stop.\n");
-
-        while (!shutdownEvent.IsSet)
+        if (mode == "sync")
         {
-            if (Console.KeyAvailable)
+            Console.WriteLine($"[Mode] Running Task 1: Synchronous Thread-Per-Client Model on port {port}.");
+            using var syncServer = new ThreadPerClientChatServer(port);
+            syncServer.Start();
+            Console.WriteLine("Press Ctrl+C to stop.\n");
+
+            try
             {
-                string? input = Console.ReadLine();
-                if (input?.Trim().Equals("q", StringComparison.OrdinalIgnoreCase) == true)
-                {
-                    break;
-                }
+                await Task.Delay(Timeout.Infinite, cts.Token);
+            }
+            catch (OperationCanceledException)
+            {
+                // Normal exit
             }
 
-            shutdownEvent.Wait(200);
+            syncServer.Stop();
+        }
+        else
+        {
+            Console.WriteLine($"[Mode] Running Task 2: Asynchronous TPL & Channels Model on port {port}.");
+            var asyncServer = new AsyncChatServer(port);
+            asyncServer.Start();
+            Console.WriteLine("Press Ctrl+C to stop.\n");
+
+            try
+            {
+                await Task.Delay(Timeout.Infinite, cts.Token);
+            }
+            catch (OperationCanceledException)
+            {
+                // Normal exit
+            }
+
+            await asyncServer.StopAsync();
         }
 
-        server.Stop();
         Console.WriteLine("Server exit complete.");
     }
 }

@@ -2,24 +2,40 @@ namespace MultiThreading.Task7.Chat.Client;
 
 internal static class Program
 {
-    private static void Main(string[] args)
+    private static async Task Main(string[] args)
     {
-        Console.WriteLine("=== Enterprise Chat Bot Client (Task 1: Synchronous Model) ===");
+        Console.WriteLine("=================================================");
+        Console.WriteLine("   ENTERPRISE CHAT CLIENT BOT (.NET 9 / TCP)     ");
+        Console.WriteLine("=================================================");
+
+        string mode = "async";
         string host = "127.0.0.1";
         int port = 5050;
-        int botCount = 1;
+        int botCount = 2;
 
-        if (args.Length > 0 && int.TryParse(args[0], out int parsedPort))
+        if (args.Length > 0)
+        {
+            if (args[0].Equals("sync", StringComparison.OrdinalIgnoreCase) || args[0].Equals("1", StringComparison.OrdinalIgnoreCase))
+            {
+                mode = "sync";
+            }
+            else if (args[0].Equals("async", StringComparison.OrdinalIgnoreCase) || args[0].Equals("2", StringComparison.OrdinalIgnoreCase))
+            {
+                mode = "async";
+            }
+        }
+
+        if (args.Length > 1 && int.TryParse(args[1], out int parsedPort))
         {
             port = parsedPort;
         }
 
-        if (args.Length > 1 && int.TryParse(args[1], out int parsedBotCount))
+        if (args.Length > 2 && int.TryParse(args[2], out int parsedBotCount))
         {
             botCount = Math.Max(1, parsedBotCount);
         }
 
-        Console.WriteLine($"Target: {host}:{port} | Concurrent Bots: {botCount}");
+        Console.WriteLine($"[Mode] {mode.ToUpperInvariant()} | Target: {host}:{port} | Concurrent Bots: {botCount}");
         Console.WriteLine("Press Ctrl+C to stop the client bots.\n");
 
         using var cts = new CancellationTokenSource();
@@ -31,14 +47,8 @@ internal static class Program
             cts.Cancel();
         };
 
-        if (botCount == 1)
+        if (mode == "sync")
         {
-            var bot = new ChatClientBot(host, port);
-            bot.Run(cts.Token);
-        }
-        else
-        {
-            // Run multiple bots concurrently
             var threads = new List<Thread>();
             for (int i = 0; i < botCount; i++)
             {
@@ -50,16 +60,35 @@ internal static class Program
                 })
                 {
                     IsBackground = true,
-                    Name = $"BotWorkerThread-{botIndex}"
+                    Name = $"SyncBotThread-{botIndex}"
                 };
                 threads.Add(thread);
                 thread.Start();
-                Thread.Sleep(300); // Stagger initial starts slightly
+                Thread.Sleep(200);
             }
 
             foreach (var thread in threads)
             {
                 thread.Join();
+            }
+        }
+        else
+        {
+            var botTasks = new List<Task>();
+            for (int i = 0; i < botCount; i++)
+            {
+                var bot = new AsyncChatClientBot(host, port);
+                botTasks.Add(bot.RunAsync(cts.Token));
+                await Task.Delay(200, CancellationToken.None);
+            }
+
+            try
+            {
+                await Task.WhenAll(botTasks);
+            }
+            catch (OperationCanceledException)
+            {
+                // Normal exit
             }
         }
 
