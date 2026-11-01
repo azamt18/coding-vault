@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="uz">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Yangi Yozuv</title>
+    <meta name="manifest.type" content="browser_action" />
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <header>
+      <h1>Yangi Yozuv</h1>
+      <p class="rules">sh→ş · ch→ç · oʻ→ö · gʻ→ğ</p>
+    </header>
+
+    <label class="row switch">
+      <span>Yoqilgan</span>
+      <input id="enabled" type="checkbox" role="switch" />
+    </label>
+
+    <section class="row site" id="site">
+      <span id="site-name" class="site-name"></span>
+      <label id="site-toggle" class="switch" hidden>
+        <span>Bu saytda işlasin</span>
+        <input id="site-enabled" type="checkbox" role="switch" />
+      </label>
+      <button id="site-grant" type="button" hidden>Bu saytda yoqiş</button>
+      <span id="site-unsupported" class="muted" hidden>Bu sahifada işlamaydi</span>
+    </section>
+
+    <section class="skip">
+      <h2>Özgartirilmaydigan sözlar</h2>
+      <form id="skip-form">
+        <input id="skip-input" type="text" placeholder="Masalan: Shohruh" autocomplete="off" />
+        <button type="submit">Qöşiş</button>
+      </form>
+      <ul id="skip-list"></ul>
+    </section>
+
+    <footer>
+      <p>Xato almaştirsa, darhol Backspace bosing.</p>
+      <p class="privacy">Heç narsa kompyuteringizdan çiqmaydi.</p>
+    </footer>
+
+    <script type="module" src="./main.ts"></script>
+  </body>
+</html>

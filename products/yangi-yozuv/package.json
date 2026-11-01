@@ -1,0 +1,33 @@
+{
+  "name": "yangi-yozuv",
+  "description": "Type the new Uzbek alphabet (Ş, Ç, Ö, Ğ) as you write — sh→ş, ch→ç, oʻ→ö, gʻ→ğ",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "wxt",
+    "dev:firefox": "wxt -b firefox",
+    "build": "wxt build",
+    "build:firefox": "wxt build -b firefox",
+    "zip": "wxt zip",
+    "zip:firefox": "wxt zip -b firefox",
+    "compile": "tsc --noEmit",
+    "postinstall": "wxt prepare",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "build:words": "node scripts/build-english-list.mjs",
+    "test:e2e": "wxt build && node scripts/e2e.mjs",
+    "store:graphics": "wxt build && node scripts/screenshot-popup.mjs && node scripts/store-graphics.mjs",
+    "build:icons": "python3 scripts/build-icons.py"
+  },
+  "devDependencies": {
+    "happy-dom": "^21.0.4",
+    "puppeteer": "^24.43.1",
+    "typescript": "^5.9.3",
+    "vite": "^8.1.5",
+    "vitest": "^4.1.12",
+    "web-ext": "^10.5.0",
+    "wordlist-english": "^1.2.1",
+    "wxt": "^0.21.3"
+  }
+}

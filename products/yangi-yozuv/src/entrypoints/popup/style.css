@@ -1,0 +1,164 @@
+:root {
+  --bg: #ffffff;
+  --fg: #1a1d21;
+  --muted: #61676f;
+  --line: #e3e6ea;
+  --accent: #0b7a5c;
+  --accent-fg: #ffffff;
+  --chip: #eef3f1;
+  color-scheme: light dark;
+  font: 14px/1.45 system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #17191c;
+    --fg: #e8eaed;
+    --muted: #9aa0a6;
+    --line: #2c3035;
+    --accent: #3cc497;
+    --accent-fg: #0d1f19;
+    --chip: #22302b;
+  }
+}
+
+[hidden] {
+  display: none !important;
+}
+
+body {
+  margin: 0;
+  width: 300px;
+  padding: 14px 16px;
+  background: var(--bg);
+  color: var(--fg);
+}
+
+h1 {
+  margin: 0;
+  font-size: 17px;
+}
+
+h2 {
+  margin: 0 0 6px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.rules {
+  margin: 2px 0 10px;
+  color: var(--accent);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 10px 0;
+  border-top: 1px solid var(--line);
+}
+
+.site {
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.site-name {
+  color: var(--muted);
+  font-size: 12px;
+  overflow-wrap: anywhere;
+}
+
+.switch {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+}
+
+.switch input {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--accent);
+}
+
+.muted {
+  color: var(--muted);
+}
+
+button {
+  padding: 6px 10px;
+  border: 0;
+  border-radius: 6px;
+  background: var(--accent);
+  color: var(--accent-fg);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.skip {
+  padding: 10px 0;
+  border-top: 1px solid var(--line);
+}
+
+form {
+  display: flex;
+  gap: 6px;
+}
+
+form input {
+  flex: 1;
+  min-width: 0;
+  padding: 6px 8px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+}
+
+ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 8px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+li {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 4px 2px 8px;
+  border-radius: 12px;
+  background: var(--chip);
+  font-size: 12px;
+}
+
+li button {
+  padding: 0 5px;
+  background: transparent;
+  color: var(--muted);
+  font-weight: 400;
+}
+
+footer {
+  padding-top: 10px;
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 12px;
+}
+
+footer p {
+  margin: 0 0 4px;
+}
+
+.privacy {
+  color: var(--accent);
+  font-weight: 600;
+}
