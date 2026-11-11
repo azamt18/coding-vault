@@ -1,0 +1,99 @@
+"""Tests for the pure parts of export_markdown.py. No network."""
+
+import re
+
+import yaml
+
+from export_markdown import (
+    filename_for,
+    frontmatter,
+    html_to_markdown,
+    number_essays,
+    render_essay,
+    select_essays,
+)
+
+
+def test_numbering_matches_download_essays():
+    raw = [
+        {"slug": "c", "createdAt": "2024-03-01"},
+        {"slug": "a", "createdAt": "2024-01-01"},
+        {"slug": "b", "createdAt": "2024-02-01"},
+    ]
+    essays = number_essays(raw)
+    assert [(e["slug"], e["site_number"]) for e in essays] == [("a", 2), ("b", 3), ("c", 4)]
+
+
+def test_filename_for():
+    assert filename_for({"slug": "daraxt", "site_number": 2}, ".md") == "002_daraxt.md"
+    assert filename_for({"slug": "mimetik", "site_number": 180}, ".json") == "180_mimetik.json"
+
+
+def test_select_number_and_range():
+    essays = number_essays([{"slug": s, "createdAt": f"2024-01-0{i}"} for i, s in enumerate("abcd", 1)])
+    assert [e["slug"] for e in select_essays(essays, only=3)] == ["b"]
+    assert [e["slug"] for e in select_essays(essays, range_=(3, 4))] == ["b", "c"]
+    assert len(select_essays(essays)) == 4
+
+
+def test_paragraphs_separated_by_one_blank_line():
+    md = html_to_markdown("<p>Birinchi\nqator.</p><p>Ikkinchi.</p>")
+    assert md == "Birinchi qator.\n\nIkkinchi."
+
+
+def test_blockquote_and_headings():
+    md = html_to_markdown("<h2>Bob</h2><blockquote><p>Hikmat.</p></blockquote>")
+    assert "## Bob" in md
+    assert "> Hikmat." in md
+
+
+def test_relative_urls_made_absolute():
+    md = html_to_markdown('<p><a href="/blog/daraxt">bu</a> <img src="/uploads/x.jpg" alt="rasm"></p>')
+    assert "[bu](https://parallelmuhit.uz/blog/daraxt)" in md
+    assert "![rasm](https://b.parallelmuhit.uz/uploads/x.jpg)" in md
+
+
+def test_absolute_urls_unchanged():
+    md = html_to_markdown('<p><a href="https://example.com/a">x</a></p>')
+    assert "[x](https://example.com/a)" in md
+
+
+def test_no_html_tags_left():
+    md = html_to_markdown('<div><p><span style="color:red">Matn</span><br></p><figure><img src="/a.png"></figure></div>')
+    assert not re.search(r"<[a-z]", md)
+
+
+def test_uzbek_characters_untouched():
+    text = "Oʻzbek gʻoyasi, ‘qoʻshtirnoq’ va o'g'il"
+    md = html_to_markdown(f"<p>{text}</p>")
+    assert md == text
+
+
+def test_frontmatter_survives_quotes_and_colons():
+    meta = {
+        "number": 2,
+        "slug": "daraxt",
+        "title": 'Daraxtlardan "rivojlanish": o\'rganamiz',
+        "author": "Alijanov Ibrohim",
+        "created_at": "2024-01-01T00:00:00.000Z",
+        "source": "https://parallelmuhit.uz/blog/daraxt",
+    }
+    fm = frontmatter(meta)
+    assert fm.startswith("---\n") and fm.endswith("---\n")
+    assert yaml.safe_load(fm.strip("-\n")) == meta
+
+
+def test_render_essay():
+    essay = {
+        "slug": "daraxt",
+        "site_number": 2,
+        "title": "Daraxt: oʻsish",
+        "author": {"name": "Alijanov Ibrohim"},
+        "createdAt": "2024-01-01T00:00:00.000Z",
+    }
+    out = render_essay(essay, {"content": "<p>Matn.</p>"})
+    head, body = out.split("---\n", 2)[1:]
+    meta = yaml.safe_load(head)
+    assert meta["number"] == 2 and meta["title"] == "Daraxt: oʻsish"
+    assert meta["source"] == "https://parallelmuhit.uz/blog/daraxt"
+    assert body == "\n# Daraxt: oʻsish\n\nMatn.\n"

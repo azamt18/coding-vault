@@ -25,6 +25,8 @@ token.json
 ## Private Documents & Media
 pdp/parallelmuhit/essays/*.pdf
 pdp/parallelmuhit/essays/**/*.pdf
+pdp/parallelmuhit/essays_md/
+pdp/parallelmuhit/essays_raw/
 
 ## Claude / Codemie local configs
 .claude/
