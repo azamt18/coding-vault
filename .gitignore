@@ -30,6 +30,7 @@ pdp/parallelmuhit/essays/*.pdf
 pdp/parallelmuhit/essays/**/*.pdf
 pdp/parallelmuhit/essays_md/
 pdp/parallelmuhit/essays_raw/
+products/parallelmuhit-kb/extract/
 
 ## Claude / Codemie local configs
 .claude/
