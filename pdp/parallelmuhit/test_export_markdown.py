@@ -48,8 +48,8 @@ def test_blockquote_and_headings():
 
 
 def test_relative_urls_made_absolute():
-    md = html_to_markdown('<p><a href="/blog/daraxt">bu</a> <img src="/uploads/x.jpg" alt="rasm"></p>')
-    assert "[bu](https://parallelmuhit.uz/blog/daraxt)" in md
+    md = html_to_markdown('<p><a href="/daraxt">bu</a> <img src="/uploads/x.jpg" alt="rasm"></p>')
+    assert "[bu](https://parallelmuhit.uz/daraxt)" in md
     assert "![rasm](https://b.parallelmuhit.uz/uploads/x.jpg)" in md
 
 
@@ -76,7 +76,7 @@ def test_frontmatter_survives_quotes_and_colons():
         "title": 'Daraxtlardan "rivojlanish": o\'rganamiz',
         "author": "Alijanov Ibrohim",
         "created_at": "2024-01-01T00:00:00.000Z",
-        "source": "https://parallelmuhit.uz/blog/daraxt",
+        "source": "https://parallelmuhit.uz/daraxt",
     }
     fm = frontmatter(meta)
     assert fm.startswith("---\n") and fm.endswith("---\n")
@@ -95,5 +95,5 @@ def test_render_essay():
     head, body = out.split("---\n", 2)[1:]
     meta = yaml.safe_load(head)
     assert meta["number"] == 2 and meta["title"] == "Daraxt: oʻsish"
-    assert meta["source"] == "https://parallelmuhit.uz/blog/daraxt"
+    assert meta["source"] == "https://parallelmuhit.uz/daraxt"
     assert body == "\n# Daraxt: oʻsish\n\nMatn.\n"

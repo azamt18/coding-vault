@@ -93,7 +93,7 @@ def render_essay(essay: dict, detail: dict) -> str:
         "title": title,
         "author": (essay.get("author") or {}).get("name", ""),
         "created_at": essay["createdAt"],
-        "source": f"{SITE_BASE}/blog/{essay['slug']}",
+        "source": f"{SITE_BASE}/{essay['slug']}",
     }
     body = html_to_markdown(detail.get("content") or "")
     return f"{frontmatter(meta)}\n# {title}\n\n{body}\n"
