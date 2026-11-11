@@ -3,7 +3,7 @@
 Spike: ElevenLabs eleven_v4 Uzbek TTS on one paragraph (docs/plan-tts.md, section 1).
 
 Usage:
-    ELEVEN_KEY=<key> python3 try_eleven_v4.py                 # preset voice (Aria)
+    ELEVEN_KEY=<key> python3 try_eleven_v4.py                 # preset voice (George)
     ELEVEN_KEY=<key> python3 try_eleven_v4.py --voice <name|id>
     ELEVEN_KEY=<key> python3 try_eleven_v4.py --clone         # instant clone of reference.wav
 
@@ -15,6 +15,7 @@ import argparse
 import os
 import re
 import sys
+import tempfile
 from pathlib import Path
 
 HERE = Path(__file__).parent
@@ -22,7 +23,7 @@ DEFAULT_TEXT_FILE = HERE / "samples" / "sharaf_p1.txt"
 DEFAULT_REFERENCE = HERE / "voice_sample" / "reference.wav"
 DEFAULT_VOICE_ID_FILE = HERE / ".eleven_voice_id"
 DEFAULT_AUDIO_DIR = HERE / "audio"
-DEFAULT_VOICE = "Aria"
+DEFAULT_VOICE = "George"
 DEFAULT_MODEL = "eleven_v4"
 LANGUAGE_CODE = "uz"
 OUTPUT_FORMAT = "mp3_44100_128"
@@ -35,12 +36,23 @@ def make_client(api_key: str):
     return ElevenLabs(api_key=api_key)
 
 
-def resolve_preset(client, voice: str) -> str:
-    """Map a voice name from the account to its id; anything else is taken as an id."""
+def short_name(name: str) -> str:
+    """Premade names look like "George - Warm, Captivating Storyteller"; keep "George"."""
+    return name.split(" - ", 1)[0].strip()
+
+
+def resolve_preset(client, voice: str) -> tuple[str, str]:
+    """Return (voice_id, label) for a voice name or id on the account.
+
+    A name matches the full name or its short name (case-insensitive); an id matches
+    a voice id. The label is the voice's short name. Anything else is sent as an id
+    and used as the label.
+    """
+    want = voice.lower()
     for v in client.voices.get_all().voices:
-        if v.name.lower() == voice.lower():
-            return v.voice_id
-    return voice
+        if want in (v.name.lower(), short_name(v.name).lower(), v.voice_id.lower()):
+            return v.voice_id, short_name(v.name)
+    return voice, voice
 
 
 def clone_voice_id(client, reference: Path, id_file: Path) -> str:
@@ -60,6 +72,31 @@ def clone_voice_id(client, reference: Path, id_file: Path) -> str:
 def output_path(audio_dir: Path, label: str, text_file: Path) -> Path:
     slug = re.sub(r"[^a-z0-9]+", "-", label.lower()).strip("-") or "voice"
     return audio_dir / f"v4_{slug}_{text_file.stem}.mp3"
+
+
+def api_error_message(err) -> str:
+    body = getattr(err, "body", None)
+    detail = body.get("detail") if isinstance(body, dict) else None
+    if isinstance(detail, dict) and detail.get("message"):
+        status = detail.get("status")
+        return f"{status}: {detail['message']}" if status else detail["message"]
+    if detail:
+        return str(detail)
+    return str(body or err)
+
+
+def write_atomically(out: Path, chunks) -> None:
+    """Stream chunks to a temp file next to out; rename only after the stream completes."""
+    out.parent.mkdir(parents=True, exist_ok=True)
+    fd, tmp = tempfile.mkstemp(dir=out.parent, prefix=f".{out.stem}.", suffix=".part")
+    try:
+        with os.fdopen(fd, "wb") as f:
+            for chunk in chunks:
+                f.write(chunk)
+        os.replace(tmp, out)
+    except BaseException:
+        Path(tmp).unlink(missing_ok=True)
+        raise
 
 
 def parse_args(argv):
@@ -85,26 +122,28 @@ def main(argv=None) -> int:
     text = args.text_file.read_text(encoding="utf-8").strip()
     client = make_client(key)
 
-    if args.clone:
-        voice_id = clone_voice_id(client, args.reference, args.voice_id_file)
-        label = "clone"
-    else:
-        voice_id = resolve_preset(client, args.voice)
-        label = args.voice
+    from elevenlabs.core.api_error import ApiError
 
-    out = output_path(args.audio_dir, label, args.text_file)
-    print(f"Model {args.model}, language {LANGUAGE_CODE}, voice {voice_id}, {len(text)} chars")
-    audio = client.text_to_speech.convert(
-        voice_id=voice_id,
-        text=text,
-        model_id=args.model,
-        language_code=LANGUAGE_CODE,
-        output_format=OUTPUT_FORMAT,
-    )
-    out.parent.mkdir(parents=True, exist_ok=True)
-    with out.open("wb") as f:
-        for chunk in audio:
-            f.write(chunk)
+    try:
+        if args.clone:
+            voice_id = clone_voice_id(client, args.reference, args.voice_id_file)
+            label = "clone"
+        else:
+            voice_id, label = resolve_preset(client, args.voice)
+
+        out = output_path(args.audio_dir, label, args.text_file)
+        print(f"Model {args.model}, language {LANGUAGE_CODE}, voice {label} ({voice_id}), {len(text)} chars")
+        audio = client.text_to_speech.convert(
+            voice_id=voice_id,
+            text=text,
+            model_id=args.model,
+            language_code=LANGUAGE_CODE,
+            output_format=OUTPUT_FORMAT,
+        )
+        write_atomically(out, audio)  # convert is lazy; ApiError can surface mid-stream
+    except ApiError as e:
+        print(f"error: elevenlabs api ({e.status_code}): {api_error_message(e)}", file=sys.stderr)
+        sys.exit(1)
     print(f"Wrote {out}")
     return 0
 

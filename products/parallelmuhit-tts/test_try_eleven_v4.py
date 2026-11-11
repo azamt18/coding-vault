@@ -6,6 +6,8 @@ from unittest import mock
 
 import pytest
 
+from elevenlabs.core.api_error import ApiError
+
 import try_eleven_v4 as v4
 
 HERE = Path(__file__).parent
@@ -17,7 +19,10 @@ def client():
     c.text_to_speech.convert.return_value = iter([b"ab", b"cd"])
     c.voices.ivc.create.return_value = SimpleNamespace(voice_id="clone123")
     c.voices.get_all.return_value = SimpleNamespace(
-        voices=[SimpleNamespace(name="Aria", voice_id="aria_id")]
+        voices=[
+            SimpleNamespace(name="George - Warm, Captivating Storyteller", voice_id="george_id"),
+            SimpleNamespace(name="Aria", voice_id="aria_id"),
+        ]
     )
     return c
 
@@ -54,13 +59,29 @@ def test_convert_called_with_v4_uz_and_file_text(env):
     assert kw["language_code"] == "uz"
     assert kw["text"] == "Zamonaviy dunyoda o'zimizga"
     assert kw["output_format"] == "mp3_44100_128"
-    assert kw["voice_id"] == "aria_id"  # preset name resolved to id
+    assert kw["voice_id"] == "george_id"  # default preset George, resolved to id
 
 
 def test_preset_output_path_and_bytes(env):
     v4.main(env.base + ["--voice", "Aria"])
     out = env.tmp / "audio" / "v4_aria_sharaf_p1.mp3"
     assert out.read_bytes() == b"abcd"
+
+
+def test_default_output_is_labelled_george(env):
+    v4.main(env.base)
+    assert (env.tmp / "audio" / "v4_george_sharaf_p1.mp3").read_bytes() == b"abcd"
+
+
+def test_name_matches_prefix_before_dash(env):
+    v4.main(env.base + ["--voice", "george"])
+    assert env.client.text_to_speech.convert.call_args.kwargs["voice_id"] == "george_id"
+
+
+def test_voice_id_on_account_is_labelled_with_short_name(env):
+    v4.main(env.base + ["--voice", "george_id"])
+    assert env.client.text_to_speech.convert.call_args.kwargs["voice_id"] == "george_id"
+    assert (env.tmp / "audio" / "v4_george_sharaf_p1.mp3").exists()
 
 
 def test_unknown_voice_is_used_as_id(env):
@@ -90,3 +111,38 @@ def test_missing_key_exits_nonzero(env, monkeypatch, capsys):
     assert e.value.code != 0
     assert "ELEVEN_KEY" in capsys.readouterr().err
     env.client.text_to_speech.convert.assert_not_called()
+
+
+def _failing_stream():
+    yield b"partial"
+    raise ApiError(status_code=404, body={"detail": {"status": "voice_not_found",
+                                                    "message": "A voice with that ID was not found."}})
+
+
+def test_failed_stream_leaves_no_output_file(env):
+    env.client.text_to_speech.convert.return_value = _failing_stream()
+    with pytest.raises(SystemExit):
+        v4.main(env.base)
+    audio = env.tmp / "audio"
+    assert not list(audio.glob("*")) if audio.exists() else True
+
+
+def test_api_error_prints_message_and_exits_nonzero(env, capsys):
+    env.client.text_to_speech.convert.return_value = _failing_stream()
+    with pytest.raises(SystemExit) as e:
+        v4.main(env.base)
+    assert e.value.code not in (0, None)
+    err = capsys.readouterr().err
+    assert "A voice with that ID was not found." in err
+    assert "Traceback" not in err
+
+
+def test_api_error_on_clone_prints_message(env, capsys):
+    env.client.voices.ivc.create.side_effect = ApiError(
+        status_code=401, body={"detail": {"status": "paid_plan_required",
+                                          "message": "Instant voice cloning needs a paid plan."}})
+    with pytest.raises(SystemExit) as e:
+        v4.main(env.base + ["--clone"])
+    assert e.value.code not in (0, None)
+    assert "paid plan" in capsys.readouterr().err
+    assert not (env.tmp / ".eleven_voice_id").exists()

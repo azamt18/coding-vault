@@ -89,6 +89,23 @@ one and note it in "as built".
 - new `products/parallelmuhit-tts/.gitignore`: `.eleven_voice_id`, `audio/v4_*.mp3`.
   (older mp3/wav files in `audio/` were already tracked; left as is.)
 - clone name on the account: `parallelmuhit-author-ivc`.
+- verified by plan (2026-11-11), commit e48b982: 40 passed (7 tts + 33 kb). kb grew from 14 to
+  33 because of kb's own commit 7cf49aa, not this work. `samples/sharaf_p1.txt` is
+  byte-identical to line 23 of `171_sharaf.md`. sdk signatures checked. `reference.wav` is 45 s
+  mono 22 kHz, under the 1–2 min elevenlabs suggests for ivc, so clone quality may suffer.
+- first real run (2026-11-11, by plan with the user's key, at the user's request):
+  - account is on the **free** tier: 10,000 chars/month, and `can_use_instant_voice_cloning` is false.
+  - "Aria" is not on the account (no such voice → 404 `voice_not_found`). preset names now carry
+    a suffix, e.g. "George - Warm, Captivating Storyteller", so an exact name match never finds
+    them. the preset run used George by id, `JBFqnCBsd6RMkjVDRZzb`, and wrote
+    `audio/v4_jbfqncbsd6rmkjvdrzzb_sharaf_p1.mp3` (339 KB, 309 chars).
+  - `--clone` → 402-style `paid_plan_required`. ivc needs a paid plan, so there is no clone sample yet.
+  - bugs for impl (small fix):
+    1. the output file is opened before the lazy `convert` stream raises, so a failed run leaves
+       a 0-byte mp3 (`audio/v4_aria_sharaf_p1.mp3`). write to a temp file and rename it at the end.
+    2. catch `elevenlabs.core.api_error.ApiError` and print `body.detail.message`, not a traceback.
+    3. match a name by prefix before " - ", and change the default to an existing preset
+       (George) instead of Aria. the output label should be the short name ("george"), not the id.
 
 ### verdict
 
