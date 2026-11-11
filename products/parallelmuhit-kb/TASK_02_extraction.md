@@ -68,3 +68,14 @@ the api's `author` is the account that posted the essay, not the writer: 179 × 
 
 ## out of scope
 merging aliases/entities, sqlite, the graph ui, the other 185 essays, q&a/rag, prompt caching and the batch api (that's for the full run).
+
+## change 2026-11-11: pilot runs on the claude code subscription, not the api
+
+there's no anthropic api key (only openrouter), and the user wants the subscription. the pilot calls `claude -p` as a subprocess instead of the sdk. the sdk version stays for the full run later (batch api).
+
+- a second implementation of the model-call function. paragraphs, checks, review and compare stay as they are.
+- `claude -p --model claude-haiku-5-5|claude-sonnet-5-5 --output-format json`. the schema goes in the prompt as a json schema, and the answer is parsed from the result text. invalid json or a schema mismatch is an error for that essay × model (`bad_json`), with no retries that hide it.
+- clean environment: remove `ANTHROPIC_API_KEY`, `ANTHROPIC_BASE_URL`, `ANTHROPIC_AUTH_TOKEN` and `ANTHROPIC_API_BASE` from the subprocess env. otherwise claude code takes the openrouter key instead of the subscription.
+- isolation: no tools, no mcp, no user CLAUDE.md, hooks or plugins in the call (pick the matching flags from `claude --help`, such as a system-prompt override, setting sources and a strict mcp config). cwd is an empty temp dir.
+- `compare.md`: instead of tokens/cost, run time and `total_cost_usd`/usage from the json output if claude code provides them (marked as "subscription, not billed").
+- `--backend cli|sdk`, default `cli`.

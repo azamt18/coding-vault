@@ -12,20 +12,25 @@ Usage:
     python3 extract.py --essays 149 --model haiku
     python3 extract.py --force                          # ignore cached raw responses
 
-The key comes from ANTHROPIC_API_KEY only. Outputs go to extract/ next to this
+Backends: `cli` (default) runs `claude -p` on the user's Claude Code subscription
+in an isolated, empty temp dir with the ANTHROPIC_* overrides removed; `sdk` uses
+the Anthropic SDK with ANTHROPIC_API_KEY. Outputs go to extract/ next to this
 script (gitignored): raw/<model>/NNN_slug.json, <model>/NNN_slug.json,
 <model>/NNN_slug.review.md and compare.md.
 """
 
 import argparse
 import json
+import os
 import re
+import subprocess
 import sys
+import tempfile
 from collections import Counter
 from pathlib import Path
 
 import yaml
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ValidationError
 
 from export_markdown import AUTHOR, DEFAULT_DATA_DIR
 
@@ -39,6 +44,31 @@ MODELS = {"haiku": "claude-haiku-5-5", "sonnet": "claude-sonnet-5-5"}
 PRICES = {"claude-haiku-5-5": (0.10, 0.50), "claude-sonnet-5-5": (2.00, 10.00)}
 EFFORT = "high"
 MAX_TOKENS = 16000
+
+# claude -p isolation: no tools, no MCP, no user/project settings (so no CLAUDE.md, hooks,
+# plugins or the settings' own API key), no skills, no saved session. --bare can't be used:
+# it turns off the OAuth login the subscription needs.
+CLI_FLAGS = [
+    "-p",
+    "--output-format", "json",
+    "--tools", "",
+    "--strict-mcp-config",
+    "--setting-sources", "",
+    "--disable-slash-commands",
+    "--no-session-persistence",
+    "--effort", EFFORT,
+]
+# any of these makes claude code use an api key (here: openrouter) instead of the subscription
+CLI_ENV_DROP = ["ANTHROPIC_API_KEY", "ANTHROPIC_BASE_URL", "ANTHROPIC_AUTH_TOKEN", "ANTHROPIC_API_BASE"]
+CLI_TIMEOUT_S = 900
+
+
+class BadJson(Exception):
+    """The model's answer is not valid json for the Extraction schema."""
+
+
+class CliError(Exception):
+    """claude -p itself failed (auth, model, timeout, non-json output)."""
 
 ENTITY_TYPES = ["person", "work", "idea", "organization"]
 RELATION_KINDS = ["wrote", "recommends", "criticises", "inspired_by", "example_of", "associated_with"]
@@ -175,7 +205,10 @@ def cost_usd(model_id: str, usage: dict) -> float:
 
 
 def build_result(essay: dict, alias: str, raw: dict) -> dict:
-    extraction = Extraction.model_validate_json(response_text(raw))
+    try:
+        extraction = Extraction.model_validate_json(response_text(raw))
+    except ValidationError as exc:
+        raise BadJson(str(exc).splitlines()[0]) from exc
     valid_ids = {p["id"] for p in essay["paragraphs"]}
     dropped = []
 
@@ -211,6 +244,11 @@ def build_result(essay: dict, alias: str, raw: dict) -> dict:
     eid = essay["id"]
     meta = essay["meta"]
     usage = {k: raw["usage"][k] for k in ("input_tokens", "output_tokens")}
+    backend = raw.get("backend", "sdk")
+    if backend == "cli":
+        cost, billed = raw.get("total_cost_usd"), False  # what claude code reports; the subscription pays
+    else:
+        cost, billed = cost_usd(raw["model"], usage), True
     return {
         "essay": {
             "id": eid,
@@ -231,7 +269,10 @@ def build_result(essay: dict, alias: str, raw: dict) -> dict:
         ],
         "dropped": dropped,
         "usage": usage,
-        "cost_usd": cost_usd(raw["model"], usage),
+        "backend": backend,
+        "billed": billed,
+        "cost_usd": cost,
+        "duration_ms": raw.get("duration_ms"),
     }
 
 
@@ -250,7 +291,7 @@ def render_review(result: dict) -> str:
         f"model: {result['model']} · source: {e['source']}",
         f"entities: {len(result['entities'])} · relations: {len(result['relations'])} · "
         f"dropped: {len(result['dropped'])} · tokens: {result['usage']['input_tokens']} in / "
-        f"{result['usage']['output_tokens']} out · ${result['cost_usd']:.4f}",
+        f"{result['usage']['output_tokens']} out · {_cost_label(result)}",
         "",
     ]
     for etype in ENTITY_TYPES:
@@ -286,32 +327,44 @@ def _counts(counter: Counter, order: list[str] | None = None) -> str:
     return ", ".join(parts) or "–"
 
 
+def _cost_label(r: dict) -> str:
+    if r["cost_usd"] is None:
+        return "–"
+    label = f"${r['cost_usd']:.4f}"
+    return label if r.get("billed", True) else f"{label} (subscription, not billed)"
+
+
+def _seconds(r: dict) -> str:
+    return f"{r['duration_ms'] / 1000:.1f} s" if r.get("duration_ms") is not None else "–"
+
+
 def render_compare(results: list[dict]) -> str:
     out = [
         "# extraction pilot: essay × model",
         "",
-        "| essay | model | entities by type | relations by kind | dropped by reason | tokens in / out | cost |",
-        "|---|---|---|---|---|---|---|",
+        "| essay | model | entities by type | relations by kind | dropped by reason | tokens in / out | run time | cost |",
+        "|---|---|---|---|---|---|---|---|",
     ]
     total = 0.0
     for r in sorted(results, key=lambda r: (r["essay"]["id"], r["alias"])):
         ents = Counter(e["type"] for e in r["entities"])
         rels = Counter(x["kind"] for x in r["relations"])
         drops = Counter(d["reason"] for d in r["dropped"])
-        total += r["cost_usd"]
+        total += r["cost_usd"] or 0.0
         out.append(
             f"| {r['essay']['id']} | {r['alias']} | {_counts(ents, ENTITY_TYPES)} ({sum(ents.values())}) "
             f"| {_counts(rels, RELATION_KINDS)} ({sum(rels.values())}) | {_counts(drops)} ({sum(drops.values())}) "
-            f"| {r['usage']['input_tokens']} / {r['usage']['output_tokens']} | ${r['cost_usd']:.4f} |"
+            f"| {r['usage']['input_tokens']} / {r['usage']['output_tokens']} | {_seconds(r)} | {_cost_label(r)} |"
         )
-    out += ["", f"total cost: ${total:.4f}"]
+    billed = all(r.get("billed", True) for r in results)
+    out += ["", f"total cost: ${total:.4f}" + ("" if billed else " (subscription, not billed)")]
     return "\n".join(out) + "\n"
 
 
 # --- running ---
 
 
-def call_model(client, model_id: str, essay: dict) -> dict:
+def call_model_sdk(client, model_id: str, essay: dict) -> dict:
     response = client.messages.parse(
         model=model_id,
         max_tokens=MAX_TOKENS,
@@ -323,14 +376,62 @@ def call_model(client, model_id: str, essay: dict) -> dict:
     return response.model_dump(mode="json")
 
 
-def run_one(md_path: Path, alias: str, out_dir: Path, client, force: bool) -> dict:
+def cli_prompt(essay: dict) -> str:
+    schema = json.dumps(Extraction.model_json_schema(), ensure_ascii=False)
+    return (
+        build_prompt(essay)
+        + "\n\nReply with only one JSON object that matches this JSON Schema."
+        + " No prose before or after it, no code fences.\n"
+        + schema
+    )
+
+
+def call_model_cli(model_id: str, essay: dict) -> dict:
+    """Run claude -p on the subscription and return the answer in the sdk's raw shape."""
+    env = {k: v for k, v in os.environ.items() if k not in CLI_ENV_DROP}
+    args = ["claude", *CLI_FLAGS, "--model", model_id, "--system-prompt", SYSTEM]
+    with tempfile.TemporaryDirectory(prefix="pm-extract-") as cwd:
+        try:
+            proc = subprocess.run(args, input=cli_prompt(essay), capture_output=True, text=True,
+                                  env=env, cwd=cwd, timeout=CLI_TIMEOUT_S)
+        except subprocess.TimeoutExpired as exc:
+            raise CliError(f"timeout after {CLI_TIMEOUT_S} s") from exc
+    try:
+        out = json.loads(proc.stdout)
+    except (json.JSONDecodeError, TypeError) as exc:
+        raise CliError(f"exit {proc.returncode}, non-json output: {(proc.stdout or proc.stderr or '')[:200]}") from exc
+    if out.get("is_error") or proc.returncode != 0:
+        raise CliError(f"exit {proc.returncode}: {str(out.get('result'))[:200]}")
+
+    u = out.get("usage") or {}
+    return {
+        "backend": "cli",
+        "model": model_id,
+        "models_used": sorted(out.get("modelUsage") or {}),
+        "content": [{"type": "text", "text": out.get("result") or ""}],
+        "stop_reason": "end_turn",
+        "usage": {
+            "input_tokens": u.get("input_tokens", 0) + u.get("cache_creation_input_tokens", 0)
+            + u.get("cache_read_input_tokens", 0),
+            "output_tokens": u.get("output_tokens", 0),
+        },
+        "duration_ms": out.get("duration_ms"),
+        "total_cost_usd": out.get("total_cost_usd"),
+        "cli_output": out,
+    }
+
+
+def run_one(md_path: Path, alias: str, out_dir: Path, client, force: bool, backend: str = "sdk") -> dict:
     essay = parse_essay(md_path.read_text(encoding="utf-8"))
     raw_path = out_dir / "raw" / alias / f"{essay['id']}.json"
 
     if raw_path.exists() and not force:
         raw = json.loads(raw_path.read_text(encoding="utf-8"))
     else:
-        raw = call_model(client, MODELS[alias], essay)
+        if backend == "cli":
+            raw = call_model_cli(MODELS[alias], essay)
+        else:
+            raw = call_model_sdk(client, MODELS[alias], essay)
         raw_path.parent.mkdir(parents=True, exist_ok=True)
         raw_path.write_text(json.dumps(raw, ensure_ascii=False, indent=2), encoding="utf-8")
 
@@ -345,27 +446,36 @@ def run_one(md_path: Path, alias: str, out_dir: Path, client, force: bool) -> di
     return result
 
 
-def run_all(paths: list[Path], aliases: list[str], out_dir: Path, client, force: bool) -> tuple[list[dict], int]:
-    """Run every essay × model. Keeps going on per-call errors, stops at once on a bad key."""
+def run_all(paths: list[Path], aliases: list[str], out_dir: Path, client, force: bool,
+            backend: str = "sdk") -> tuple[list[dict], list[tuple[str, str, str]]]:
+    """Run every essay × model. Keeps going on per-call errors (no retries), stops at once on a bad key."""
     import anthropic
 
-    results, failed = [], 0
+    results, failures = [], []
     for path in paths:
         for alias in aliases:
             try:
-                r = run_one(path, alias, out_dir, client, force)
+                r = run_one(path, alias, out_dir, client, force, backend)
+            except BadJson as exc:
+                failures.append((path.stem, alias, "bad_json"))
+                print(f"{path.stem} {alias}: ERROR bad_json: {exc}", file=sys.stderr)
+                continue
+            except CliError as exc:
+                failures.append((path.stem, alias, "cli_error"))
+                print(f"{path.stem} {alias}: ERROR cli_error: {exc}", file=sys.stderr)
+                continue
             except anthropic.AuthenticationError as exc:
                 # the message names the problem, never the key itself
                 print(f"{path.stem} {alias}: ERROR authentication failed ({exc.message}); stopping", file=sys.stderr)
                 raise SystemExit(1)
             except Exception as exc:
-                failed += 1
+                failures.append((path.stem, alias, type(exc).__name__))
                 print(f"{path.stem} {alias}: ERROR {type(exc).__name__}: {exc}", file=sys.stderr)
                 continue
             results.append(r)
             print(f"{r['essay']['id']} {alias}: {len(r['entities'])} entities, "
-                  f"{len(r['relations'])} relations, {len(r['dropped'])} dropped, ${r['cost_usd']:.4f}")
-    return results, failed
+                  f"{len(r['relations'])} relations, {len(r['dropped'])} dropped, {_seconds(r)}, {_cost_label(r)}")
+    return results, failures
 
 
 def find_essays(data_dir: Path, numbers: list[int]) -> list[Path]:
@@ -383,7 +493,9 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Extraction pilot on parallelmuhit essays")
     parser.add_argument("--essays", default=",".join(map(str, PILOT_ESSAYS)), help="comma-separated essay numbers")
     parser.add_argument("--model", choices=["haiku", "sonnet", "both"], default="both")
-    parser.add_argument("--force", action="store_true", help="call the api even if a raw response is cached")
+    parser.add_argument("--backend", choices=["cli", "sdk"], default="cli",
+                        help="cli: claude -p on the subscription (default); sdk: anthropic sdk + ANTHROPIC_API_KEY")
+    parser.add_argument("--force", action="store_true", help="call the model even if a raw response is cached")
     parser.add_argument("--data-dir", type=Path, default=DEFAULT_DATA_DIR)
     parser.add_argument("--out-dir", type=Path, default=DEFAULT_OUT_DIR)
     return parser.parse_args(argv)
@@ -410,11 +522,11 @@ def main():
         def messages(self):
             return get_client().messages
 
-    results, failed = run_all(paths, aliases, args.out_dir, LazyClient(), args.force)
+    results, failures = run_all(paths, aliases, args.out_dir, LazyClient(), args.force, args.backend)
     if results:
         (args.out_dir / "compare.md").write_text(render_compare(results), encoding="utf-8")
         print(f"\ncompare: {args.out_dir / 'compare.md'}")
-    sys.exit(1 if failed else 0)
+    sys.exit(1 if failures else 0)
 
 
 if __name__ == "__main__":

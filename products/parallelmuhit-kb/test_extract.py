@@ -253,3 +253,107 @@ def test_run_all_aborts_on_first_authentication_error(tmp_path):
         extract.run_all(paths, ["haiku", "sonnet"], tmp_path / "extract", AuthFailClient(), force=False)
     assert exc.value.code == 1
     assert AuthFailClient.calls == 1
+
+
+# --- cli backend (claude -p on the subscription) ---
+
+import os
+import subprocess
+
+
+def _cli_stdout(result_text, is_error=False, model="claude-haiku-5-5"):
+    return json.dumps({
+        "type": "result", "subtype": "success", "is_error": is_error, "result": result_text,
+        "duration_ms": 12345, "total_cost_usd": 0.0123,
+        "usage": {"input_tokens": 10, "cache_creation_input_tokens": 2990, "cache_read_input_tokens": 0, "output_tokens": 1500},
+        "modelUsage": {model: {}},
+    })
+
+
+@pytest.fixture
+def essay_file(tmp_path):
+    md = tmp_path / "data" / "essays_md"
+    md.mkdir(parents=True)
+    path = md / "149_qiziquvchanlik.md"
+    path.write_text(ESSAY_MD, encoding="utf-8")
+    return path
+
+
+@pytest.fixture
+def fake_cli(monkeypatch):
+    for var in ("ANTHROPIC_API_KEY", "ANTHROPIC_BASE_URL", "ANTHROPIC_AUTH_TOKEN", "ANTHROPIC_API_BASE"):
+        monkeypatch.setenv(var, "sk-or-v1-should-not-leak")
+    calls = []
+    state = {"stdout": None, "returncode": 0}
+
+    def run(args, input=None, capture_output=None, text=None, env=None, cwd=None, timeout=None):
+        calls.append({"args": args, "input": input, "env": env, "cwd": cwd, "cwd_listing": os.listdir(cwd)})
+        return subprocess.CompletedProcess(args, state["returncode"], stdout=state["stdout"], stderr="")
+
+    monkeypatch.setattr(extract.subprocess, "run", run)
+    return calls, state
+
+
+def test_cli_call_cleans_env_and_isolates(essay_file, tmp_path, fake_raw, fake_cli):
+    calls, state = fake_cli
+    state["stdout"] = _cli_stdout(extract.response_text(fake_raw))
+    result = extract.run_one(essay_file, "haiku", tmp_path / "extract", None, force=False, backend="cli")
+
+    call = calls[0]
+    for var in ("ANTHROPIC_API_KEY", "ANTHROPIC_BASE_URL", "ANTHROPIC_AUTH_TOKEN", "ANTHROPIC_API_BASE"):
+        assert var not in call["env"]
+    assert "PATH" in call["env"]
+    args = call["args"]
+    assert args[0] == "claude" and "-p" in args
+    assert args[args.index("--model") + 1] == "claude-haiku-5-5"
+    assert args[args.index("--output-format") + 1] == "json"
+    assert args[args.index("--tools") + 1] == ""
+    assert args[args.index("--setting-sources") + 1] == ""
+    assert args[args.index("--system-prompt") + 1] == extract.SYSTEM
+    for flag in ("--strict-mcp-config", "--disable-slash-commands", "--no-session-persistence"):
+        assert flag in args
+    assert call["cwd_listing"] == [] and not str(call["cwd"]).startswith(str(Path(__file__).parent))
+    assert "[p1] Qiziquvchanlik muallifni hayron qoldiradi" in call["input"]
+    assert '"relations"' in call["input"]  # the json schema is in the prompt
+
+    assert len(result["relations"]) == 3
+    assert result["backend"] == "cli" and result["billed"] is False
+    assert result["usage"] == {"input_tokens": 3000, "output_tokens": 1500}
+    assert result["duration_ms"] == 12345 and result["cost_usd"] == 0.0123
+
+
+def test_cli_compare_marks_subscription(essay_file, tmp_path, fake_raw, fake_cli):
+    calls, state = fake_cli
+    state["stdout"] = _cli_stdout(extract.response_text(fake_raw))
+    result = extract.run_one(essay_file, "haiku", tmp_path / "extract", None, force=False, backend="cli")
+    md = extract.render_compare([result])
+    assert "subscription, not billed" in md and "12.3 s" in md
+
+
+@pytest.mark.parametrize("text", [
+    "Here is the graph: {}",
+    '```json\n{"entities": [], "relations": []}\n```',
+    '{"entities": []}',
+    '{"entities": [{"name": "x"}], "relations": []}',
+])
+def test_cli_bad_json_is_an_error_without_retry(essay_file, tmp_path, fake_cli, text, capsys):
+    calls, state = fake_cli
+    state["stdout"] = _cli_stdout(text)
+    results, failures = extract.run_all([essay_file], ["haiku"], tmp_path / "extract", None, force=False, backend="cli")
+    assert results == []
+    assert failures == [("149_qiziquvchanlik", "haiku", "bad_json")]
+    assert len(calls) == 1
+    assert "bad_json" in capsys.readouterr().err
+
+
+def test_cli_error_result_is_an_error_not_bad_json(essay_file, tmp_path, fake_cli):
+    calls, state = fake_cli
+    state["stdout"] = _cli_stdout("Invalid API key", is_error=True)
+    state["returncode"] = 1
+    results, failures = extract.run_all([essay_file], ["haiku"], tmp_path / "extract", None, force=False, backend="cli")
+    assert results == [] and failures == [("149_qiziquvchanlik", "haiku", "cli_error")]
+
+
+def test_backend_flag_defaults_to_cli():
+    assert extract.parse_args([]).backend == "cli"
+    assert extract.parse_args(["--backend", "sdk"]).backend == "sdk"
