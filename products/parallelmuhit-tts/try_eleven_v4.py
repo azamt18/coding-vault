@@ -6,6 +6,7 @@ Usage:
     ELEVEN_KEY=<key> python3 try_eleven_v4.py                 # preset voice (George)
     ELEVEN_KEY=<key> python3 try_eleven_v4.py --voice <name|id>
     ELEVEN_KEY=<key> python3 try_eleven_v4.py --clone         # instant clone of reference.wav
+    ELEVEN_KEY=<key> python3 try_eleven_v4.py --voice <id> --stability 0.5 --similarity 0.75
 
 The API key is read only from the ELEVEN_KEY env var.
 The clone's voice id is cached in .eleven_voice_id (gitignored), so it is created once.
@@ -99,6 +100,22 @@ def write_atomically(out: Path, chunks) -> None:
         raise
 
 
+def unit_float(value: str) -> float:
+    x = float(value)
+    if not 0.0 <= x <= 1.0:
+        raise argparse.ArgumentTypeError(f"{value} is not between 0 and 1")
+    return x
+
+
+def voice_settings(stability, similarity):
+    """VoiceSettings only when a setting was given; None means the voice's stored settings."""
+    if stability is None and similarity is None:
+        return None
+    from elevenlabs import VoiceSettings
+
+    return VoiceSettings(stability=stability, similarity_boost=similarity)
+
+
 def parse_args(argv):
     p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     p.add_argument("--text-file", type=Path, default=DEFAULT_TEXT_FILE)
@@ -106,6 +123,8 @@ def parse_args(argv):
     g.add_argument("--voice", default=DEFAULT_VOICE, help="preset voice name or id")
     g.add_argument("--clone", action="store_true", help="use an instant clone of --reference")
     p.add_argument("--model", default=DEFAULT_MODEL)
+    p.add_argument("--stability", type=unit_float, help="voice_settings.stability, 0-1")
+    p.add_argument("--similarity", type=unit_float, help="voice_settings.similarity_boost, 0-1")
     p.add_argument("--reference", type=Path, default=DEFAULT_REFERENCE)
     p.add_argument("--voice-id-file", type=Path, default=DEFAULT_VOICE_ID_FILE)
     p.add_argument("--audio-dir", type=Path, default=DEFAULT_AUDIO_DIR)
@@ -133,12 +152,18 @@ def main(argv=None) -> int:
 
         out = output_path(args.audio_dir, label, args.text_file)
         print(f"Model {args.model}, language {LANGUAGE_CODE}, voice {label} ({voice_id}), {len(text)} chars")
+        extra = {}
+        settings = voice_settings(args.stability, args.similarity)
+        if settings is not None:
+            extra["voice_settings"] = settings
+            print(f"voice_settings stability={args.stability} similarity_boost={args.similarity}")
         audio = client.text_to_speech.convert(
             voice_id=voice_id,
             text=text,
             model_id=args.model,
             language_code=LANGUAGE_CODE,
             output_format=OUTPUT_FORMAT,
+            **extra,
         )
         write_atomically(out, audio)  # convert is lazy; ApiError can surface mid-stream
     except ApiError as e:

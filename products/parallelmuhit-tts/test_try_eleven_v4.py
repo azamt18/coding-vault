@@ -6,6 +6,7 @@ from unittest import mock
 
 import pytest
 
+from elevenlabs import VoiceSettings
 from elevenlabs.core.api_error import ApiError
 
 import try_eleven_v4 as v4
@@ -82,6 +83,31 @@ def test_voice_id_on_account_is_labelled_with_short_name(env):
     v4.main(env.base + ["--voice", "george_id"])
     assert env.client.text_to_speech.convert.call_args.kwargs["voice_id"] == "george_id"
     assert (env.tmp / "audio" / "v4_george_sharaf_p1.mp3").exists()
+
+
+def test_no_voice_settings_by_default(env):
+    v4.main(env.base)
+    assert "voice_settings" not in env.client.text_to_speech.convert.call_args.kwargs
+
+
+def test_stability_and_similarity_send_voice_settings(env):
+    v4.main(env.base + ["--stability", "0.5", "--similarity", "0.75"])
+    vs = env.client.text_to_speech.convert.call_args.kwargs["voice_settings"]
+    assert isinstance(vs, VoiceSettings)
+    assert (vs.stability, vs.similarity_boost) == (0.5, 0.75)
+
+
+def test_one_setting_alone_sends_only_that_field(env):
+    v4.main(env.base + ["--stability", "0.3"])
+    vs = env.client.text_to_speech.convert.call_args.kwargs["voice_settings"]
+    assert vs.stability == 0.3 and vs.similarity_boost is None
+
+
+def test_setting_out_of_range_is_rejected(env):
+    with pytest.raises(SystemExit) as e:
+        v4.main(env.base + ["--similarity", "75"])
+    assert e.value.code == 2
+    env.client.text_to_speech.convert.assert_not_called()
 
 
 def test_unknown_voice_is_used_as_id(env):

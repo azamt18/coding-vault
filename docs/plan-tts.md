@@ -13,7 +13,8 @@ https://elevenlabs.io/docs/overview/models
 | section | state |
 |---|---|
 | 1. eleven v4 spike on one paragraph | open |
-| 2. batch path in generate_audio.py | not planned; depends on section 1 sounding good |
+| 1b. one full essay with the author's clone | open |
+| 2. batch path for all essays | not planned; waits on 1b and the user's budget choice |
 
 ---
 
@@ -116,3 +117,53 @@ one and note it in "as built".
 and generated `audio/stress_ivc_s50_sim75_v4.mp3` (plus a `(1)` copy) themselves: an instant
 clone, stability 50, similarity 75, eleven_v4. section 2 (batch) can be planned. the cost
 estimate is in `products/parallelmuhit-tts/tts-cost.md`: ≈1.84M chars, ≈$147 at the api rate.
+
+---
+
+## 1b. one full essay with the author's clone
+
+decided with the user (2026-11-11): convert **one full essay** before choosing a budget.
+
+- essay: #171 `sharaf` "Sharaf haqida", 6,648 chars. that's one request (under v4's 10k), and
+  the same essay as the paragraph test.
+- voice: the user's own clone on the account, "Aziz Rahimov", `GSSGNagQ0qBLqvmOD9Hl`
+  (category cloned, made in the elevenlabs ui). use it by id with `--voice`, not `--clone`, which
+  would create a second clone. its stored settings are empty (`None`), so the settings must be sent.
+- settings the user liked: stability 50, similarity 75 → `voice_settings` with
+  `stability=0.5, similarity_boost=0.75`.
+- also measure: the account's `character_count` before and after (751 / 40,000 before). that
+  settles the open "credits per v4 character" question in `products/parallelmuhit-tts/tts-cost.md`.
+
+### what to build (impl)
+
+- `try_eleven_v4.py`: add `--stability` and `--similarity` (floats from 0 to 1). when either is
+  given, pass `voice_settings=VoiceSettings(stability=..., similarity_boost=...)` to convert; when
+  neither is, send nothing (as now). mocked tests for both cases.
+- `samples/171_sharaf.txt`: the read-aloud text of `pdp/parallelmuhit/essays_md/171_sharaf.md`,
+  using the same rules as the cost estimate:
+  - title plus body
+  - no front matter and no date line (`*dd.mm.yy*`)
+  - images dropped; links keep their text
+  - leading `#`, `>` and list markers removed; `*`, `_` and backticks removed
+  - three or more newlines collapsed to two
+  - expected length is 6,648 chars (± a few for a trailing newline). write it with a small
+    function `md_to_speech_text(md: str) -> str` in a new `essay_text.py`, so section 2 can reuse
+    it, and test it on a small inline md sample.
+- not in scope: no real api call (plan runs it), no chunking, no change to `generate_audio.py`.
+
+### run (plan, with the user's key)
+
+`python3 try_eleven_v4.py --text-file samples/171_sharaf.txt --voice GSSGNagQ0qBLqvmOD9Hl --stability 0.5 --similarity 0.75`
+→ `audio/v4_aziz-rahimov_171_sharaf.mp3`
+
+### as built
+
+- sdk 2.65.0: `from elevenlabs import VoiceSettings` (same class as `elevenlabs.types.VoiceSettings`).
+  fields: stability, similarity_boost, style, use_speaker_boost, speed.
+- `--stability` / `--similarity` take a float in 0–1 (anything else is an argparse error, exit 2).
+  with only one given, the other stays `None`, and the sdk leaves it out of the request json
+  (checked: `{'stability': 0.3}`).
+- `essay_text.md_to_speech_text` follows the rules above. list markers are removed before `*`/`_`,
+  and trailing spaces are stripped. it also runs as a cli:
+  `python3 essay_text.py <md> <txt>` (writes the text plus one trailing newline).
+- `samples/171_sharaf.txt`: 6,648 chars (6,649 with the trailing newline), which matches the csv.
