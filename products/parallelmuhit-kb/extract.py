@@ -491,35 +491,76 @@ def run_one(md_path: Path, alias: str, out_dir: Path, client, force: bool, backe
 
 
 def run_all(paths: list[Path], aliases: list[str], out_dir: Path, client, force: bool,
-            backend: str = "sdk") -> tuple[list[dict], list[tuple[str, str, str]]]:
-    """Run every essay × model. Keeps going on per-call errors (no retries), stops at once on a bad key."""
+            backend: str = "sdk", jobs: int = 1) -> tuple[list[dict], list[tuple[str, str, str]]]:
+    """Run every essay × model, `jobs` at a time. Results come back in input order.
+
+    No retries. A bad_json answer is recorded and the run goes on. A cli_error (e.g. the
+    subscription limit) or a bad API key stops new calls; calls already running finish,
+    and the rest are reported as not_started so a rerun (without --force) resumes there.
+    """
+    import threading
+    from concurrent.futures import ThreadPoolExecutor
+
     import anthropic
 
+    stop = threading.Event()
+    auth_failed = threading.Event()
+    print_lock = threading.Lock()
+
+    def say(msg: str, err: bool = False) -> None:
+        with print_lock:
+            print(msg, file=sys.stderr if err else sys.stdout, flush=True)
+
+    def work(path: Path, alias: str):
+        if stop.is_set():
+            return "not_started", None
+        try:
+            r = run_one(path, alias, out_dir, client, force, backend)
+        except BadJson as exc:
+            say(f"{path.stem} {alias}: ERROR bad_json: {exc}", err=True)
+            return "bad_json", None
+        except CliError as exc:
+            stop.set()
+            say(f"{path.stem} {alias}: ERROR cli_error: {exc}; no new calls", err=True)
+            return "cli_error", None
+        except anthropic.AuthenticationError as exc:
+            stop.set()
+            auth_failed.set()
+            # the message names the problem, never the key itself
+            say(f"{path.stem} {alias}: ERROR authentication failed ({exc.message}); stopping", err=True)
+            return "auth_error", None
+        except Exception as exc:
+            say(f"{path.stem} {alias}: ERROR {type(exc).__name__}: {exc}", err=True)
+            return type(exc).__name__, None
+        say(f"{r['essay']['id']} {alias}: {len(r['entities'])} entities, {len(r['relations'])} relations, "
+            f"{len(r['dropped'])} dropped, {_seconds(r)}, {_cost_label(r)}")
+        return "ok", r
+
+    tasks = [(path, alias) for path in paths for alias in aliases]
+    with ThreadPoolExecutor(max_workers=max(1, jobs)) as pool:
+        outcomes = list(pool.map(lambda t: work(*t), tasks))
+
     results, failures = [], []
-    for path in paths:
-        for alias in aliases:
-            try:
-                r = run_one(path, alias, out_dir, client, force, backend)
-            except BadJson as exc:
-                failures.append((path.stem, alias, "bad_json"))
-                print(f"{path.stem} {alias}: ERROR bad_json: {exc}", file=sys.stderr)
-                continue
-            except CliError as exc:
-                failures.append((path.stem, alias, "cli_error"))
-                print(f"{path.stem} {alias}: ERROR cli_error: {exc}", file=sys.stderr)
-                continue
-            except anthropic.AuthenticationError as exc:
-                # the message names the problem, never the key itself
-                print(f"{path.stem} {alias}: ERROR authentication failed ({exc.message}); stopping", file=sys.stderr)
-                raise SystemExit(1)
-            except Exception as exc:
-                failures.append((path.stem, alias, type(exc).__name__))
-                print(f"{path.stem} {alias}: ERROR {type(exc).__name__}: {exc}", file=sys.stderr)
-                continue
+    for (path, alias), (status, r) in zip(tasks, outcomes):
+        if status == "ok":
             results.append(r)
-            print(f"{r['essay']['id']} {alias}: {len(r['entities'])} entities, "
-                  f"{len(r['relations'])} relations, {len(r['dropped'])} dropped, {_seconds(r)}, {_cost_label(r)}")
+        else:
+            failures.append((path.stem, alias, status))
+    if auth_failed.is_set():
+        raise SystemExit(1)
     return results, failures
+
+
+def select_paths(data_dir: Path, spec: str) -> list[Path]:
+    """--essays: "all", a range "A-B", or a comma list of numbers."""
+    spec = spec.strip()
+    every = sorted((data_dir / "essays_md").glob("[0-9][0-9][0-9]_*.md"))
+    if spec == "all":
+        return every
+    if re.fullmatch(r"\d+-\d+", spec):
+        a, b = map(int, spec.split("-"))
+        return [p for p in every if a <= int(p.name[:3]) <= b]
+    return find_essays(data_dir, [int(x) for x in spec.split(",") if x.strip()])
 
 
 def find_essays(data_dir: Path, numbers: list[int]) -> list[Path]:
@@ -535,7 +576,9 @@ def find_essays(data_dir: Path, numbers: list[int]) -> list[Path]:
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Extraction pilot on parallelmuhit essays")
-    parser.add_argument("--essays", default=",".join(map(str, PILOT_ESSAYS)), help="comma-separated essay numbers")
+    parser.add_argument("--essays", default=",".join(map(str, PILOT_ESSAYS)),
+                        help='"all", a range like 140-181, or comma-separated essay numbers')
+    parser.add_argument("--jobs", type=int, default=1, help="essays to run at the same time (default 1)")
     parser.add_argument("--model", choices=["haiku", "sonnet", "both"], default="sonnet")
     parser.add_argument("--backend", choices=["cli", "sdk"], default="cli",
                         help="cli: claude -p on the subscription (default); sdk: anthropic sdk + ANTHROPIC_API_KEY")
@@ -547,9 +590,8 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
 
 def main():
     args = parse_args()
-    numbers = [int(x) for x in args.essays.split(",") if x.strip()]
     aliases = list(MODELS) if args.model == "both" else [args.model]
-    paths = find_essays(args.data_dir, numbers)
+    paths = select_paths(args.data_dir, args.essays)
 
     client = None
 
@@ -566,10 +608,20 @@ def main():
         def messages(self):
             return get_client().messages
 
-    results, failures = run_all(paths, aliases, args.out_dir, LazyClient(), args.force, args.backend)
+    results, failures = run_all(paths, aliases, args.out_dir, LazyClient(), args.force, args.backend, args.jobs)
     if results:
         (args.out_dir / "compare.md").write_text(render_compare(results), encoding="utf-8")
         print(f"\ncompare: {args.out_dir / 'compare.md'}")
+
+    by_status = Counter(status for _, _, status in failures)
+    print(f"\ndone {len(results)} of {len(paths) * len(aliases)}"
+          + "".join(f", {status} {n}" for status, n in sorted(by_status.items())))
+    if by_status.get("cli_error"):
+        print("stopped after a cli_error (possibly the subscription limit). rerun the same command later "
+              "without --force to resume; finished essays are not called again.", file=sys.stderr)
+    for stem, alias, status in failures:
+        if status == "bad_json":
+            print(f"bad_json: {stem} {alias}", file=sys.stderr)
     sys.exit(1 if failures else 0)
 
 

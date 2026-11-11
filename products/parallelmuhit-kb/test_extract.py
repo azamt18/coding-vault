@@ -479,3 +479,91 @@ def test_prompt_makes_associated_with_a_last_resort():
     assert "associated_with only when none of the other 6 kinds fits" in extract.SYSTEM
     assert "inspired_by" in extract.SYSTEM.split("associated_with only when")[1].split("\n- ")[0]
     assert "recommends" in extract.SYSTEM.split("associated_with only when")[1].split("\n- ")[0]
+
+
+# --- task 03 step 2: all essays, --jobs, clean stop on cli_error ---
+
+import threading
+import time
+
+
+def _essay_dir(tmp_path, numbers):
+    md = tmp_path / "essays_md"
+    md.mkdir(exist_ok=True)
+    for n in numbers:
+        (md / f"{n:03d}_e{n}.md").write_text("", encoding="utf-8")
+    return tmp_path
+
+
+def test_essay_selection_all_and_range(tmp_path):
+    data = _essay_dir(tmp_path, [2, 3, 10, 149])
+    assert [p.name for p in extract.select_paths(data, "all")] == ["002_e2.md", "003_e3.md", "010_e10.md", "149_e149.md"]
+    assert [p.name for p in extract.select_paths(data, "3-10")] == ["003_e3.md", "010_e10.md"]
+    assert [p.name for p in extract.select_paths(data, "2,149")] == ["002_e2.md", "149_e149.md"]
+
+
+class FakeRunOne:
+    """Stands in for run_one: records calls, fails on chosen essays, can be slow."""
+
+    def __init__(self, fail=None, delay=0.0):
+        self.fail = fail or {}
+        self.delay = delay
+        self.calls = []
+        self.lock = threading.Lock()
+
+    def __call__(self, path, alias, out_dir, client, force, backend="sdk"):
+        with self.lock:
+            self.calls.append(path.stem)
+        time.sleep(self.delay)
+        exc = self.fail.get(path.stem)
+        if exc:
+            raise exc
+        return {"essay": {"id": path.stem}, "alias": alias, "entities": [], "relations": [], "dropped": [],
+                "duration_ms": 1, "cost_usd": 0.0, "billed": False}
+
+
+def test_jobs_keep_sequential_order(tmp_path, monkeypatch):
+    data = _essay_dir(tmp_path, range(1, 10))
+    fake = FakeRunOne(delay=0.01)
+    monkeypatch.setattr(extract, "run_one", fake)
+    paths = extract.select_paths(data, "all")
+    results, failures = extract.run_all(paths, ["sonnet"], tmp_path / "x", None, False, "cli", jobs=3)
+    assert [r["essay"]["id"] for r in results] == [p.stem for p in paths]
+    assert failures == [] and sorted(fake.calls) == [p.stem for p in paths]
+
+
+def test_cli_error_stops_new_calls_and_lets_running_finish(tmp_path, monkeypatch):
+    data = _essay_dir(tmp_path, range(1, 21))
+    fake = FakeRunOne(fail={"002_e2": extract.CliError("usage limit reached")}, delay=0.05)
+    monkeypatch.setattr(extract, "run_one", fake)
+    paths = extract.select_paths(data, "all")
+    results, failures = extract.run_all(paths, ["sonnet"], tmp_path / "x", None, False, "cli", jobs=3)
+    assert ("002_e2", "sonnet", "cli_error") in failures
+    not_started = [f for f in failures if f[2] == "not_started"]
+    assert len(fake.calls) <= 4 + 1          # the 3 running at the time plus at most one picked up
+    assert len(results) + len([f for f in failures if f[2] == "cli_error"]) + len(not_started) == 20
+    assert len(not_started) >= 15
+
+
+def test_cli_error_sequential_stops_right_after(tmp_path, monkeypatch):
+    data = _essay_dir(tmp_path, range(1, 6))
+    fake = FakeRunOne(fail={"002_e2": extract.CliError("limit")})
+    monkeypatch.setattr(extract, "run_one", fake)
+    results, failures = extract.run_all(extract.select_paths(data, "all"), ["sonnet"], tmp_path / "x", None,
+                                        False, "cli", jobs=1)
+    assert fake.calls == ["001_e1", "002_e2"]
+    assert [f[0] for f in failures if f[2] == "not_started"] == ["003_e3", "004_e4", "005_e5"]
+
+
+def test_bad_json_does_not_stop_the_run(tmp_path, monkeypatch):
+    data = _essay_dir(tmp_path, range(1, 5))
+    fake = FakeRunOne(fail={"002_e2": extract.BadJson("relations missing")})
+    monkeypatch.setattr(extract, "run_one", fake)
+    results, failures = extract.run_all(extract.select_paths(data, "all"), ["sonnet"], tmp_path / "x", None,
+                                        False, "cli", jobs=2)
+    assert failures == [("002_e2", "sonnet", "bad_json")] and len(results) == 3
+
+
+def test_jobs_flag():
+    assert extract.parse_args([]).jobs == 1
+    assert extract.parse_args(["--jobs", "3", "--essays", "all"]).jobs == 3

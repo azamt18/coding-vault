@@ -45,3 +45,9 @@ a miss doesn't block the report. it's a signal for plan and the user.
 ## out of scope
 
 merging names (task 04), sqlite, the graph ui, q&a, the api/batch backend, any prompt change beyond step 1.
+
+## step 1 result (plan, 2026-11-11)
+
+`b86b97e`, 58 tests. `associated_with` 60% → 9% (3 of 33), 0 drops, 0 unlinked, 0 bad_json. G'azzoliy/Popper are now `inspired_by`. go for step 2.
+
+known weakness, accepted with no prompt change: a handful of forced kinds are wrong instead of vague. `Pol Getti example_of` should be counterexample. `Kasbiy rivojlanish`/`ego counterexample_of shaxsiy rivojlanish` is really a distinction or an obstacle, not an opposite. the 5 random essays from step 3 will show how often this happens.
