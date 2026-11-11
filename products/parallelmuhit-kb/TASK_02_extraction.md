@@ -112,3 +112,12 @@ changes:
 3. **`name` exactly as written, including lowercase.** only `base_name` changes form (plan's call, a fix to the round 2 prompt).
 
 after round 3: if the review reads right, extraction is settled → task 03 (all 188 essays + merging names).
+
+## closed (plan, 2026-11-11)
+
+extraction settled on round 3 (`e2c03e0`, 57 tests): sonnet 5.5 via `claude -p`, 7 kinds, quotes of 1–3 sentences, every person/work linked. 3 essays: 30 links, 0 drops, 0 unlinked, 0 bad_json.
+
+carried into task 03:
+- prompt: `associated_with` only when none of the other 6 kinds fits (r3: 9 of 11 in 149, 5 of 8 in 180). on the full run, watch its share of all links. above ~30%, look into it.
+- names merging keys on `base_name` (`name` is inflected: "Ben Gremdan", "Karl Popperdan"). for ideas `base_name` is inconsistent (capitals, rephrasing).
+- G'azzoliy/Popper → "inson nazariyalari cheklangan" is a source link, not associated_with. check whether `inspired_by` catches it after the prompt line.
