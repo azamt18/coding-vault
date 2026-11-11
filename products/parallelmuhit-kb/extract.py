@@ -179,6 +179,10 @@ link them to it.
 Relations: source --kind--> target, for example person wrote work, idea example_of idea.
 Use counterexample_of when the essay holds someone or something up as the opposite of an
 idea (a warning, what not to do), and example_of only when it is shown as a case of the idea.
+Use associated_with only when none of the other 6 kinds fits. Usually another kind is meant:
+the source of an idea or a thought (where it comes from, who taught it) -> inspired_by; advice
+to do or read something -> recommends; a case of an idea -> example_of; the opposite of an
+idea -> counterexample_of; disapproval -> criticises; authorship -> wrote.
 - source and target: entity names from your list, or "{AUTHOR}".
 - kind: one of {", ".join(RELATION_KINDS)}.
 - label: a short phrase in Uzbek, using the essay's own wording.

@@ -470,3 +470,12 @@ def test_unlinked_in_review_and_compare(essay, fake_raw):
     assert "- Ben Grem" in review and "- Pol Getti" in review
     compare = extract.render_compare([result])
     assert "| unlinked |" in compare and "| 2 (Ben Grem, Pol Getti) |" in compare
+
+
+# --- task 03 step 1: associated_with only as a last resort ---
+
+
+def test_prompt_makes_associated_with_a_last_resort():
+    assert "associated_with only when none of the other 6 kinds fits" in extract.SYSTEM
+    assert "inspired_by" in extract.SYSTEM.split("associated_with only when")[1].split("\n- ")[0]
+    assert "recommends" in extract.SYSTEM.split("associated_with only when")[1].split("\n- ")[0]
