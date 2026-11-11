@@ -97,3 +97,39 @@ def test_render_essay():
     assert meta["number"] == 2 and meta["title"] == "Daraxt: oʻsish"
     assert meta["source"] == "https://parallelmuhit.uz/daraxt"
     assert body == "\n# Daraxt: oʻsish\n\nMatn.\n"
+
+
+# --- data dir: scripts live in products/, essays stay in pdp/parallelmuhit ---
+
+import json
+from pathlib import Path
+
+import download_essays
+import export_markdown
+
+
+def test_default_data_dir_is_pdp_parallelmuhit():
+    expected = Path(__file__).resolve().parents[2] / "pdp" / "parallelmuhit"
+    assert export_markdown.DEFAULT_DATA_DIR == expected
+    assert download_essays.DEFAULT_DATA_DIR == expected
+
+
+def test_data_dir_flag(tmp_path):
+    assert export_markdown.parse_args(["--offline"]).data_dir == export_markdown.DEFAULT_DATA_DIR
+    assert export_markdown.parse_args(["--offline", "--data-dir", str(tmp_path)]).data_dir == tmp_path
+    assert download_essays.parse_args(["--data-dir", str(tmp_path)]).data_dir == tmp_path
+
+
+def test_offline_export_writes_into_data_dir_not_cwd(tmp_path, monkeypatch):
+    data = tmp_path / "data"
+    (data / "essays_raw").mkdir(parents=True)
+    essay = {"slug": "daraxt", "title": "Daraxt", "author": {"name": "A"}, "createdAt": "2024-01-01"}
+    (data / "essays_raw" / "_list.json").write_text(json.dumps([essay]), encoding="utf-8")
+    (data / "essays_raw" / "002_daraxt.json").write_text(json.dumps({"content": "<p>Matn.</p>"}), encoding="utf-8")
+    elsewhere = tmp_path / "elsewhere"
+    elsewhere.mkdir()
+    monkeypatch.chdir(elsewhere)
+
+    assert export_markdown.export("", None, None, force=False, offline=True, data_dir=data) == 0
+    assert (data / "essays_md" / "002_daraxt.md").read_text(encoding="utf-8").endswith("Matn.\n")
+    assert list(elsewhere.iterdir()) == []

@@ -2,8 +2,10 @@
 """
 Export parallelmuhit.uz essays from the API to Markdown.
 
-Raw API responses go to essays_raw/ (the list as _list.json, each essay as
-NNN_slug.json), Markdown with YAML frontmatter goes to essays_md/NNN_slug.md.
+Raw API responses go to <data-dir>/essays_raw/ (the list as _list.json, each
+essay as NNN_slug.json), Markdown with YAML frontmatter goes to
+<data-dir>/essays_md/NNN_slug.md. <data-dir> defaults to pdp/parallelmuhit in
+this repo, wherever the script is run from.
 
 Usage:
     TOKEN=<your_jwt> python3 export_markdown.py              # all essays
@@ -25,9 +27,8 @@ from markdownify import markdownify
 
 API_BASE = "https://b.parallelmuhit.uz"
 SITE_BASE = "https://parallelmuhit.uz"
-RAW_DIR = Path("essays_raw")
-MD_DIR = Path("essays_md")
-LIST_FILE = RAW_DIR / "_list.json"
+# products/parallelmuhit-kb/<this file> -> <repo>/pdp/parallelmuhit
+DEFAULT_DATA_DIR = Path(__file__).resolve().parents[2] / "pdp" / "parallelmuhit"
 
 
 def number_essays(raw: list[dict]) -> list[dict]:
@@ -112,8 +113,18 @@ def _write_json(path: Path, data) -> None:
     path.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
 
 
-def export(token: str, only: int | None, range_: tuple[int, int] | None, force: bool, offline: bool) -> int:
-    RAW_DIR.mkdir(exist_ok=True)
+def export(
+    token: str,
+    only: int | None,
+    range_: tuple[int, int] | None,
+    force: bool,
+    offline: bool,
+    data_dir: Path = DEFAULT_DATA_DIR,
+) -> int:
+    RAW_DIR = data_dir / "essays_raw"
+    MD_DIR = data_dir / "essays_md"
+    LIST_FILE = RAW_DIR / "_list.json"
+    RAW_DIR.mkdir(parents=True, exist_ok=True)
     MD_DIR.mkdir(exist_ok=True)
     client = None
 
@@ -173,18 +184,24 @@ def export(token: str, only: int | None, range_: tuple[int, int] | None, force: 
         if client is not None:
             client.close()
 
-    print(f"\nDone. Markdown in ./{MD_DIR}/, raw JSON in ./{RAW_DIR}/" + (f" ({errors} errors)" if errors else ""))
+    print(f"\nDone. Markdown in {MD_DIR}/, raw JSON in {RAW_DIR}/" + (f" ({errors} errors)" if errors else ""))
     return 1 if errors else 0
 
 
-def main():
+def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Export parallelmuhit.uz essays to Markdown")
     parser.add_argument("--token", default=os.environ.get("TOKEN", ""), help="JWT auth token (or TOKEN env var)")
     parser.add_argument("--number", type=int, default=None, metavar="N", help="export only essay #N")
     parser.add_argument("--range", dest="range_", metavar="A-B", help="export essays #A through #B (e.g. 166-170)")
     parser.add_argument("--force", action="store_true", help="overwrite existing .md files")
     parser.add_argument("--offline", action="store_true", help="convert from essays_raw/ without calling the API")
-    args = parser.parse_args()
+    parser.add_argument("--data-dir", type=Path, default=DEFAULT_DATA_DIR,
+                        help=f"folder with essays_raw/ and essays_md/ (default: {DEFAULT_DATA_DIR})")
+    return parser.parse_args(argv)
+
+
+def main():
+    args = parse_args()
 
     if not args.offline and not args.token:
         print("Error: provide your JWT token via --token or TOKEN env var (or use --offline)", file=sys.stderr)
@@ -199,7 +216,7 @@ def main():
             print("Error: --range must be in the form A-B (e.g. 166-170)", file=sys.stderr)
             sys.exit(1)
 
-    sys.exit(export(args.token, args.number, range_, args.force, args.offline))
+    sys.exit(export(args.token, args.number, range_, args.force, args.offline, args.data_dir))
 
 
 if __name__ == "__main__":

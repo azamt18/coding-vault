@@ -6,6 +6,9 @@ obj/
 *.userosscache
 *.sln.docstates
 
+## Python
+__pycache__/
+
 ## JetBrains Rider / IntelliJ
 .idea/
 *.DotSettings.user
