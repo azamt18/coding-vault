@@ -118,7 +118,9 @@ coding-vault/
 │
 ├── pdp/                                    # Professional Development Project
 │   ├── timebox/                            # Time-boxing & task management system
-│   └── parallelmuhit/                      # Parallel task orchestration
+│   └── parallelmuhit/                      # parallelmuhit.uz essays (PDF, Markdown, raw API JSON)
+│       ├── → products/parallelmuhit-kb/    # essay export to Markdown, base for the knowledge base
+│       └── → products/parallelmuhit-tts/   # Uzbek TTS experiments, Chatterbox fine-tuning
 │
 └── ROADMAP.md                              # Detailed Interview Milestones & Study Plan
 ```
@@ -147,7 +149,9 @@ coding-vault/
 ### 3️⃣ Professional Development Tools
 - **PDP** (`pdp/`) — Professional Development Project
   - `timebox/` — Time-boxing & task management
-  - `parallelmuhit/` — Parallel task orchestration & execution
+  - `parallelmuhit/` — parallelmuhit.uz essays: PDF, Markdown & raw API JSON
+    - `products/parallelmuhit-kb/` — essay export to Markdown, base for the knowledge base
+    - `products/parallelmuhit-tts/` — Uzbek TTS experiments, Chatterbox fine-tuning
   - Integrated with EPAM ecosystem & enterprise workflows
 
 ---
