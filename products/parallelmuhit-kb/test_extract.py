@@ -357,3 +357,24 @@ def test_cli_error_result_is_an_error_not_bad_json(essay_file, tmp_path, fake_cl
 def test_backend_flag_defaults_to_cli():
     assert extract.parse_args([]).backend == "cli"
     assert extract.parse_args(["--backend", "sdk"]).backend == "sdk"
+
+
+# --- non-breaking spaces (U+00A0 from &nbsp;) read as normal spaces ---
+
+
+def test_plain_text_maps_nbsp_to_space():
+    assert extract.plain_text("professional xatokor deb") == "professional xatokor deb"
+    assert extract.plain_text("Shoushenkdan qochish  filmidagi") == "Shoushenkdan qochish filmidagi"
+
+
+def test_nbsp_mapping_leaves_apostrophes_untouched():
+    s = "o‘g‘il oʻzbek o'g'il"
+    assert extract.plain_text(s) == "o‘g‘il oʻzbek o'g'il"
+
+
+def test_quote_with_normal_space_matches_nbsp_paragraph():
+    md = ESSAY_MD.replace("Charli Manger **sohadan tashqari", "Charli Manger **sohadan tashqari")
+    assert md.count(" ") == 2
+    essay = extract.parse_essay(md)
+    assert extract.check_quote(essay, "p3", "Charli Manger sohadan tashqari o'rganish") is None
+    assert " " not in extract.build_prompt(essay)

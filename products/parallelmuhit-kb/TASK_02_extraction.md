@@ -79,3 +79,16 @@ there's no anthropic api key (only openrouter), and the user wants the subscript
 - isolation: no tools, no mcp, no user CLAUDE.md, hooks or plugins in the call (pick the matching flags from `claude --help`, such as a system-prompt override, setting sources and a strict mcp config). cwd is an empty temp dir.
 - `compare.md`: instead of tokens/cost, run time and `total_cost_usd`/usage from the json output if claude code provides them (marked as "subscription, not billed").
 - `--backend cli|sdk`, default `cli`.
+
+## pilot result (plan, 2026-11-11)
+
+code `7cf49aa`, `d5eb2c9`, `86ea7f2`. 42 tests green. run via `claude -p` (subscription), 6 calls, 2 min 57 s.
+- 5 of 6 worked. `bad_json` on 149 × haiku: the `relations` key is missing.
+- drops: 3 × `quote_not_found`, all caused by U+00A0 (`&nbsp;`) in the essays, which the models copy as a normal space. fix: U+00A0 → space in `plain_text()`.
+- sonnet: all link kinds get used, plus author links ("Aziz Rahimov inspired_by Ryan Holiday"). haiku: 002 has 5 of 5 links as `associated_with` with labels like "misol", "mashq".
+- haiku found things sonnet missed: GM (002), takasur surasi (180).
+
+plan's read of the 5 review files:
+- **quotes anchor the link but don't always prove it**: "George Soros milliarder.", "Charli Mungerning mashhur gapiga qarang".
+- **counterexamples end up as `example_of`**: Soros, Pol Getti and NasDaily appear as positive examples, though the essay holds them up as the opposite.
+- **names vary**: "Charli Munger" (002) vs "Charli Manger" (149), lowercase "prison break", "Teylor svift", inflected aliases ("janob Talebda", "egosi"). this is task 03's problem, but extraction can help if it gives the base form.

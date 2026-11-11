@@ -111,7 +111,8 @@ def plain_text(block: str) -> str:
     """Markdown block → the text the model sees and quotes are checked against.
 
     Removes images, link syntax (keeps the text), heading marks, `>` and `*`/`_`
-    emphasis. Apostrophes and Uzbek letters are left byte for byte.
+    emphasis, and turns non-breaking spaces into normal ones. Apostrophes and
+    Uzbek letters are left byte for byte.
     """
     lines = []
     for line in block.splitlines():
@@ -123,7 +124,8 @@ def plain_text(block: str) -> str:
     text = _LINK.sub(r"\1", text)
     text = text.replace("*", "")
     text = re.sub(r"(?<![\w])_+|_+(?![\w])", "", text)
-    return re.sub(r"[ \t]+", " ", text).strip()
+    # U+00A0 (from &nbsp;) reads as a normal space: models copy it back as one
+    return re.sub(r"[ \t\u00a0]+", " ", text).strip()
 
 
 def parse_essay(md: str) -> dict:
