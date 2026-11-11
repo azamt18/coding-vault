@@ -613,6 +613,11 @@ def main():
         (args.out_dir / "compare.md").write_text(render_compare(results), encoding="utf-8")
         print(f"\ncompare: {args.out_dir / 'compare.md'}")
 
+    args.out_dir.mkdir(parents=True, exist_ok=True)
+    (args.out_dir / "last_run.json").write_text(
+        json.dumps({"essays": args.essays, "failures": [list(f) for f in failures]}, ensure_ascii=False, indent=2),
+        encoding="utf-8")
+
     by_status = Counter(status for _, _, status in failures)
     print(f"\ndone {len(results)} of {len(paths) * len(aliases)}"
           + "".join(f", {status} {n}" for status, n in sorted(by_status.items())))
