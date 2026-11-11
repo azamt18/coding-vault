@@ -1,0 +1,189 @@
+number,slug,title,chars,requests,usd_v4,minutes_est
+2,daraxt,Daraxtlardan rivojlanishni o'rganamiz,8523,1,0.68,8.5
+3,javoblar,Javoblarni endi nima qilamiz?,10156,2,0.81,10.2
+4,kitob,Nega aynan shu uch kitob tavsiya qilindi,9083,1,0.73,9.1
+5,yollar,Uzun yo'llar haqida,11717,2,0.94,11.7
+6,qomusiylik,Odamga qomusiylik yarashadi,10801,2,0.86,10.8
+7,amal,Qachon amal qilishni boshlaymiz,9650,1,0.77,9.7
+8,qorquv,Sinov va xato bilan qo'rquvni yengamiz,11177,2,0.89,11.2
+9,biz,Biz — bu qilayotgan ishlarimiz,10308,2,0.82,10.3
+10,zor,Zo'r ishlar qanday qilinadi,12524,2,1.0,12.5
+11,maslahat,Maslahatlarni kimdan olamiz?,12692,2,1.02,12.7
+12,asli,Narsalarning aslini ko'rishni o'rganamiz,5732,1,0.46,5.7
+13,otibketyapti,U mendan o'tib ketyapti,8753,1,0.7,8.8
+14,misol,Misol bilan gaplashamiz,8339,1,0.67,8.3
+15,rozilik,Rozi va norozilik o'rtasini topamiz,7577,1,0.61,7.6
+16,vaqt,Vaqtni ushlashga urinib,8027,1,0.64,8.0
+17,korgazma,Ko'rgazmaviy va mohiyatiy o'lchovlar,10090,2,0.81,10.1
+18,tirbandlik,Tirbandlikdan qochish haqida o'ylar,10106,2,0.81,10.1
+19,yiqilmaslik,Avval yiqilmaslik o'rganiladi,9157,1,0.73,9.2
+20,kasb,Kasb tanlash haqida,11406,2,0.91,11.4
+21,amaliyot,Nazariya va amaliyot o'rtasidagi chuqurlik,10362,2,0.83,10.4
+22,qochish,Hamma narsani biladiganlardan qochish,7050,1,0.56,7.0
+23,turmush,Turmush qurishdagi kuzatuvlar,11978,2,0.96,12.0
+24,robotlar,Robotlar va sun'iy intellekt kelishiga tayyorlanamiz,11552,2,0.92,11.6
+25,korinish,Boy ko'rinishga harakat qilish boy bo'lishga xalaqit beradi.,11717,2,0.94,11.7
+26,ikkiquyon,Bir o'q bilan ikkita quyon o'ldirishni o'rganamiz,8714,1,0.7,8.7
+27,xarita,Xaritaga qaramayotgan yo'ldan adashib ketadi,10795,2,0.86,10.8
+28,kelajak,"O'tmishdagi ishlar, kelajakdagilarini ko'rsatib beradi",12608,2,1.01,12.6
+29,ulgurish,Ko'p ishlarga ulgurish haqida,6884,1,0.55,6.9
+30,xato,Xatoga yondashuv haqida,11765,2,0.94,11.8
+31,oliymaqsad,Oliy maqsad haqida o'ylar,11228,2,0.9,11.2
+32,organish,O'rganishni tezlashtiramiz,12694,2,1.02,12.7
+33,qiyindavrlar,Qiyin davrlar kimligimizni ko'rsatadi,10885,2,0.87,10.9
+34,qadoq,Hamma narsa qadoqda keladi,8673,1,0.69,8.7
+35,qarorlar,Qarorlarimiz to'g'riligini qayerdan bilamiz?,11920,2,0.95,11.9
+36,nuqtayinazar,Har bitta nuqtayi nazar qo'shimcha qo'l beradi,10733,2,0.86,10.7
+37,yeyish,Nima yesak o'shamiz,7692,1,0.62,7.7
+38,hassa,Hassa yurishimizga xalaqit beradi,9248,1,0.74,9.2
+39,yuk,Yuk yengillashgan sari yana yuk olish,12128,2,0.97,12.1
+40,jahl,Jahl haqida,12433,2,0.99,12.4
+41,status,Status haqida,10355,2,0.83,10.4
+42,boshlamaslik,Butun umr qilinmaydigan ishlarni boshlamaslik haqida,13065,2,1.05,13.1
+43,alochi,A'lochilar millioner bo'ladimi?,10991,2,0.88,11.0
+44,qorqamiz,Nega fikrimizni o'zgartirishdan qo'rqamiz?,10571,2,0.85,10.6
+45,qolish,O'zbekistonda qolish kerakmi? Yoki ketish?,14403,2,1.15,14.4
+46,suhbat,Suhbatlar haqida suhbatlashamiz,10196,2,0.82,10.2
+47,atrof,Atrofimizni o'zgartirish uchun to'rt qadam,11351,2,0.91,11.4
+48,tiniqlik,G'oya tiniqligi haqida,10972,2,0.88,11.0
+49,ming,Mingta yuz mingtadan ko'proq bo'la oladi,12566,2,1.01,12.6
+50,soxta,Soxta o'sish haqida,7763,1,0.62,7.8
+51,ishxona,Ishxona tanlash bo'yicha qo'llanma,9290,1,0.74,9.3
+52,tilak,Katta hayot oldidan tilaklar,7722,1,0.62,7.7
+53,teskarisi,Teskariliklarni yechish dunyoqarashimizni kengaytiradi.,10299,2,0.82,10.3
+54,chegara,Chegaralar erkinlik olib keladi,8673,1,0.69,8.7
+55,bogbon,Gulga qarab bog'bonni ko'rsa bo'ladi,14011,2,1.12,14.0
+56,hikmat,Hikmat haqida,9066,1,0.73,9.1
+57,oqituvchi,Nima uchun zo'r o'qituvchi bo'lishimiz kerak?,12575,2,1.01,12.6
+58,noshukurlik,Noshukurlik yutqazishga olib boradi,7352,1,0.59,7.4
+59,nonushta, Nonushtani nima qilamiz?,6243,1,0.5,6.2
+60,yosh,Agar yosh bo'lib qolsam,7357,1,0.59,7.4
+61,ishlar,Muhim ishlar qolib ketmasligi haqida,10924,2,0.87,10.9
+62,xohish,Xohishlarni qanday boshqaramiz?,10291,2,0.82,10.3
+63,anana,An'ana ilm-fanni yutib ketadi.,8280,1,0.66,8.3
+64,yetakchi,Yetakchilar qanday yetishadi?,10037,2,0.8,10.0
+65,harakatchan,Harakatchan dunyodan 3ta xulosa.,6905,1,0.55,6.9
+66,hayrat,Hayrat haqida,7274,1,0.58,7.3
+67,tosh,Besh million yillik tosh betondan ko'proq yashaydi,9633,1,0.77,9.6
+68,garov,Garovga qo'yasanmi? (Wanna bet?),6281,1,0.5,6.3
+69,ustunlik,Ustunlik qayerdan keladi?,8211,1,0.66,8.2
+70,ogriq,Og'riqning foydalari haqida,8236,1,0.66,8.2
+71,ishonch,O'zimizga ishonch haqida,8129,1,0.65,8.1
+72,oyinlar,Videoo'yinlar haqida,10463,2,0.84,10.5
+73,pul,Pul odamni o'zgartiradimi?,7858,1,0.63,7.9
+74,rost,Rost gapirishning kutilmagan foydalari haqida,7710,1,0.62,7.7
+75,ish,Umrni bag'ishlaydigan ishlar qanday topiladi?,7933,1,0.63,7.9
+76,raqam,Chiroyli raqamlar nega tezda sotilib ketishi haqida,7459,1,0.6,7.5
+77,siqilish,Siqilish haqida,8765,1,0.7,8.8
+78,tanish,O'zimizni tanish haqida,9301,1,0.74,9.3
+79,london,Londonning koʻrinmas tomonlari haqida,10744,2,0.86,10.7
+80,tolov,Hamma narsaning to'lovi bor,11027,2,0.88,11.0
+81,jarlik,Buyuk jarlik haqida,8208,1,0.66,8.2
+82,virtual,Virtual muhit haqiqiy muhitdan oldin keladi.,10777,2,0.86,10.8
+83,premium,Premium hayot paradoksi haqida,11029,2,0.88,11.0
+84,saqlash,Bolalarni Al-Maktum tuzog'idan qanday saqlab qolamiz?,11333,2,0.91,11.3
+85,kerakli,"Kerakli degani, yetarli degani emas",9144,1,0.73,9.1
+86,tinch,Tinch qo'ysak nima bo'larkan?,7915,1,0.63,7.9
+87,taklif,Ruxsatsiz va ruxsatli taklif haqida,8477,1,0.68,8.5
+88,tasavvur,Tasavvur haqida,11098,2,0.89,11.1
+89,kislorod,Bir kislorodning safari,12441,2,1.0,12.4
+90,quruvchi,Quruvchilik baxti,8182,1,0.65,8.2
+91,uzoqqa,Havotir oldirmaslik uzoqqa olib borishi haqida,6955,1,0.56,7.0
+92,qisqayol,Glutamat zarbasidan qaytib turish qiyin kechadi,7192,1,0.58,7.2
+93,qoriqchi,Qo'riqlashga arziydigan narsa tugab qoladi,10042,2,0.8,10.0
+94,yol,Yo'l yo'lni ko'rsatadi,9131,1,0.73,9.1
+95,bilish,Bilishning bilishdan farqi bor,9147,1,0.73,9.1
+96,motiv, O'zini o'zi ruhlantiradiganlar qayerdan keladi?,9951,1,0.8,10.0
+97,tiriklik,Ijtimoiy tiriklik haqida,9372,1,0.75,9.4
+98,gap,Gapirish va gapirmaslik haqida,9292,1,0.74,9.3
+99,ikkilanish,Ikkilanish haqida,8912,1,0.71,8.9
+100,qutulish,"Jasorat, g'ayrat va qarilik orqali ikkilanishdan qutulamiz.",9872,1,0.79,9.9
+101,qonish,Qo'nishni bilish san'ati,7804,1,0.62,7.8
+102,intizom,Intizom haqida,8352,1,0.67,8.4
+103,qurbonlik,Qurbonlik ham natijaga qadr beradi,8005,1,0.64,8.0
+104,qurbonlik2,Qurbonlik prizmasi bilan qarashni o'rganamiz,9687,1,0.77,9.7
+105,kengaymas,Kengaymas va kengayuvchan sohalar haqida,10577,2,0.85,10.6
+106,yutqazish,Yutsak ham yutqazadigan o'yindan qanday chiqamiz?,10811,2,0.86,10.8
+107,2025,O'tgan yili tushunganlarim. 2025-yil sarhisobini qilamiz.,8101,1,0.65,8.1
+108,maglubiyat,Mag'lubiyat ichkaridan keladi,9643,1,0.77,9.6
+109,nimadeydi,Odamlar nima deydi?,10236,2,0.82,10.2
+110,instagram,Instagram aybdor,10358,2,0.83,10.4
+111,tolangan,Puli to'langan,7985,1,0.64,8.0
+112,ustunlikhissi,Dunyoqarashni kengaytirish orqali ustunlik hissini yo'qotamiz,12779,2,1.02,12.8
+113,adolat,Vaziyatlarni hisobga olmay adolat qilib bo'lmaydi,10850,2,0.87,10.8
+114,inqiroz,Ishonch inqirozi,7866,1,0.63,7.9
+115,ijodkorlik,Ijodkorlik haqida,9480,1,0.76,9.5
+116,maqsad,Gapning o'zidan uning maqsadi muhimroq,11359,2,0.91,11.4
+117,miya,Inobatga olish miyamizni band qiladi,8597,1,0.69,8.6
+118,korinmas,Ko’rinmas reyting ko'rinib turadigan muomalaga ta'sir qiladi,11984,2,0.96,12.0
+119,boy,Boy bo'lish uchun to'g'ri va noto'g'ri sabablar,8678,1,0.69,8.7
+120,mijoz,Mijozlarni odam sifatida ko'rish haqida,8480,1,0.68,8.5
+121,omad,"Mehnat, tavakkal va ikkita omad.",10871,2,0.87,10.9
+122,texnologiya,Texnologiya otini minadiganlar haqida,9873,1,0.79,9.9
+123,kontekst,Umumiy kontekst qidirib,6710,1,0.54,6.7
+124,yangilik,Yangiliklarni bog'ich ostiga olish haqida,9378,1,0.75,9.4
+125,oqqush,Qora oqqushni qidirib qora oqqushlarga tayyorlanamiz,9517,1,0.76,9.5
+126,chuqur,Chuqur ishlar uchun eshigimizni qulflash haqida,10781,2,0.86,10.8
+127,prinsip,Prinsiplar bilan yashaydiganlar uchun yaxshi yangilik,13042,2,1.04,13.0
+128,kelishish,Kelishib keta olishning kuchi haqida,9132,1,0.73,9.1
+129,kombo,Umumiy kontekst. Prinsiplar va oson kelishish birlashsa nima bo'ladi?,13997,2,1.12,14.0
+130,suhbatlar,Mazmunli suhbatlarni qidirib,14156,2,1.13,14.2
+131,sabr,Sabr haqida,12316,2,0.99,12.3
+132,bitirish,Nima ishni bitirmoqchiman o'zi?,8511,1,0.68,8.5
+133,tadbirkorlik,Tadbirkorlik haqida,9274,1,0.74,9.3
+134,orzu,Orzumangasadan dakki eshitishni o'rganamiz,11366,2,0.91,11.4
+135,jarroh,Jarrohdan ko'p topadigan futbolchilar haqida,11172,2,0.89,11.2
+136,ajratish,Ming yil oldingi faylasufdan dakkilarni ajratishni o'rganamiz,8538,1,0.68,8.5
+137,soddavoy,Kopyushon egasi va soddavoy ko'zoynakli aqlmoqqa yashashni o'rgatadi,11209,2,0.9,11.2
+138,foyda,"Yo'qligi qiynaydi, ko'pligi foyda bermaydi.",8323,1,0.67,8.3
+139,toxtama,"Shoshma, to'xtama",9982,1,0.8,10.0
+140,royxat,Bog'ga ro'yxat bilan kirish haqida,10758,2,0.86,10.8
+141,yozish,Yozish haqida,8843,1,0.71,8.8
+142,sarmoya, O'zimizga sarmoya kiritish ketma-ketligi haqida,9364,1,0.75,9.4
+143,mohiyat,Mohiyatlarni tushunish haqida,10429,2,0.83,10.4
+144,xarid, Ikkita argument orqali xaridlarni kamtarlashtiramiz,9258,1,0.74,9.3
+145,ehtimol,Ehtimolligi baland ishlarni o'z holiga qo'yib bersak-chi?,6709,1,0.54,6.7
+146,muammo,Vazifalardan muammolarga o'tish haqida,13556,2,1.08,13.6
+147,maxraj,Umumiy maxraj qidirib,9142,1,0.73,9.1
+148,manoqib,Manoqiblar orqali tutqunlik zanjirlarini kesamiz,14977,2,1.2,15.0
+149,qiziquvchanlik,Qiziquvchanlik maktabdan keyin ham kerak bo'ladi,10501,2,0.84,10.5
+150,dost,Do'st tanlash haqida,10616,2,0.85,10.6
+151,ota, Hayot otalikdan keyin boshlanadi,7787,1,0.62,7.8
+152,qalb,Qalblarni qozonish haqida,10675,2,0.85,10.7
+153,pufak,Kichkina chiroyli pufakchamiz,11176,2,0.89,11.2
+154,soha,Sen sohangni topa olmayapsan. Katta ehtimol sababini bilaman.,12761,2,1.02,12.8
+155,qulaylik,Qulaylik ummonida noqulaylik orolchasi orqali omon qolamiz,9067,1,0.73,9.1
+156,gam,G'am kosasi haqida,9901,1,0.79,9.9
+157,gam2,G'am menyusidan asosiylarini tanlashni o'rganamiz,7327,1,0.59,7.3
+158,eskirmas,Eskirmas ma'lumotlarni ovlang,8727,1,0.7,8.7
+159,istanbul,Istanbul haqida,8988,1,0.72,9.0
+160,bolta,Imkoniyatlarimizni chopayotgan qarz boltasi haqida,10708,2,0.86,10.7
+161,botanik,Botanik orolidan amaliyotchi akademik qit'asiga suzamiz,10505,2,0.84,10.5
+162,ildiz,Ildizlarga yopishish yutqazishni kamaytiradi,8841,1,0.71,8.8
+163,voqealik," Tasavvurimizda o'zgarmagunimizcha, voqelikda ham o'zgarmaymiz",7675,1,0.61,7.7
+164,osish,O'sish tezligimiz qanday bo'lgani yaxshi?,14459,2,1.16,14.5
+165,start,Boshlashimiz uchun ruxsat shart emas,8290,1,0.66,8.3
+166,qahramonlar,Ishonsa bo'ladigan qahramonlarni ajratib olish haqida,8458,1,0.68,8.5
+167,kitobsiz,Kitob o'qimay kitobdagilarni olganlar haqida,8227,1,0.66,8.2
+168,choqqi,Cho'qqilarga qurbon bo'layotgan bo'laklarimiz,7634,1,0.61,7.6
+169,hujum,Fitratimizga qilingan hujum haqida,10926,2,0.87,10.9
+170,maqtanish,Maqtanishga yo'l qo'ymaydigan eski pullar haqida,7555,1,0.6,7.6
+171,sharaf,Sharaf haqida,6648,1,0.53,6.6
+172,ustoz,Javobi orqali ustoz bo'ladiganlar haqida,6757,1,0.54,6.8
+173,oqish,Kitob o'qish haqida,6578,1,0.53,6.6
+174,epidemiya,Aqliy hassadan foydalanish epidemiyasiga xush kelibsiz!,8580,1,0.69,8.6
+175,tasir,Ta'sirimiz biz o'ylagandan ko'proq bo'ladi,6225,1,0.5,6.2
+176,ishlat,Aleksandr Dyumadan sun’iy intellektni ishlatishni o’rganamiz,11923,2,0.95,11.9
+177,yolgizlik,Epistemik yolg'izlik haqida,8711,1,0.7,8.7
+178,qutqaruvchi,"O'zimizni qutqarsak, minglab odamni qutqaramiz",6741,1,0.54,6.7
+179,qaram,Moliyaviy qaramlikdan qutulamiz,9151,1,0.73,9.2
+180,mimetik,Mimetik qaramlik haqida,8499,1,0.68,8.5
+181,chizgich,Ichki chizg'ich yo'qligi fikriy qaramlikka olib borishi haqida,7444,1,0.6,7.4
+182,xavotir,Status xavotirlaridan qutulishni o'rganamiz,10413,2,0.83,10.4
+183,dam,Dam olish halida,6711,1,0.54,6.7
+184,ford,Genri Forddan fikrlaydigan bajaruvchi bo'lishni o'rganamiz,9717,1,0.78,9.7
+185,mega,Megashaharlar haqida,9175,1,0.73,9.2
+186,mega2,Megashaharni inobatga olish haqida,9548,1,0.76,9.5
+187,blog,Blog yuritish haqida,7038,1,0.56,7.0
+188,jarlik2,Jarlikning to'g'ri tarafida turish haqida,19398,2,1.55,19.4
+189,sir,Ichimizdagi sir yakkashoxlikka olib borishi haqida,18353,2,1.47,18.4

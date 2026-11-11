@@ -99,14 +99,20 @@ one and note it in "as built".
     a suffix, e.g. "George - Warm, Captivating Storyteller", so an exact name match never finds
     them. the preset run used George by id, `JBFqnCBsd6RMkjVDRZzb`, and wrote
     `audio/v4_jbfqncbsd6rmkjvdrzzb_sharaf_p1.mp3` (339 KB, 309 chars).
-  - `--clone` → 402-style `paid_plan_required`. ivc needs a paid plan, so there is no clone sample yet.
+  - `--clone` → http 400, `paid_plan_required` / `can_not_use_instant_voice_cloning`. ivc needs a paid plan, so there is no clone sample yet.
   - bugs for impl (small fix):
     1. the output file is opened before the lazy `convert` stream raises, so a failed run leaves
        a 0-byte mp3 (`audio/v4_aria_sharaf_p1.mp3`). write to a temp file and rename it at the end.
     2. catch `elevenlabs.core.api_error.ApiError` and print `body.detail.message`, not a traceback.
     3. match a name by prefix before " - ", and change the default to an existing preset
        (George) instead of Aria. the output label should be the short name ("george"), not the id.
+- fix commit 8b81f26, verified by plan: 55 passed (13 tts + 42 kb). against the live api
+  (free calls only): `--clone` prints one error line, exits 1, and leaves no `.eleven_voice_id`
+  and no partial file. "George", "george" and the id all resolve to George.
 
 ### verdict
 
-(empty)
+2026-11-11, user: **sounds good.** the user upgraded to the starter plan, where ivc is enabled,
+and generated `audio/stress_ivc_s50_sim75_v4.mp3` (plus a `(1)` copy) themselves: an instant
+clone, stability 50, similarity 75, eleven_v4. section 2 (batch) can be planned. the cost
+estimate is in `products/parallelmuhit-tts/tts-cost.md`: ≈1.84M chars, ≈$147 at the api rate.
