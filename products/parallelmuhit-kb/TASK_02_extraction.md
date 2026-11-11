@@ -92,3 +92,12 @@ plan's read of the 5 review files:
 - **quotes anchor the link but don't always prove it**: "George Soros milliarder.", "Charli Mungerning mashhur gapiga qarang".
 - **counterexamples end up as `example_of`**: Soros, Pol Getti and NasDaily appear as positive examples, though the essay holds them up as the opposite.
 - **names vary**: "Charli Munger" (002) vs "Charli Manger" (149), lowercase "prison break", "Teylor svift", inflected aliases ("janob Talebda", "egosi"). this is task 03's problem, but extraction can help if it gives the base form.
+
+## changes after the pilot (user approved, 2026-11-11)
+
+1. **model for the full run: `claude-sonnet-5-5`.** haiku is dropped, and the rerun is sonnet only.
+2. **new kind `counterexample_of`**: the essay holds someone or something up as the opposite of an idea (Soros: money ≠ growth). the list now has 7 kinds.
+3. **quote = the whole sentence that states the link itself**, not just the sentence where the name appears. the quote alone must make the link clear. the check stays an exact substring of the paragraph.
+4. **`base_name`** on each entity: the name in its basic form with normal capitals ("janob Talebda" → "Taleb", "Teylor svift" → "Teylor Svift"). the essay's spelling and transliteration stay. `name` stays exactly as written. no merging, it's only a hint for task 03.
+
+rerun: 3 essays × sonnet with `--force`. compare against the previous sonnet run: the number of links, how many are `counterexample_of`, the drops.

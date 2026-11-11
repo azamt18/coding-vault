@@ -137,7 +137,9 @@ def test_validation_keeps_good_items_and_drops_with_reasons(essay, fake_raw):
         ("Charli Manger", "Qiziquvchanlik"),
         ("Aziz Rahimov", "Qiziquvchanlik"),
         ("Charli Manger", "Berkshir"),
+        ("Berkshir", "Qiziquvchanlik"),
     ]
+    assert result["relations"][-1]["kind"] == "counterexample_of"
     reasons = sorted(d["reason"] for d in result["dropped"])
     assert reasons == sorted(
         ["bad_type", "bad_paragraph", "quote_not_found", "quote_not_found", "bad_paragraph",
@@ -316,7 +318,7 @@ def test_cli_call_cleans_env_and_isolates(essay_file, tmp_path, fake_raw, fake_c
     assert "[p1] Qiziquvchanlik muallifni hayron qoldiradi" in call["input"]
     assert '"relations"' in call["input"]  # the json schema is in the prompt
 
-    assert len(result["relations"]) == 3
+    assert len(result["relations"]) == 4
     assert result["backend"] == "cli" and result["billed"] is False
     assert result["usage"] == {"input_tokens": 3000, "output_tokens": 1500}
     assert result["duration_ms"] == 12345 and result["cost_usd"] == 0.0123
@@ -378,3 +380,49 @@ def test_quote_with_normal_space_matches_nbsp_paragraph():
     essay = extract.parse_essay(md)
     assert extract.check_quote(essay, "p3", "Charli Manger sohadan tashqari o'rganish") is None
     assert " " not in extract.build_prompt(essay)
+
+
+# --- round 2: counterexample_of, whole-sentence quotes, base_name, sonnet default ---
+
+
+def test_seven_kinds_with_counterexample_of():
+    assert extract.RELATION_KINDS == [
+        "wrote", "recommends", "criticises", "inspired_by", "example_of", "counterexample_of", "associated_with",
+    ]
+    assert "counterexample_of" in extract.Relation.model_json_schema()["properties"]["kind"]["description"]
+    assert "counterexample_of" in extract.SYSTEM
+
+
+def test_prompt_asks_for_whole_sentence_quotes_and_base_name():
+    assert "whole sentence" in extract.SYSTEM
+    assert "base_name" in extract.SYSTEM
+
+
+def test_base_name_is_required_and_kept(essay, fake_raw):
+    assert "base_name" in extract.Entity.model_json_schema()["required"]
+    result = extract.build_result(essay, "sonnet", fake_raw)
+    assert [e["base_name"] for e in result["entities"]] == ["Charli Manger", "Qiziquvchanlik", "Berkshir"]
+
+
+def test_review_shows_base_name_only_when_it_differs(essay, fake_raw):
+    result = extract.build_result(essay, "sonnet", fake_raw)
+    result["entities"][0] = {**result["entities"][0], "name": "janob Mangerda", "base_name": "Manger"}
+    md = extract.render_review(result)
+    assert "**janob Mangerda** → Manger" in md
+    assert "**Qiziquvchanlik**:" in md and "→ Qiziquvchanlik:" not in md
+
+
+def test_missing_base_name_is_bad_json(essay, fake_raw):
+    import copy
+    raw = copy.deepcopy(fake_raw)
+    blk = next(b for b in raw["content"] if b["type"] == "text")
+    d = json.loads(blk["text"])
+    del d["entities"][0]["base_name"]
+    blk["text"] = json.dumps(d)
+    with pytest.raises(extract.BadJson):
+        extract.build_result(essay, "sonnet", raw)
+
+
+def test_model_defaults_to_sonnet():
+    assert extract.parse_args([]).model == "sonnet"
+    assert extract.parse_args(["--model", "haiku"]).model == "haiku"

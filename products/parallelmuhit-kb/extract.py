@@ -8,7 +8,7 @@ what doesn't hold. Code also builds the essay node, the author node and the
 mentioned_in edges.
 
 Usage:
-    python3 extract.py                                  # pilot essays 2,149,180 on both models
+    python3 extract.py                                  # pilot essays 2,149,180 on sonnet
     python3 extract.py --essays 149 --model haiku
     python3 extract.py --force                          # ignore cached raw responses
 
@@ -71,7 +71,9 @@ class CliError(Exception):
     """claude -p itself failed (auth, model, timeout, non-json output)."""
 
 ENTITY_TYPES = ["person", "work", "idea", "organization"]
-RELATION_KINDS = ["wrote", "recommends", "criticises", "inspired_by", "example_of", "associated_with"]
+RELATION_KINDS = [
+    "wrote", "recommends", "criticises", "inspired_by", "example_of", "counterexample_of", "associated_with",
+]
 
 
 # --- response schema (type/kind stay plain strings so code, not the decoder, enforces the lists) ---
@@ -79,6 +81,7 @@ RELATION_KINDS = ["wrote", "recommends", "criticises", "inspired_by", "example_o
 
 class Entity(BaseModel):
     name: str = Field(description="exactly as written in the essay")
+    base_name: str = Field(description="basic form with normal capitals, the essay's spelling, not translated")
     type: str = Field(description="one of: " + ", ".join(ENTITY_TYPES))
     description: str = Field(description="one sentence in Uzbek, grounded in the essay")
     aliases: list[str] = Field(description="other spellings of this entity in this essay")
@@ -157,6 +160,10 @@ Return entities and relations.
 
 Entities: only what the essay actually discusses, not every passing word.
 - name: exactly as written in the essay, including its apostrophes and letters.
+- base_name: the same name in its basic form with normal capitals: no case or possessive
+  endings, no titles like "janob" ("janob Talebda" -> "Taleb", "Teylor svift" -> "Teylor Svift",
+  "prison break" -> "Prison Break"). Keep the essay's spelling and transliteration; do not
+  translate it or switch to an English spelling. If the name is already basic, repeat it.
 - type: one of {", ".join(ENTITY_TYPES)}.
   work = book, article, film, podcast or talk. Do not extract places or events.
 - description: one sentence in Uzbek, based only on what the essay says.
@@ -165,12 +172,16 @@ Entities: only what the essay actually discusses, not every passing word.
 Do not list {AUTHOR} as an entity; refer to him by that name in relations.
 
 Relations: source --kind--> target, for example person wrote work, idea example_of idea.
+Use counterexample_of when the essay holds someone or something up as the opposite of an
+idea (a warning, what not to do), and example_of only when it is shown as a case of the idea.
 - source and target: entity names from your list, or "{AUTHOR}".
 - kind: one of {", ".join(RELATION_KINDS)}.
 - label: a short phrase in Uzbek, using the essay's own wording.
 - paragraph: the id of the paragraph that supports it.
-- quote: text copied exactly, character for character, from that paragraph. Do not change
-  apostrophes (ʻ ‘ ’ ') or letters, and do not join text from different paragraphs.
+- quote: the whole sentence that states the link itself, so that the quote alone makes the
+  link clear, not only a sentence where the name appears. Copy it exactly, character for
+  character, from that paragraph. Do not change apostrophes (ʻ ‘ ’ ') or letters, and do not
+  join text from different paragraphs.
 Only include relations the essay states or clearly argues.
 """
 
@@ -303,7 +314,8 @@ def render_review(result: dict) -> str:
         out += [f"## {etype}", ""]
         for ent in group:
             aliases = f" (also: {', '.join(ent['aliases'])})" if ent["aliases"] else ""
-            out.append(f"- **{ent['name']}**{aliases}: {ent['description']} [{', '.join(ent['paragraphs'])}]")
+            base = f" → {ent['base_name']}" if ent.get("base_name") and ent["base_name"] != ent["name"] else ""
+            out.append(f"- **{ent['name']}**{base}{aliases}: {ent['description']} [{', '.join(ent['paragraphs'])}]")
         out.append("")
 
     out += ["## relations", ""]
@@ -494,7 +506,7 @@ def find_essays(data_dir: Path, numbers: list[int]) -> list[Path]:
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Extraction pilot on parallelmuhit essays")
     parser.add_argument("--essays", default=",".join(map(str, PILOT_ESSAYS)), help="comma-separated essay numbers")
-    parser.add_argument("--model", choices=["haiku", "sonnet", "both"], default="both")
+    parser.add_argument("--model", choices=["haiku", "sonnet", "both"], default="sonnet")
     parser.add_argument("--backend", choices=["cli", "sdk"], default="cli",
                         help="cli: claude -p on the subscription (default); sdk: anthropic sdk + ANTHROPIC_API_KEY")
     parser.add_argument("--force", action="store_true", help="call the model even if a raw response is cached")
