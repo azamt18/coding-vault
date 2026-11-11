@@ -27,6 +27,8 @@ from markdownify import markdownify
 
 API_BASE = "https://b.parallelmuhit.uz"
 SITE_BASE = "https://parallelmuhit.uz"
+# every essay is written by him; the api "author" is the account that posted it
+AUTHOR = "Aziz Rahimov"
 # products/parallelmuhit-kb/<this file> -> <repo>/pdp/parallelmuhit
 DEFAULT_DATA_DIR = Path(__file__).resolve().parents[2] / "pdp" / "parallelmuhit"
 
@@ -92,7 +94,8 @@ def render_essay(essay: dict, detail: dict) -> str:
         "number": essay["site_number"],
         "slug": essay["slug"],
         "title": title,
-        "author": (essay.get("author") or {}).get("name", ""),
+        "author": AUTHOR,
+        "posted_by": (essay.get("author") or {}).get("name", ""),
         "created_at": essay["createdAt"],
         "source": f"{SITE_BASE}/{essay['slug']}",
     }

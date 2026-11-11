@@ -133,3 +133,17 @@ def test_offline_export_writes_into_data_dir_not_cwd(tmp_path, monkeypatch):
     assert export_markdown.export("", None, None, force=False, offline=True, data_dir=data) == 0
     assert (data / "essays_md" / "002_daraxt.md").read_text(encoding="utf-8").endswith("Matn.\n")
     assert list(elsewhere.iterdir()) == []
+
+
+def test_author_is_the_writer_and_api_author_is_posted_by():
+    essay = {
+        "slug": "daraxt",
+        "site_number": 2,
+        "title": "Daraxt",
+        "author": {"name": "Alijanov Ibrohim"},
+        "createdAt": "2024-01-01T00:00:00.000Z",
+    }
+    meta = yaml.safe_load(render_essay(essay, {"content": ""}).split("---\n", 2)[1])
+    assert meta["author"] == "Aziz Rahimov"
+    assert meta["posted_by"] == "Alijanov Ibrohim"
+    assert list(meta) == ["number", "slug", "title", "author", "posted_by", "created_at", "source"]
