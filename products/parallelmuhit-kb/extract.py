@@ -3,8 +3,9 @@
 Extraction pilot: pull entities and quote-backed relations out of essays with Claude.
 
 One call per essay per model. The model sees the title and numbered plain-text
-paragraphs; code checks every relation against the essay and drops (never fixes)
-what doesn't hold. Code also builds the essay node, the author node and the
+paragraphs; each relation carries a quote of 1-3 consecutive sentences from one
+paragraph. Code checks every relation against the essay and drops (never fixes)
+what doesn't hold, and counts persons/works left without a relation (unlinked). Code also builds the essay node, the author node and the
 mentioned_in edges.
 
 Usage:
@@ -159,7 +160,8 @@ When the essay says "men", "biz" or otherwise speaks in the author's own voice, 
 Return entities and relations.
 
 Entities: only what the essay actually discusses, not every passing word.
-- name: exactly as written in the essay, including its apostrophes and letters.
+- name: exactly as written in the essay, including its apostrophes, letters and lowercase.
+  Do not capitalise or otherwise change it ("kibr" stays "kibr"); only base_name changes form.
 - base_name: the same name in its basic form with normal capitals: no case or possessive
   endings, no titles like "janob" ("janob Talebda" -> "Taleb", "Teylor svift" -> "Teylor Svift",
   "prison break" -> "Prison Break"). Keep the essay's spelling and transliteration; do not
@@ -170,6 +172,9 @@ Entities: only what the essay actually discusses, not every passing word.
 - aliases: other spellings of the same entity in this essay (may be empty).
 - paragraphs: ids of the paragraphs where it appears.
 Do not list {AUTHOR} as an entity; refer to him by that name in relations.
+Every person and every work must have at least one relation, to an idea, a person, a work or
+{AUTHOR}. If the essay mentions someone to make a point, extract that point as an idea and
+link them to it.
 
 Relations: source --kind--> target, for example person wrote work, idea example_of idea.
 Use counterexample_of when the essay holds someone or something up as the opposite of an
@@ -178,10 +183,11 @@ idea (a warning, what not to do), and example_of only when it is shown as a case
 - kind: one of {", ".join(RELATION_KINDS)}.
 - label: a short phrase in Uzbek, using the essay's own wording.
 - paragraph: the id of the paragraph that supports it.
-- quote: the whole sentence that states the link itself, so that the quote alone makes the
-  link clear, not only a sentence where the name appears. Copy it exactly, character for
-  character, from that paragraph. Do not change apostrophes (ʻ ‘ ’ ') or letters, and do not
-  join text from different paragraphs.
+- quote: 1-3 consecutive sentences from that paragraph that state the link, so that the quote
+  alone makes the link clear: include the sentence that names the source or target when the
+  link itself is stated in the next one. Copy it exactly, character for character, as one
+  continuous piece of that paragraph. Do not change apostrophes (ʻ ‘ ’ ') or letters, and do
+  not join text from different paragraphs.
 Only include relations the essay states or clearly argues.
 """
 
@@ -215,6 +221,15 @@ def response_text(raw: dict) -> str:
 def cost_usd(model_id: str, usage: dict) -> float:
     price_in, price_out = PRICES[model_id]
     return usage["input_tokens"] * price_in / 1e6 + usage["output_tokens"] * price_out / 1e6
+
+
+LINKED_TYPES = ("person", "work")
+
+
+def find_unlinked(entities: list[dict], relations: list[dict]) -> list[str]:
+    """Persons and works that are neither source nor target of any kept relation."""
+    ends = {r["source"] for r in relations} | {r["target"] for r in relations}
+    return [e["name"] for e in entities if e["type"] in LINKED_TYPES and e["name"] not in ends]
 
 
 def build_result(essay: dict, alias: str, raw: dict) -> dict:
@@ -281,6 +296,7 @@ def build_result(essay: dict, alias: str, raw: dict) -> dict:
             for e in entities
         ],
         "dropped": dropped,
+        "unlinked": find_unlinked(entities, relations),
         "usage": usage,
         "backend": backend,
         "billed": billed,
@@ -332,6 +348,10 @@ def render_review(result: dict) -> str:
         out.append("none")
     for d in result["dropped"]:
         out.append(f"- `{d['reason']}`: {json.dumps(d['item'], ensure_ascii=False)}")
+
+    out += ["", "## unlinked", "", "persons and works with no relation (counted, not dropped):", ""]
+    unlinked = result.get("unlinked", [])
+    out += [f"- {name}" for name in unlinked] or ["none"]
     return "\n".join(out).rstrip() + "\n"
 
 
@@ -352,12 +372,17 @@ def _seconds(r: dict) -> str:
     return f"{r['duration_ms'] / 1000:.1f} s" if r.get("duration_ms") is not None else "–"
 
 
+def _unlinked_cell(r: dict) -> str:
+    names = r.get("unlinked", [])
+    return f"{len(names)} ({', '.join(names)})" if names else "0"
+
+
 def render_compare(results: list[dict]) -> str:
     out = [
         "# extraction pilot: essay × model",
         "",
-        "| essay | model | entities by type | relations by kind | dropped by reason | tokens in / out | run time | cost |",
-        "|---|---|---|---|---|---|---|---|",
+        "| essay | model | entities by type | relations by kind | dropped by reason | unlinked | tokens in / out | run time | cost |",
+        "|---|---|---|---|---|---|---|---|---|",
     ]
     total = 0.0
     for r in sorted(results, key=lambda r: (r["essay"]["id"], r["alias"])):
@@ -368,6 +393,7 @@ def render_compare(results: list[dict]) -> str:
         out.append(
             f"| {r['essay']['id']} | {r['alias']} | {_counts(ents, ENTITY_TYPES)} ({sum(ents.values())}) "
             f"| {_counts(rels, RELATION_KINDS)} ({sum(rels.values())}) | {_counts(drops)} ({sum(drops.values())}) "
+            f"| {_unlinked_cell(r)} "
             f"| {r['usage']['input_tokens']} / {r['usage']['output_tokens']} | {_seconds(r)} | {_cost_label(r)} |"
         )
     billed = all(r.get("billed", True) for r in results)

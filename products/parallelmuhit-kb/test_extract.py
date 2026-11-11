@@ -393,9 +393,8 @@ def test_seven_kinds_with_counterexample_of():
     assert "counterexample_of" in extract.SYSTEM
 
 
-def test_prompt_asks_for_whole_sentence_quotes_and_base_name():
-    assert "whole sentence" in extract.SYSTEM
-    assert "base_name" in extract.SYSTEM
+def test_prompt_asks_for_base_name():
+    assert "base_name" in extract.SYSTEM  # the quote rule moved to 1-3 sentences in round 3
 
 
 def test_base_name_is_required_and_kept(essay, fake_raw):
@@ -426,3 +425,48 @@ def test_missing_base_name_is_bad_json(essay, fake_raw):
 def test_model_defaults_to_sonnet():
     assert extract.parse_args([]).model == "sonnet"
     assert extract.parse_args(["--model", "haiku"]).model == "haiku"
+
+
+# --- round 3: multi-sentence quotes, every person/work linked, name kept as written ---
+
+
+def test_quote_of_consecutive_sentences_in_one_paragraph_passes(essay):
+    two = "O'rganishdan to'xtamaydigan odamlar. Angliyada yashaydigan vatandoshimiz shuni kuzatgan."
+    assert extract.check_quote(essay, "p2", two) is None
+
+
+def test_quote_spanning_two_paragraphs_fails(essay):
+    across = "vatandoshimiz shuni kuzatgan. Shuning uchun Charli Manger"
+    assert extract.check_quote(essay, "p2", across) == "quote_not_found"
+    assert extract.check_quote(essay, "p3", across) == "quote_not_found"
+
+
+def test_prompt_round3_rules():
+    assert "1-3 consecutive sentences" in extract.SYSTEM
+    assert "at least one relation" in extract.SYSTEM
+    assert "lowercase" in extract.SYSTEM
+
+
+def test_unlinked_counts_only_person_and_work(essay, fake_raw):
+    result = extract.build_result(essay, "sonnet", fake_raw)
+    assert result["unlinked"] == []  # Manger is linked; idea/organization never count
+
+    only_author = [r for r in result["relations"] if r["source"] == extract.AUTHOR]
+    unlinked = extract.find_unlinked(result["entities"], only_author)
+    assert unlinked == ["Charli Manger"]
+
+
+def test_link_to_author_counts_as_linked():
+    ents = [{"name": "Kitob", "type": "work"}, {"name": "Ali", "type": "person"}]
+    rels = [{"source": extract.AUTHOR, "target": "Kitob"}]
+    assert extract.find_unlinked(ents, rels) == ["Ali"]
+
+
+def test_unlinked_in_review_and_compare(essay, fake_raw):
+    result = extract.build_result(essay, "sonnet", fake_raw)
+    result["unlinked"] = ["Ben Grem", "Pol Getti"]
+    review = extract.render_review(result)
+    assert review.index("## unlinked") > review.index("## dropped")
+    assert "- Ben Grem" in review and "- Pol Getti" in review
+    compare = extract.render_compare([result])
+    assert "| unlinked |" in compare and "| 2 (Ben Grem, Pol Getti) |" in compare

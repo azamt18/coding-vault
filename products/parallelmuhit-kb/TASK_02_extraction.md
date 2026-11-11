@@ -101,3 +101,14 @@ plan's read of the 5 review files:
 4. **`base_name`** on each entity: the name in its basic form with normal capitals ("janob Talebda" → "Taleb", "Teylor svift" → "Teylor Svift"). the essay's spelling and transliteration stay. `name` stays exactly as written. no merging, it's only a hint for task 03.
 
 rerun: 3 essays × sonnet with `--force`. compare against the previous sonnet run: the number of links, how many are `counterexample_of`, the drops.
+
+## round 3 (user approved, 2026-11-11). the last round on the pilot
+
+round 2 result (`23eebdd`): 0 drops, every `counterexample_of` reads right (Dalio, Munger, NasDaily). but links went 24 → 18. 9 of the 22 person/work entities have no link (002: Shoushenk, Umar ibn Abdulaziz, Hishom ibn AbduMalik, Soros; 149: Ben Grem, Pol Getti, Bek Olimjon, G'azzoliy, Karl Popper). in 180 quotes aren't self-contained ("Ulardan istaklar oladi…" doesn't name Teylor Svift). `name` got capitalised ("kibr" → "Kibr").
+
+changes:
+1. **quote = 1–3 consecutive sentences from the same paragraph**, exact substring as before, so the sentence that names someone can come along.
+2. **every person and work has at least one link** (to an idea, a person, a work or the author). if the other end is missing, extract it as an entity (e.g. the idea "inson nazariyalari cheklangan" for G'azzoliy/Popper). code counts the person/work entities with no link and reports them in compare.md (`unlinked`). no drop, only a count.
+3. **`name` exactly as written, including lowercase.** only `base_name` changes form (plan's call, a fix to the round 2 prompt).
+
+after round 3: if the review reads right, extraction is settled → task 03 (all 188 essays + merging names).
