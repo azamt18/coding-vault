@@ -167,3 +167,12 @@ decided with the user (2026-11-11): convert **one full essay** before choosing a
   and trailing spaces are stripped. it also runs as a cli:
   `python3 essay_text.py <md> <txt>` (writes the text plus one trailing newline).
 - `samples/171_sharaf.txt`: 6,648 chars (6,649 with the trailing newline), which matches the csv.
+
+### run result (plan, 2026-11-12)
+
+- full essay #171, one request: 417 s of audio, 6.7 MB.
+- measured cost: 2,659 credits for 6,648 chars (751 → 3,410), ≈0.40 credits per char. audio is
+  ≈1.05 min per 1k chars, as estimated.
+- whole catalog: 1.84M chars ≈ 735k credits ≈ 18 months on starter (40k/month, ≈10 essays a month).
+- `tts-cost.md` still assumes 1 credit per char. impl must correct it.
+- verdict: pending, the user hasn't listened yet.
