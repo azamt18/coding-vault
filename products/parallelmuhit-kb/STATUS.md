@@ -122,9 +122,16 @@ a visual tool that shows how the people, works, ideas and organizations in Aziz 
 - overrides applied: 4 idea merges (hikmat+hikmat egasi, Mimesis+mimetik qaramlik, Status+Status o'yinlari, kutilma+Kichik kutuvlar) and Umar+Umar hazratlari. ideas 70 → 65. group_ideas had to call the model again (theme cache keyed on the idea set): 13 themes now (was 14), they differ from before. offline rerun byte-identical, 138 tests pass. not done: labels "Charli Manger", "Baffet", "Andryu Gryu" (spelling not given, there is also a separate person "Charlie").
 - ask.py prompt rule: "Aziz recommends/criticises" only with his own judgement, otherwise "Aziz X ning fikrini keltiradi"; a missing part says not found. live Taleb question rechecked: the three groups are now separate, no fake "tanqid". still not judged by the user.
 - rebase: dry run in a throwaway worktree. feat/pm-kb = feat/savolbor tip `c53d012` + 28 commits, so `git rebase --onto main feat/savolbor` replays only those 28 (no savolbor files, 0 conflicts, 138 tests pass). the real rebase is NOT done, waiting for the user's ok (the tts session also commits here).
-- `TASK_09_ui_question_box.md` drafted, needs the user's ok.
+- `TASK_09_ui_question_box.md` drafted (the user's ok not recorded here, impl built it anyway, see below).
+
+## done, task 09 ui question box: `234096a` + `b5b14cd` (checked by plan 2026-11-12)
+
+- `serve.py` (stdlib `ThreadingHTTPServer`, 127.0.0.1:8787): `GET /api/health`, `POST /api/ask`; a lock runs one model call at a time; empty/bad json/too long → 400 without a model call, model error → 502 with a one-line message. vite proxies `/api`; the box hides itself when health fails. ui: `answer.ts` renders the answer, dropped citations get a warning, a citation focuses the node.
+- checked: 149 python + 33 npm tests pass, `npm run build` ok, code matches design points 1–5 (read `serve.py`, test names, `vite.config.ts`).
+- not checked: a live question through `serve.py` + `npm run dev`, a click on a citation in the browser, how the box looks. the user does this.
+- STATUS.md was stale before this entry (it said task 09 was only drafted).
 
 ## next task
 
-- the user's ok on: the real rebase, TASK_09, the label spellings. eval parked (8 draft questions in `eval_questions.json`).
-- the user judges the live ask run and looks at the ui (13 new themes).
+- the user's ok on: the real rebase (now 30 commits: `git rebase --onto main feat/savolbor`), the label spellings. eval parked (8 draft questions in `eval_questions.json`).
+- the user tries the question box live and judges the live ask run and the 13 themes.
