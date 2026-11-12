@@ -25,7 +25,15 @@
       <p id="count" class="muted"></p>
     </aside>
     <main id="stage"></main>
-    <aside id="details" class="empty"><p class="muted">click a node to see its links and quotes.</p></aside>
+    <aside id="details">
+      <section id="ask" hidden>
+        <h1>ask the essays</h1>
+        <textarea id="q" rows="2" maxlength="500" placeholder="savol yozing, masalan: Taleb haqida nima deydi?"></textarea>
+        <div class="row"><button id="send">ask</button><span id="ask-state" class="muted"></span></div>
+        <div id="answer"></div>
+      </section>
+      <div id="node" class="empty"><p class="muted">click a node to see its links and quotes.</p></div>
+    </aside>
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>

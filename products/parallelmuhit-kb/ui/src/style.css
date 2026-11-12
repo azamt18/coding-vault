@@ -29,3 +29,9 @@ label.check { display: flex; align-items: center; gap: 6px; padding: 1px 0; curs
 .jump.hidden-node { color: #999; }
 dl { margin: 4px 0; } dt { font-size: 11px; color: #777; } dd { margin: 0 0 4px; }
 .urls { margin-top: 4px; display: flex; flex-wrap: wrap; gap: 4px 10px; font-size: 12px; }
+#ask { padding-bottom: 12px; border-bottom: 1px solid #e3e3e3; margin-bottom: 12px; }
+#ask textarea { width: 100%; resize: vertical; font: inherit; padding: 6px; }
+#ask .row { align-items: center; }
+.answer-text { white-space: pre-wrap; }
+.cite { font-size: 11px; }
+.warn { background: #fdecea; color: #8a1c13; padding: 6px 8px; border-radius: 4px; }

@@ -8,6 +8,7 @@ import { defaultFilters, visible, type Filters, type Visible } from "./filters";
 import { neighbourhood } from "./focus";
 import { search } from "./search";
 import { urlItems, type KbUrl } from "./urls";
+import { answerView, essayNodeId, type AskResult } from "./answer";
 import { DIM_EDGE, DIM_NODE, KIND_COLOR, TYPE_COLOR } from "./colors";
 
 const LAYOUT_MS = 8000;
@@ -197,7 +198,7 @@ async function main() {
   }
 
   function renderDetails() {
-    const panel = $("details");
+    const panel = $("node");
     if (!selected) {
       panel.className = "empty";
       panel.replaceChildren(el("p", { className: "muted" }, "click a node to see its links and quotes."));
@@ -229,6 +230,67 @@ async function main() {
     panel.replaceChildren(...parts);
     panel.scrollTop = 0;
   }
+
+  // --- question box: shown only when the local server (serve.py) answers /api/health ---
+  const askBox = $("ask");
+  fetch("/api/health").then((r) => r.ok && r.json()).then((j) => { if (j && j.ok) askBox.hidden = false; }).catch(() => {});
+  const send = $<HTMLButtonElement>("send");
+  const q = $<HTMLTextAreaElement>("q");
+  const state = $("ask-state");
+  const out = $("answer");
+
+  function showAnswer(r: AskResult) {
+    const v = answerView(r);
+    const parts: Node[] = [];
+    if (v.warning) parts.push(el("p", { className: "warn" }, v.warning));
+    const quotes = new Map<string, HTMLElement>();
+    const text = el("p", { className: "answer-text" });
+    for (const s of v.segments) {
+      if ("text" in s) { text.append(s.text); continue; }
+      const b = el("button", { className: "jump cite" }, `[${s.cite}]`);
+      b.onclick = () => {
+        const node = essayNodeId(s.cite);
+        if (byId.has(node)) select(node, true);
+        quotes.get(s.cite)?.scrollIntoView({ block: "nearest" });
+      };
+      text.append(b);
+    }
+    parts.push(text);
+    for (const c of v.citations) {
+      const box = el("div", { className: "link" }, el("div", { className: "meta" }, `${c.id} · ${c.title}`),
+        el("blockquote", {}, c.quote));
+      const links = [
+        ...(c.essayUrl ? [el("a", { href: c.essayUrl, target: "_blank", rel: "noopener noreferrer" }, "↗ essay")] : []),
+        ...c.links.map((u) => el("a", { href: u.href, target: u.target, rel: u.rel }, u.label)),
+      ];
+      if (links.length) box.append(el("div", { className: "urls" }, ...links));
+      quotes.set(c.id, box);
+      parts.push(box);
+    }
+    out.replaceChildren(...parts);
+  }
+
+  async function ask() {
+    const question = q.value.trim();
+    if (!question) return;
+    send.disabled = true;
+    state.textContent = "thinking… (about 15 s)";
+    out.replaceChildren();
+    try {
+      const res = await fetch("/api/ask", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ question }) });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error ?? `error ${res.status}`);
+      showAnswer(data as AskResult);
+      state.textContent = "";
+    } catch (e) {
+      state.textContent = "";
+      out.replaceChildren(el("p", { className: "warn" }, String((e as Error).message ?? e)));
+    } finally {
+      send.disabled = false;
+    }
+  }
+  send.onclick = ask;
+  q.onkeydown = (e) => { if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) ask(); };
 
   refresh();
 }
