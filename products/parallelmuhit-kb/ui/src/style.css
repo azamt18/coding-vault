@@ -28,3 +28,4 @@ label.check { display: flex; align-items: center; gap: 6px; padding: 1px 0; curs
 .jump { border: 0; background: none; padding: 0; color: #1a5fb4; text-decoration: underline; cursor: pointer; }
 .jump.hidden-node { color: #999; }
 dl { margin: 4px 0; } dt { font-size: 11px; color: #777; } dd { margin: 0 0 4px; }
+.urls { margin-top: 4px; display: flex; flex-wrap: wrap; gap: 4px 10px; font-size: 12px; }

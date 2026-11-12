@@ -7,6 +7,7 @@ import { LINK_KINDS, NODE_TYPES, loadGraph, type KbGraph, type KbLink, type KbNo
 import { defaultFilters, visible, type Filters, type Visible } from "./filters";
 import { neighbourhood } from "./focus";
 import { search } from "./search";
+import { urlItems, type KbUrl } from "./urls";
 import { DIM_EDGE, DIM_NODE, KIND_COLOR, TYPE_COLOR } from "./colors";
 
 const LAYOUT_MS = 8000;
@@ -175,6 +176,12 @@ async function main() {
     return b;
   }
 
+  function urlList(urls?: KbUrl[]) {
+    const items = urlItems(urls);
+    if (!items.length) return null;
+    return el("div", { className: "urls" }, ...items.map((u) => el("a", { href: u.href, target: u.target, rel: u.rel }, u.label)));
+  }
+
   function linkItem(l: KbLink, me: string) {
     const out = l.source === me;
     const other = out ? l.target : l.source;
@@ -184,6 +191,8 @@ async function main() {
       el("div", { className: "meta" }, [where, l.label].filter(Boolean).join(" — ")));
     box.style.borderLeftColor = KIND_COLOR[l.kind];
     if (l.quote) box.append(el("blockquote", {}, l.quote));
+    const us = urlList(l.urls);
+    if (us) box.append(us);
     return box;
   }
 
@@ -208,6 +217,8 @@ async function main() {
       parts.push(el("h3", {}, "descriptions"),
         el("dl", {}, ...desc.flatMap(([essay, text]) => [el("dt", {}, essay), el("dd", {}, text)])));
     }
+    const nodeUrls = urlList(n.urls);
+    if (nodeUrls) parts.push(el("h3", {}, "links in the essays"), nodeUrls);
     const mine = (linksOf.get(n.id) ?? []).map((i) => kb.links[i]);
     for (const kind of LINK_KINDS) {
       const ls = mine.filter((l) => l.kind === kind);

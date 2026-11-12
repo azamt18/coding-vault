@@ -106,7 +106,7 @@ class Extraction(BaseModel):
 # --- essay → paragraphs ---
 
 _IMAGE = re.compile(r"!\[[^\]]*\]\([^)]*\)")
-_LINK = re.compile(r"\[([^\]]*)\]\([^)]*\)")
+_LINK = re.compile(r"\[([^\]]*)\]\(([^)]*)\)")
 _RULE = re.compile(r"^\s*([-*_])(\s*\1){2,}\s*$")
 _DATE = re.compile(r"^\d{1,2}\.\d{1,2}\.\d{4}$")
 
@@ -132,6 +132,23 @@ def plain_text(block: str) -> str:
     return re.sub(r"[ \t\u00a0]+", " ", text).strip()
 
 
+def block_links(block: str) -> list[dict]:
+    """[{"text": anchor, "url": url}] for the http(s) links of one markdown block, deduped by url.
+
+    Images are not links. The anchor is cleaned like the paragraph text, so it can be found in it.
+    """
+    links, seen = [], set()
+    for anchor, target in _LINK.findall(_IMAGE.sub("", block)):
+        parts = target.split()
+        url = parts[0] if parts else ""
+        text = plain_text(anchor)
+        if not re.match(r"https?://", url) or not text or url in seen:
+            continue
+        seen.add(url)
+        links.append({"text": text, "url": url})
+    return links
+
+
 def parse_essay(md: str) -> dict:
     if not md.startswith("---\n"):
         raise ValueError("essay has no frontmatter")
@@ -147,7 +164,7 @@ def parse_essay(md: str) -> dict:
         text = plain_text(block)
         if not text or _DATE.match(text):  # image-only blocks end up empty
             continue
-        paragraphs.append({"id": f"p{len(paragraphs) + 1}", "text": text})
+        paragraphs.append({"id": f"p{len(paragraphs) + 1}", "text": text, "links": block_links(block)})
     return {"id": essay_id, "meta": meta, "paragraphs": paragraphs}
 
 
@@ -316,7 +333,8 @@ def build_result(essay: dict, alias: str, raw: dict) -> dict:
         "author": {"name": AUTHOR},
         "model": raw["model"],
         "alias": alias,
-        "paragraphs": [{"id": p["id"], "global_id": f"{eid}#{p['id']}", "text": p["text"]} for p in essay["paragraphs"]],
+        "paragraphs": [{"id": p["id"], "global_id": f"{eid}#{p['id']}", "text": p["text"],
+                        "links": p["links"]} for p in essay["paragraphs"]],
         "entities": entities,
         "relations": relations,
         "mentioned_in": [

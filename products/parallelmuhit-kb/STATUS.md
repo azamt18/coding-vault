@@ -27,6 +27,13 @@ a visual tool that shows how the people, works, ideas and organizations in Aziz 
 - task 04 merge names: `f0ffbf0`. 1948 nodes (542 persons, 145 works, 73 orgs, 999 ideas), 119 blocks clustered by the model, 3 compound splits. relation links 2193 = 2190 + 3 − 0 self-loops, 0 dangling, 102 tests. checked by plan 2026-11-12: munger/taleb/buffet each one node (Ernst Buffet kept separate), 0 of 30 sampled merges wrong (seed 20261112), offline rerun byte-identical.
 - task 03 full run: 2582 entities, 2190 links, drops 0.2%, associated_with 6.8%, 8 unlinked, 80 tests. last code `d331b93`, closed `84344e7`.
 
+## done, task 07 keep urls (impl, 2026-11-12)
+
+- `extract.parse_essay` returns `links` per paragraph; offline `add_urls.py` patches `extract/sonnet/*.json` paragraphs and adds `urls` to `graph.json` and `graph_grouped.json` (rerun byte-identical, no `claude -p`). run it after any rerun of merge_names/group_ideas.
+- ui: node panel shows `↗ anchor` links under quotes and a "links in the essays" list on nodes. 121 python, 26 npm tests, build ok.
+- numbers: the "2239" in TASK_07 counted images too (`](` = 2241 = 1742 links + 499 images). 1740 http links, 1732 after per-paragraph dedupe (8 empty anchors/duplicates). (essay, url) pairs 1720: 1090 attached, 630 left out (anchor in no quote and no node name). graph_grouped: 1687 links and 74 nodes carry `urls`.
+- 003_javoblar p13 Aziz Rahimov → Shahboz Dolimov carries the youtube url (checked in the json, not in the browser).
+
 ## known weaknesses
 
 - about 10% of links are weak: the quote doesn't name the source, a forced kind, a heading as an entity.
@@ -65,8 +72,33 @@ a visual tool that shows how the people, works, ideas and organizations in Aziz 
 - weak links shown as they are.
 - stack: user delegated, so vite + ts + graphology + sigma, vanilla, in `ui/`.
 
-## next: task 06 (written, `TASK_06_graph_ui.md`)
+## done, task 06 graph ui: `f6e2394` (checked by plan 2026-11-12)
 
-- hand-off to impl: "do TASK_06_graph_ui.md".
-- this STATUS.md update is not committed. impl commits it with task 06.
-- worktree: `/Users/azam_turgunboev/coding-vault-pmkb` (feat/pm-kb), not pushed. a rebase onto main is needed before any pr.
+- `ui/` (vite + sigma 3.0.3 + forceatlas2). 23 npm tests, build ok, 114 python tests.
+- default view: 1773 nodes (1961 − 188 essays), 2186 links = 2193 relation − 76 extracted `wrote` + 69 in_theme. checked by plan.
+- `filters.ts`: a link is hidden only by kind, endpoint type or essay. weak links stay visible. this is tested.
+- impl's deviations, accepted: sigma 3 (4.x changed the reducer api), node size capped at 16, in_theme hidden under an essay filter, a click on empty space clears the focus, the panel lists all of a node's links, forceatlas2 runs 8 s on load.
+- not checked: how it looks. the user opens `npm run dev` in `ui/` and judges the layout, the essay+kind filter on an essay with example_of links, and the camera animation.
+
+## found by the user after the ui review (2026-11-12)
+
+- urls inside essay text are lost in the extraction/graph layer (`plain_text` keeps only the anchor text). the markdown export has them. fix = `TASK_07_keep_urls.md`, offline, no model calls.
+- user answers: ui review points 1 and 3 "yes", point 2 unclear (asked again: limit panel links to 10 per kind + "show all"? default: leave as is).
+- then `TASK_08_rag_qa.md`: bm25 + graph retrieval, `claude -p` answers with checked citations, cli first.
+
+## decisions, task 08 (user: "yes" to both, 2026-11-12)
+
+- retrieval = bm25 + graph, no embeddings (add only if the eval shows misses).
+- cli `ask.py` first, ui question box (needs a local python server) as a later separate task.
+- task 07 first, so answers can cite urls.
+
+## open questions
+
+- panel link list: limit to 10 per kind or leave as is (unanswered, default leave).
+- eval for task 08: the user writes 6 questions with expected essays.
+
+## next (the user decides)
+
+- visual review of the ui (above), plus the not-blocking points under "open for the user".
+- then: rag q&a over the graph (from the goal), or first a rebase of feat/pm-kb onto main and a pr. no push without the user's ok.
+- worktree: `/Users/azam_turgunboev/coding-vault-pmkb` (feat/pm-kb), not pushed.

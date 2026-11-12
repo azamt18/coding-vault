@@ -167,6 +167,7 @@ def test_graph_pieces_built_by_code(essay, fake_raw):
     assert len(result["mentioned_in"]) == 3
     assert result["paragraphs"][0] == {
         "id": "p1", "global_id": "149_qiziquvchanlik#p1", "text": "Qiziquvchanlik muallifni hayron qoldiradi",
+        "links": [],
     }
 
 
@@ -646,3 +647,37 @@ def test_offline_never_calls_and_reports_missing_raw(tmp_path, fake_raw):
 def test_offline_flag():
     assert extract.parse_args([]).offline is False
     assert extract.parse_args(["--offline", "--essays", "all"]).offline is True
+
+
+# --- task 07: urls from links ---
+
+LINKS_MD = """\
+---
+number: 7
+slug: havolalar
+title: "Havolalar"
+author: Aziz Rahimov
+source: https://parallelmuhit.uz/havolalar
+---
+
+Shahboz bilan suhbatga [qarang](https://youtu.be/abc). Rasm: ![alt](https://b.x/i.jpg) va [pochta](mailto:a@b.uz) hamda [yana](https://youtu.be/abc) va [Atomic Habits](https://example.com/ah "sarlavha").
+
+![](https://b.x/only.jpg)
+
+Havolasiz paragraf.
+"""
+
+
+def test_parse_essay_returns_http_links_only_deduped_in_order():
+    e = extract.parse_essay(LINKS_MD)
+    p1 = e["paragraphs"][0]
+    assert p1["links"] == [{"text": "qarang", "url": "https://youtu.be/abc"},
+                           {"text": "Atomic Habits", "url": "https://example.com/ah"}]
+    assert e["paragraphs"][1]["links"] == []
+
+
+def test_links_do_not_change_paragraph_ids_or_text():
+    e = extract.parse_essay(LINKS_MD)
+    assert [p["id"] for p in e["paragraphs"]] == ["p1", "p2"]
+    assert e["paragraphs"][0]["text"] == (
+        "Shahboz bilan suhbatga qarang. Rasm: va pochta hamda yana va Atomic Habits.")

@@ -1,3 +1,5 @@
+import type { KbUrl } from "./urls";
+
 // shape of extract/graph_grouped.json (built by the python pipeline, read-only here)
 
 export const NODE_TYPES = ["person", "work", "idea", "organization", "theme", "author", "essay"] as const;
@@ -18,6 +20,7 @@ export interface KbNode {
   number?: number;
   slug?: string;
   source?: string;
+  urls?: KbUrl[];
 }
 
 export interface KbLink {
@@ -29,6 +32,7 @@ export interface KbLink {
   paragraph?: string;
   paragraphs?: string[];
   quote?: string;
+  urls?: KbUrl[];
 }
 
 export interface KbGraph {
