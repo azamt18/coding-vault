@@ -52,7 +52,7 @@ internal class Program
 
     private static async Task CalculateSum(int n)
     {
-        _cancellationTokenSource.Cancel();
+        await _cancellationTokenSource.CancelAsync();
         _cancellationTokenSource = new CancellationTokenSource();
         var token = _cancellationTokenSource.Token;
 

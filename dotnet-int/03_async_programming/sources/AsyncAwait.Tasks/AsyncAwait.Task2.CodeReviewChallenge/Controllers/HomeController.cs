@@ -25,9 +25,14 @@ public class HomeController : Controller
         return View();
     }
 
+    // public ActionResult Privacy()
+    // {
+    //     ViewBag.Message = _privacyDataService.GetPrivacyDataAsync().Result;
+    //     return View();
+    // }
     public ActionResult Privacy()
     {
-        ViewBag.Message = _privacyDataService.GetPrivacyDataAsync().Result;
+        ViewBag.Message = _privacyDataService.GetPrivacyData(); // sync-over-async
         return View();
     }
 
