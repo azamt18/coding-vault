@@ -117,12 +117,14 @@ a visual tool that shows how the people, works, ideas and organizations in Aziz 
 - weak: the "tanqid" line is clumsy (says "not found", then cites 020_kasb#p10, which is Taleb's own advice). 136_ajratish#p32 and 018_tirbandlik#p11 are Taleb's ideas, not Aziz recommending them, yet they sit under "tavsiya". the model mixes "Aziz recommends" with "Aziz quotes Taleb". a kind-aware step (plan's decision) should help; so could a prompt rule to separate "recommends" from "quotes".
 - not judged by the user yet.
 
+## done 2026-11-12 (plan, after "all of them"), commit `e9c4d32`
+
+- overrides applied: 4 idea merges (hikmat+hikmat egasi, Mimesis+mimetik qaramlik, Status+Status o'yinlari, kutilma+Kichik kutuvlar) and Umar+Umar hazratlari. ideas 70 → 65. group_ideas had to call the model again (theme cache keyed on the idea set): 13 themes now (was 14), they differ from before. offline rerun byte-identical, 138 tests pass. not done: labels "Charli Manger", "Baffet", "Andryu Gryu" (spelling not given, there is also a separate person "Charlie").
+- ask.py prompt rule: "Aziz recommends/criticises" only with his own judgement, otherwise "Aziz X ning fikrini keltiradi"; a missing part says not found. live Taleb question rechecked: the three groups are now separate, no fake "tanqid". still not judged by the user.
+- rebase: dry run in a throwaway worktree. feat/pm-kb = feat/savolbor tip `c53d012` + 28 commits, so `git rebase --onto main feat/savolbor` replays only those 28 (no savolbor files, 0 conflicts, 138 tests pass). the real rebase is NOT done, waiting for the user's ok (the tts session also commits here).
+- `TASK_09_ui_question_box.md` drafted, needs the user's ok.
+
 ## next task
 
-- eval parked by the user (2026-11-12). a draft of 8 questions is in `eval_questions.json` (uncommitted, expected essays unchecked). the user judges the live run above whenever ready. ui question box is a later separate task.
-
-## next (the user decides)
-
-- visual review of the ui, plus the not-blocking points under "open for the user".
-- rebase of feat/pm-kb onto main and a pr. no push without the user's ok.
-- worktree: `/Users/azam_turgunboev/coding-vault-pmkb` (feat/pm-kb), not pushed.
+- the user's ok on: the real rebase, TASK_09, the label spellings. eval parked (8 draft questions in `eval_questions.json`).
+- the user judges the live ask run and looks at the ui (13 new themes).
