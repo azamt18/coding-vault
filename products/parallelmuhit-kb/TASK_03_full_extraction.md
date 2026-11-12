@@ -51,3 +51,17 @@ merging names (task 04), sqlite, the graph ui, q&a, the api/batch backend, any p
 `b86b97e`, 58 tests. `associated_with` 60% → 9% (3 of 33), 0 drops, 0 unlinked, 0 bad_json. G'azzoliy/Popper are now `inspired_by`. go for step 2.
 
 known weakness, accepted with no prompt change: a handful of forced kinds are wrong instead of vague. `Pol Getti example_of` should be counterexample. `Kasbiy rivojlanish`/`ego counterexample_of shaxsiy rivojlanish` is really a distinction or an obstacle, not an opposite. the 5 random essays from step 3 will show how often this happens.
+
+## as built (plan, 2026-11-12)
+
+`b86b97e`, `735f662`, `9f94150`. 72 tests. run 1 stopped on the subscription's 5-hour limit after 20 essays (clean stop, as planned). run 2 did the rest. 173_oqish was bad_json (prose after the json) and worked after 1 retry. model time 129 min.
+
+result: 188/188. 2582 entities (person 1239, idea 1089, work 158, organization 96). 2171 links. drops 1.1%, associated_with 6.8%, 0 bad_json: all thresholds PASS. 21 unlinked.
+
+plan read the 5 random essays (043, 071, 091, 116, 120), 54 links. most read right (Brenson/Cole Summers counterexample_of a'lochilik, Kostko counterexample_of mijozga raqam deb qarash, Adler wrote "Kitoblarni qanday o'qiymiz"). weak, about 5–6 of 54:
+- the quote doesn't name the source: Ben Afflek → Netflix, Sam Altman, Andrey Karpati.
+- a forced kind: Piter Til / Naval example_of a'lochilik.
+- a heading extracted as an entity: "Qizil diplomlilar hozir qayerda?".
+- `inspired_by` runs in both directions: "Aziz Rahimov inspired_by Adler" (person draws on a source) and "Ota-onaning ishonchi inspired_by Soloveychik" (idea comes from a person). both read as "draws on". task 04/ui has to treat it consistently.
+
+fix after the run (plan's call): 18 of 19 `unknown_entity` drops are the same name in another form (case, or base_name instead of name). the code resolves a link endpoint against `name` or `base_name`, case-insensitively, with no other fuzz, then rebuilds from the raw cache (no calls).

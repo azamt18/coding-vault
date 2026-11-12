@@ -236,6 +236,29 @@ def find_unlinked(entities: list[dict], relations: list[dict]) -> list[str]:
     return [e["name"] for e in entities if e["type"] in LINKED_TYPES and e["name"] not in ends]
 
 
+def endpoint_resolver(entities: list[dict]):
+    """Map a link endpoint to an entity's `name` (or the author).
+
+    An exact `name` wins. Otherwise the endpoint may match one entity's name or
+    base_name ignoring case. No other fuzz: when the lowercased form fits more than
+    one entity, or none, the result is None and the link drops as unknown_entity.
+    """
+    exact = {e["name"] for e in entities} | {AUTHOR}
+    folded: dict[str, set[str]] = {}
+    for e in entities:
+        for form in (e["name"], e.get("base_name") or e["name"]):
+            folded.setdefault(form.casefold(), set()).add(e["name"])
+    folded.setdefault(AUTHOR.casefold(), set()).add(AUTHOR)
+
+    def resolve(endpoint: str) -> str | None:
+        if endpoint in exact:
+            return endpoint
+        hits = folded.get(endpoint.casefold(), set())
+        return next(iter(hits)) if len(hits) == 1 else None
+
+    return resolve
+
+
 def build_result(essay: dict, alias: str, raw: dict) -> dict:
     try:
         extraction = Extraction.model_validate_json(response_text(raw))
@@ -258,20 +281,21 @@ def build_result(essay: dict, alias: str, raw: dict) -> dict:
             continue
         entities.append({**item, "paragraphs": good})
 
-    known = {e["name"] for e in entities} | {AUTHOR}
+    resolve = endpoint_resolver(entities)
     relations = []
     for rel in extraction.relations:
         item = rel.model_dump()
+        source, target = resolve(rel.source), resolve(rel.target)
         if rel.kind not in RELATION_KINDS:
             reason = "bad_kind"
-        elif rel.source not in known or rel.target not in known:
+        elif source is None or target is None:
             reason = "unknown_entity"
         else:
             reason = check_quote(essay, rel.paragraph, rel.quote)
         if reason:
             dropped.append({"item": item, "reason": reason})
         else:
-            relations.append(item)
+            relations.append({**item, "source": source, "target": target})
 
     eid = essay["id"]
     meta = essay["meta"]
@@ -491,7 +515,7 @@ def run_one(md_path: Path, alias: str, out_dir: Path, client, force: bool, backe
 
 
 def run_all(paths: list[Path], aliases: list[str], out_dir: Path, client, force: bool,
-            backend: str = "sdk", jobs: int = 1) -> tuple[list[dict], list[tuple[str, str, str]]]:
+            backend: str = "sdk", jobs: int = 1, offline: bool = False) -> tuple[list[dict], list[tuple[str, str, str]]]:
     """Run every essay × model, `jobs` at a time. Results come back in input order.
 
     No retries. A bad_json answer is recorded and the run goes on. A cli_error (e.g. the
@@ -514,8 +538,12 @@ def run_all(paths: list[Path], aliases: list[str], out_dir: Path, client, force:
     def work(path: Path, alias: str):
         if stop.is_set():
             return "not_started", None
+        if offline and not (out_dir / "raw" / alias / f"{path.stem}.json").exists():
+            say(f"{path.stem} {alias}: no raw answer, skipped (offline)", err=True)
+            return "no_raw", None
         try:
-            r = run_one(path, alias, out_dir, client, force, backend)
+            # offline: rebuild from the cached raw answer only, never call the model
+            r = run_one(path, alias, out_dir, client, False if offline else force, backend)
         except BadJson as exc:
             say(f"{path.stem} {alias}: ERROR bad_json: {exc}", err=True)
             return "bad_json", None
@@ -583,6 +611,8 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--backend", choices=["cli", "sdk"], default="cli",
                         help="cli: claude -p on the subscription (default); sdk: anthropic sdk + ANTHROPIC_API_KEY")
     parser.add_argument("--force", action="store_true", help="call the model even if a raw response is cached")
+    parser.add_argument("--offline", action="store_true",
+                        help="rebuild outputs from cached raw answers only; never call the model (ignores --force)")
     parser.add_argument("--data-dir", type=Path, default=DEFAULT_DATA_DIR)
     parser.add_argument("--out-dir", type=Path, default=DEFAULT_OUT_DIR)
     return parser.parse_args(argv)
@@ -608,7 +638,7 @@ def main():
         def messages(self):
             return get_client().messages
 
-    results, failures = run_all(paths, aliases, args.out_dir, LazyClient(), args.force, args.backend, args.jobs)
+    results, failures = run_all(paths, aliases, args.out_dir, LazyClient(), args.force, args.backend, args.jobs, args.offline)
     if results:
         (args.out_dir / "compare.md").write_text(render_compare(results), encoding="utf-8")
         print(f"\ncompare: {args.out_dir / 'compare.md'}")

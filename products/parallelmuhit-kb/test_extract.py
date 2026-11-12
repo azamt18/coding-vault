@@ -567,3 +567,82 @@ def test_bad_json_does_not_stop_the_run(tmp_path, monkeypatch):
 def test_jobs_flag():
     assert extract.parse_args([]).jobs == 1
     assert extract.parse_args(["--jobs", "3", "--essays", "all"]).jobs == 3
+
+
+# --- task 03: link endpoints resolve by name or base_name, case-insensitively ---
+
+
+def _raw_from(entities, relations):
+    return {"model": "claude-sonnet-5-5", "stop_reason": "end_turn", "usage": {"input_tokens": 1, "output_tokens": 1},
+            "content": [{"type": "text", "text": json.dumps({"entities": entities, "relations": relations},
+                                                            ensure_ascii=False)}]}
+
+
+def _ent(name, base, etype="idea", paragraphs=("p3",)):
+    return {"name": name, "base_name": base, "type": etype, "description": "d", "aliases": [],
+            "paragraphs": list(paragraphs)}
+
+
+def _rel(source, target, kind="example_of"):
+    return {"source": source, "target": target, "kind": kind, "label": "l", "paragraph": "p3",
+            "quote": "sohadan tashqari o'rganish ham muhimligini"}
+
+
+def test_endpoint_matching_ignores_case_and_keeps_entity_name(essay):
+    raw = _raw_from([_ent("Charli Manger", "Charli Manger", "person"), _ent("blog yuritish", "Blog yuritish")],
+                    [_rel("charli manger", "Blog Yuritish")])
+    r = extract.build_result(essay, "sonnet", raw)
+    assert r["dropped"] == []
+    assert (r["relations"][0]["source"], r["relations"][0]["target"]) == ("Charli Manger", "blog yuritish")
+    assert r["unlinked"] == []
+
+
+def test_endpoint_matching_uses_base_name(essay):
+    raw = _raw_from([_ent("janob Taleb", "Taleb", "person"), _ent("noyob tajriba", "Noyob tajriba")],
+                    [_rel("Taleb", "noyob tajriba", "recommends")])
+    r = extract.build_result(essay, "sonnet", raw)
+    assert r["dropped"] == [] and r["relations"][0]["source"] == "janob Taleb"
+
+
+def test_author_matches_case_insensitively(essay):
+    raw = _raw_from([_ent("ego", "Ego")], [_rel("aziz rahimov", "ego", "criticises")])
+    r = extract.build_result(essay, "sonnet", raw)
+    assert r["dropped"] == [] and r["relations"][0]["source"] == extract.AUTHOR
+
+
+def test_true_unknown_still_drops(essay):
+    raw = _raw_from([_ent("ego", "Ego")], [_rel("Antoniy", "ego")])
+    r = extract.build_result(essay, "sonnet", raw)
+    assert [d["reason"] for d in r["dropped"]] == ["unknown_entity"] and r["relations"] == []
+
+
+def test_ambiguous_lowercase_match_drops_instead_of_guessing(essay):
+    raw = _raw_from([_ent("Ego", "Ego"), _ent("EGO", "Ego kitobi", "work")], [_rel("ego", "Ego kitobi")])
+    r = extract.build_result(essay, "sonnet", raw)
+    assert [d["reason"] for d in r["dropped"]] == ["unknown_entity"]
+
+
+def test_exact_name_wins_over_an_ambiguous_lowercase_form(essay):
+    raw = _raw_from([_ent("Ego", "Ego"), _ent("EGO", "Ego kitobi", "work")], [_rel("EGO", "Ego")])
+    r = extract.build_result(essay, "sonnet", raw)
+    assert r["dropped"] == [] and (r["relations"][0]["source"], r["relations"][0]["target"]) == ("EGO", "Ego")
+
+
+def test_offline_never_calls_and_reports_missing_raw(tmp_path, fake_raw):
+    data = tmp_path / "data"
+    (data / "essays_md").mkdir(parents=True)
+    path = data / "essays_md" / "149_qiziquvchanlik.md"
+    path.write_text(ESSAY_MD, encoding="utf-8")
+    out = tmp_path / "extract"
+    results, failures = extract.run_all([path], ["sonnet"], out, NoNetworkClient(), False, "cli", offline=True)
+    assert results == [] and failures == [("149_qiziquvchanlik", "sonnet", "no_raw")]
+
+    (out / "raw" / "sonnet").mkdir(parents=True)
+    (out / "raw" / "sonnet" / "149_qiziquvchanlik.json").write_text(json.dumps(fake_raw), encoding="utf-8")
+    results, failures = extract.run_all([path], ["sonnet"], out, NoNetworkClient(), True, "cli", offline=True)
+    assert failures == [] and len(results) == 1  # --force is ignored offline: the cached answer is used
+
+
+def test_offline_flag():
+    assert extract.parse_args([]).offline is False
+    assert extract.parse_args(["--offline", "--essays", "all"]).offline is True
