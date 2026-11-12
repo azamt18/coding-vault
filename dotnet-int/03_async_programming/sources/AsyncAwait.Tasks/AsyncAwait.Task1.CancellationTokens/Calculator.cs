@@ -9,12 +9,12 @@ internal static class Calculator
     {
         long sum = 0;
 
-        for (var i = 0; i < n; i++)
+        for (long i = 0; i < n; i++) // upd: var i => long i. integer overflow risk
         {
             cancellationToken.ThrowIfCancellationRequested();
 
             // i + 1 is to allow 2147483647 (Max(Int32)) 
-            sum = sum + (i + 1);
+            sum += i + 1;
             await Task.Delay(300, cancellationToken);
             // Thread.Sleep(10);
         }
