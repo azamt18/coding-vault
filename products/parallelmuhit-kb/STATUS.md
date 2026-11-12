@@ -1,6 +1,6 @@
 # parallelmuhit kb: status
 
-updated 2026-11-12 (task 08 cli built) by "Parallel muhit KB on RAG (plan)". this file is the plan session's memory. the details are in the TASK_*.md files.
+updated 2026-11-12 (question box checked live) by "Parallel muhit KB on RAG (plan)". this file is the plan session's memory. the details are in the TASK_*.md files.
 
 ## goal
 
@@ -131,7 +131,20 @@ a visual tool that shows how the people, works, ideas and organizations in Aziz 
 - not checked: a live question through `serve.py` + `npm run dev`, a click on a citation in the browser, how the box looks. the user does this.
 - STATUS.md was stale before this entry (it said task 09 was only drafted).
 
+## done, pr (2026-11-12)
+
+- force push of the rebased `feat/pm-kb` was blocked by the permission classifier, so the branch went out as `origin/feat/pm-kb-pr` (no force). pr #1 into main, label `enhancement`: https://github.com/azamt18/coding-vault/pull/1. it also carries the tts session's files.
+- old `origin/feat/pm-kb` still has the pre-rebase history (its one extra commit `caf3878` equals main's `04a8261`). delete it on github after the merge, and the local tag `pm-kb-before-rebase`.
+
+## live check of the question box (2026-11-12, user)
+
+- ran `serve.py` (8787) + vite on 5174 (the vite on 5173 was started before the `/api` proxy was added, so its box stayed hidden: restart vite after config changes). the user: "looks good for now". no defects reported.
+- pr #1 is NOT merged yet (the user did not say merge).
+
+## merged (2026-11-12, user: "merge pr #1", "clean up")
+
+- pr #1 merged into main as `e8626a7` (merge commit, ci green). deleted `origin/feat/pm-kb`, `origin/feat/pm-kb-pr` and the tag `pm-kb-before-rebase`. the local `feat/pm-kb` worktree (`coding-vault-pmkb`) still exists and has one unpushed docs commit (this file).
+
 ## next task
 
-- the label spellings. the real rebase is done (2026-11-12): 33 commits on top of main, 0 savolbor files, 149 python + 33 npm tests pass. old tip is the tag `pm-kb-before-rebase` (delete it once the pr is merged). the tts session's uncommitted `docs/plan-tts.md` note was committed by plan before the rebase. eval parked (8 draft questions in `eval_questions.json`).
-- the user tries the question box live and judges the live ask run and the 13 themes.
+- start new work from main (new branch), no task chosen yet. candidates: label spellings "Charli Manger", "Baffet", "Andryu Gryu"; eval round for task 08 (8 draft questions in `eval_questions.json`, kind-aware retrieval step).
