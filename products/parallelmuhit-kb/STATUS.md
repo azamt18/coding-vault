@@ -133,5 +133,5 @@ a visual tool that shows how the people, works, ideas and organizations in Aziz 
 
 ## next task
 
-- the user's ok on: the real rebase (now 30 commits: `git rebase --onto main feat/savolbor`), the label spellings. eval parked (8 draft questions in `eval_questions.json`).
+- the label spellings. the real rebase is done (2026-11-12): 33 commits on top of main, 0 savolbor files, 149 python + 33 npm tests pass. old tip is the tag `pm-kb-before-rebase` (delete it once the pr is merged). the tts session's uncommitted `docs/plan-tts.md` note was committed by plan before the rebase. eval parked (8 draft questions in `eval_questions.json`).
 - the user tries the question box live and judges the live ask run and the 13 themes.
