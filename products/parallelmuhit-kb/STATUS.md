@@ -1,6 +1,6 @@
 # parallelmuhit kb: status
 
-updated 2026-11-12 by "Parallel muhit KB on RAG (plan)". this file is the plan session's memory. the details are in the TASK_*.md files.
+updated 2026-11-12 (task 07 verified) by "Parallel muhit KB on RAG (plan)". this file is the plan session's memory. the details are in the TASK_*.md files.
 
 ## goal
 
@@ -33,6 +33,8 @@ a visual tool that shows how the people, works, ideas and organizations in Aziz 
 - ui: node panel shows `↗ anchor` links under quotes and a "links in the essays" list on nodes. 121 python, 26 npm tests, build ok.
 - numbers: the "2239" in TASK_07 counted images too (`](` = 2241 = 1742 links + 499 images). 1740 http links, 1732 after per-paragraph dedupe (8 empty anchors/duplicates). (essay, url) pairs 1720: 1090 attached, 630 left out (anchor in no quote and no node name). graph_grouped: 1687 links and 74 nodes carry `urls`.
 - 003_javoblar p13 Aziz Rahimov → Shahboz Dolimov carries the youtube url (checked in the json, not in the browser).
+
+- verified by plan 2026-11-12: `e6bd043`, 121 python + 26 npm tests pass, `add_urls.py` rerun byte-identical, 1687 links and 74 nodes carry `urls`. not checked: the youtube url in the browser, how the new panel looks.
 
 ## known weaknesses
 
@@ -97,8 +99,12 @@ a visual tool that shows how the people, works, ideas and organizations in Aziz 
 - panel link list: limit to 10 per kind or leave as is (unanswered, default leave).
 - eval for task 08: the user writes 6 questions with expected essays.
 
+## next task
+
+- task 08 rag q&a, cli part (`TASK_08_rag_qa.md`, section "design"): bm25 + graph retrieval, `ask.py`, citations checked against the quotes, with urls. impl can build it now; the eval needs the user's 6 questions.
+
 ## next (the user decides)
 
-- visual review of the ui (above), plus the not-blocking points under "open for the user".
-- then: rag q&a over the graph (from the goal), or first a rebase of feat/pm-kb onto main and a pr. no push without the user's ok.
+- visual review of the ui, plus the not-blocking points under "open for the user".
+- rebase of feat/pm-kb onto main and a pr. no push without the user's ok.
 - worktree: `/Users/azam_turgunboev/coding-vault-pmkb` (feat/pm-kb), not pushed.
