@@ -6,6 +6,9 @@ obj/
 *.userosscache
 *.sln.docstates
 
+## Python
+__pycache__/
+
 ## JetBrains Rider / IntelliJ
 .idea/
 *.DotSettings.user
@@ -25,6 +28,9 @@ token.json
 ## Private Documents & Media
 pdp/parallelmuhit/essays/*.pdf
 pdp/parallelmuhit/essays/**/*.pdf
+pdp/parallelmuhit/essays_md/
+pdp/parallelmuhit/essays_raw/
+products/parallelmuhit-kb/extract/
 
 ## Claude / Codemie local configs
 .claude/

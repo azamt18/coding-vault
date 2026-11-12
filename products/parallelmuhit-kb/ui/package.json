@@ -1,0 +1,23 @@
+{
+  "name": "parallelmuhit-kb-ui",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "sync": "sh sync_data.sh",
+    "dev": "sh sync_data.sh && vite",
+    "build": "tsc --noEmit && vite build",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "graphology": "^0.26.0",
+    "graphology-layout-forceatlas2": "^0.10.1",
+    "sigma": "^3.0.3"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.6",
+    "graphology-types": "^0.24.8",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.8",
+    "vitest": "^5.1.0"
+  }
+}

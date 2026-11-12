@@ -18,7 +18,8 @@ import httpx
 from playwright.async_api import async_playwright
 
 API_BASE = "https://b.parallelmuhit.uz"
-OUTPUT_DIR = Path("essays")
+# products/parallelmuhit-kb/<this file> -> <repo>/pdp/parallelmuhit
+DEFAULT_DATA_DIR = Path(__file__).resolve().parents[2] / "pdp" / "parallelmuhit"
 
 HTML_TEMPLATE = """\
 <!DOCTYPE html>
@@ -78,8 +79,10 @@ def safe_filename(slug: str, index: int) -> str:
     return f"{index:03d}_{slug}.pdf"
 
 
-async def download_essays(token: str, only: int | None = None, range_: tuple[int, int] | None = None):
-    OUTPUT_DIR.mkdir(exist_ok=True)
+async def download_essays(token: str, only: int | None = None, range_: tuple[int, int] | None = None,
+                          data_dir: Path = DEFAULT_DATA_DIR):
+    OUTPUT_DIR = data_dir / "essays"
+    OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
     api_headers = {
         "Authorization": f"Bearer {token}",
@@ -159,15 +162,21 @@ async def download_essays(token: str, only: int | None = None, range_: tuple[int
 
         await browser.close()
 
-    print(f"\nDone. PDFs saved to ./{OUTPUT_DIR}/")
+    print(f"\nDone. PDFs saved to {OUTPUT_DIR}/")
 
 
-def main():
+def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Download parallelmuhit.uz essays as PDFs")
     parser.add_argument("--token", default=os.environ.get("TOKEN", ""), help="JWT auth token")
     parser.add_argument("--number", type=int, default=None, metavar="N", help="download only essay #N")
     parser.add_argument("--range", dest="range_", metavar="A-B", help="download essays #A through #B (e.g. 166-170)")
-    args = parser.parse_args()
+    parser.add_argument("--data-dir", type=Path, default=DEFAULT_DATA_DIR,
+                        help=f"folder that holds essays/ (default: {DEFAULT_DATA_DIR})")
+    return parser.parse_args(argv)
+
+
+def main():
+    args = parse_args()
 
     if not args.token:
         print("Error: provide your JWT token via --token or TOKEN env var", file=sys.stderr)
@@ -182,7 +191,7 @@ def main():
             print("Error: --range must be in the form A-B (e.g. 166-170)", file=sys.stderr)
             sys.exit(1)
 
-    asyncio.run(download_essays(args.token, only=args.number, range_=range_))
+    asyncio.run(download_essays(args.token, only=args.number, range_=range_, data_dir=args.data_dir))
 
 
 if __name__ == "__main__":

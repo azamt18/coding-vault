@@ -1,0 +1,10 @@
+{
+  "type": "result",
+  "subtype": "success",
+  "is_error": false,
+  "result": "{\"clusters\": [[\"Charli Munger\", \"Charlie Manger\", \"Munger\"], [\"Charli Mungerson\"]]}",
+  "duration_ms": 4321,
+  "total_cost_usd": 0.0042,
+  "usage": {"input_tokens": 5, "cache_creation_input_tokens": 900, "cache_read_input_tokens": 0, "output_tokens": 60},
+  "modelUsage": {"claude-sonnet-5-5": {}}
+}
