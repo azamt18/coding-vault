@@ -1,6 +1,6 @@
 # parallelmuhit kb: status
 
-updated 2026-11-12 (task 07 verified) by "Parallel muhit KB on RAG (plan)". this file is the plan session's memory. the details are in the TASK_*.md files.
+updated 2026-11-12 (task 08 cli built) by "Parallel muhit KB on RAG (plan)". this file is the plan session's memory. the details are in the TASK_*.md files.
 
 ## goal
 
@@ -99,9 +99,27 @@ a visual tool that shows how the people, works, ideas and organizations in Aziz 
 - panel link list: limit to 10 per kind or leave as is (unanswered, default leave).
 - eval for task 08: the user writes 6 questions with expected essays.
 
+## done, task 08 cli part: `61562d1` (checked by plan 2026-11-12)
+
+- `retrieve.py` (bm25 over about 6k paragraphs + 1-hop graph links, caps 12 + 20) and `ask.py` (`claude -p` sonnet, citation check, `--context` = no model call). 138 tests.
+- checked: the 4 rules from design point 3 are tested (fake id, an id outside the context, quotes copied by code, not found isn't flagged). `--context` on the 2 example questions: Taleb retrieves well with some noise. the book question is weak (generic "tavsiya" paragraphs, no recommends links).
+- plan's decision for the eval round: first measure the baseline on the 12 questions. then add a kind-aware step (question words → link kind, e.g. tavsiya → recommends, tanqid → criticises, ilhom → inspired_by, pulling those links ranked by bm25) and measure again.
+
+## done, task 08 rag q&a cli: `61562d1` (impl, checked by plan 2026-11-12)
+
+- `retrieve.py` (bm25 + graph) and `ask.py` (`claude -p` answers, cited paragraph ids verified against the context, quotes and urls copied from the data). 138 python tests pass. `ask.py --context` on a taleb question returns sensible paragraphs from several essays.
+- not checked: a live answer (needs the subscription), the graph relations section of the context.
+
+## live ask.py run (2026-11-12, impl)
+
+- question: "Aziz Rahimov Talebning qaysi g'oyalarini tanqid qiladi yoki tavsiya qiladi?" works end to end. 11 cited ids, all printed with copied quotes and urls, none dropped.
+- good: the answer is in uzbek and every claim has a paragraph id; the quotes support the claims (004_kitob, 125_oqqush, 140_royxat, 062_xohish, 137_soddavoy).
+- weak: the "tanqid" line is clumsy (says "not found", then cites 020_kasb#p10, which is Taleb's own advice). 136_ajratish#p32 and 018_tirbandlik#p11 are Taleb's ideas, not Aziz recommending them, yet they sit under "tavsiya". the model mixes "Aziz recommends" with "Aziz quotes Taleb". a kind-aware step (plan's decision) should help; so could a prompt rule to separate "recommends" from "quotes".
+- not judged by the user yet.
+
 ## next task
 
-- task 08 rag q&a, cli part (`TASK_08_rag_qa.md`, section "design"): bm25 + graph retrieval, `ask.py`, citations checked against the quotes, with urls. impl can build it now; the eval needs the user's 6 questions.
+- eval parked by the user (2026-11-12). a draft of 8 questions is in `eval_questions.json` (uncommitted, expected essays unchecked). the user judges the live run above whenever ready. ui question box is a later separate task.
 
 ## next (the user decides)
 

@@ -1,0 +1,80 @@
+{
+  "note": "draft by plan 2026-11-12, expected essays come from graph_grouped.json links, the user must correct them. pass = an expected essay is cited, no fake id. expect_not_found = the answer must be 'essalarda bu haqda topilmadi'.",
+  "questions": [
+    {
+      "id": "q1",
+      "q": "Aziz Rahimov Hararini qaysi jihatdan tanqid qiladi?",
+      "kind": "criticises",
+      "expected": [
+        "004_kitob",
+        "006_qomusiylik"
+      ]
+    },
+    {
+      "id": "q2",
+      "q": "Aziz Rahimov Skot Adamsning qaysi fikrlarini tavsiya qiladi?",
+      "kind": "recommends",
+      "expected": [
+        "004_kitob",
+        "053_teskarisi"
+      ]
+    },
+    {
+      "id": "q3",
+      "q": "Taleb g'oyalari Aziz Rahimovga qanday ta'sir qilgan?",
+      "kind": "inspired_by",
+      "expected": [
+        "006_qomusiylik",
+        "013_otibketyapti",
+        "018_tirbandlik",
+        "020_kasb"
+      ]
+    },
+    {
+      "id": "q4",
+      "q": "Aziz Rahimov Seneka haqida nima deydi?",
+      "kind": "inspired_by",
+      "expected": [
+        "006_qomusiylik",
+        "011_maslahat",
+        "018_tirbandlik",
+        "030_xato"
+      ]
+    },
+    {
+      "id": "q5",
+      "q": "Charli Manger qaysi essalarda tilga olinadi va nima uchun?",
+      "kind": "inspired_by",
+      "expected": [
+        "007_amal",
+        "009_biz",
+        "013_otibketyapti",
+        "029_ulgurish"
+      ]
+    },
+    {
+      "id": "q6",
+      "q": "Qaysi kitoblarni o'qishni tavsiya qiladi?",
+      "kind": "recommends",
+      "expected": [
+        "004_kitob",
+        "024_robotlar",
+        "082_virtual"
+      ]
+    },
+    {
+      "id": "n1",
+      "q": "Aziz Rahimov Python dasturlash tili haqida nima deydi?",
+      "kind": "not_found",
+      "expect_not_found": true,
+      "note": "grep -i python in essays_md: 0 files"
+    },
+    {
+      "id": "n2",
+      "q": "Aziz Rahimov vegetarianlik haqida qanday fikrda?",
+      "kind": "not_found",
+      "expect_not_found": true,
+      "note": "grep -i vegetarian in essays_md: 0 files"
+    }
+  ]
+}

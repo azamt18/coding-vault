@@ -1,5 +1,10 @@
 {
-  "merge": [],
+  "merge": [
+    ["hikmat", "hikmat egasi"],
+    ["Mimesis", "mimetik qaramlik"],
+    ["Status", "Status o'yinlari"],
+    ["kutilma", "Kichik kutuvlar"]
+  ],
   "keep_apart": [],
   "label": {},
   "theme": {}

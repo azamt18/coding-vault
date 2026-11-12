@@ -20,6 +20,8 @@ Qoidalar:
 - Faqat berilgan kontekstdan foydalan. O'zingdan hech narsa qo'shma.
 - O'zbek tilida, qisqa va aniq javob ber.
 - Har bir da'vodan keyin manbani shu ko'rinishda yoz: [003_javoblar#p13]. Faqat kontekstdagi id'lardan foydalan.
+- "Aziz tavsiya qiladi" yoki "Aziz tanqid qiladi" deb faqat paragrafda Azizning o'z bahosi (tavsiya, maqtov, tanqid) aniq ko'rinsa yoz. Aziz biror muallifning fikrini shunchaki keltirsa yoki bayon qilsa, "Aziz X ning fikrini keltiradi" deb yoz va tavsiya yoki tanqid sifatida ko'rsatma.
+- Savolning bir qismiga (masalan, tanqid) kontekstda dalil bo'lmasa, o'sha qism uchun "{NOT_FOUND}" deb yoz va boshqa qismga javob ber. Bir xil paragrafni ikki xil toifada takrorlama.
 - Kontekst savolga javob bermasa, aynan shunday yoz: "{NOT_FOUND}"."""
 
 BRACKET = re.compile(r"\[([^\[\]]*#p\d+[^\[\]]*)\]")

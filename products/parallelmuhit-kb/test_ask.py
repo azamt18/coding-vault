@@ -60,6 +60,7 @@ def test_prompt_lists_ids_and_rules():
     prompt = ask.build_prompt("Taleb?", ctx)
     assert "[001_a#p1]" in prompt and "Taleb?" in prompt
     assert "essalarda bu haqda topilmadi" in ask.SYSTEM
+    assert "fikrini keltiradi" in ask.SYSTEM  # recommends vs quotes rule
 
 
 def test_render_shows_answer_quotes_urls_and_flag():
