@@ -24,6 +24,7 @@ a visual tool that shows how the people, works, ideas and organizations in Aziz 
 
 - task 01 markdown export: 188 essays.
 - task 02 pilot (3 essays, 3 rounds).
+- task 04 merge names: `f0ffbf0`. 1948 nodes (542 persons, 145 works, 73 orgs, 999 ideas), 119 blocks clustered by the model, 3 compound splits. relation links 2193 = 2190 + 3 − 0 self-loops, 0 dangling, 102 tests. checked by plan 2026-11-12: munger/taleb/buffet each one node (Ernst Buffet kept separate), 0 of 30 sampled merges wrong (seed 20261112), offline rerun byte-identical.
 - task 03 full run: 2582 entities, 2190 links, drops 0.2%, associated_with 6.8%, 8 unlinked, 80 tests. last code `d331b93`, closed `84344e7`.
 
 ## known weaknesses
@@ -40,11 +41,17 @@ a visual tool that shows how the people, works, ideas and organizations in Aziz 
 - `merge_overrides.json` (tracked, the user edits it) is applied on every run.
 - the output is one `extract/graph.json`, with no sqlite.
 
-## next: task 04 merge names (ready to hand off)
+## decisions, task 05 (user, 2026-11-12)
 
-- spec: `TASK_04_merge_names.md`.
-- 2026-11-12, user answers: (1) worktree. (2) cherry-pick to main.
-- done: `caf3878` is on main as `04a8261` (only Program.cs was committed, and main's other staged files were left staged). feat/pm-kb was reset to `84344e7`. the stash "WIP on feat/pm-kb" still points to caf3878.
-- impl works in `/Users/azam_turgunboev/coding-vault-pmkb` (worktree on feat/pm-kb). `pdp/parallelmuhit` and `products/parallelmuhit-kb/extract` there are symlinks to the main checkout, and both are listed in `.git/info/exclude` (patterns that end in `/` don't match symlinks).
-- STATUS.md and TASK_04 live in the worktree for real. the main checkout has symlinks to them. impl commits them with task 04.
-- next: send impl a pointer to `TASK_04_merge_names.md` (summary + "don't" list, notify_when_idle), with the worktree path as its cwd.
+- scope: only ideas in 2+ essays (70 of 999). the other 929 stay as they are, no theme. known weakness: the graph's idea layer barely changes, and a 1-essay idea can't join a theme. revisit after seeing the result.
+- shape: merge variants, then group the merged ideas under about 5–15 themes (theme nodes + `in_theme` links).
+- method: sonnet via `claude -p`, same as task 04, no embeddings.
+
+## next: task 05 (written, `TASK_05_group_ideas.md`)
+
+- hand-off to impl: "do TASK_05_group_ideas.md".
+
+- impl's question (19:3x), answered as option a: duplicate mentioned_in idea→essay links are folded (paragraphs unioned). balance = input − self-loops − folded + in_theme, now in the spec. 70 ideas → one merge call, as the spec allows.
+- small things for task 05 or the user: the "most essays" label rule picks uzbek spellings such as "Charli Manger", "Baffet", "Andryu Gryu". the user can fix a label in `merge_overrides.json` if they want. a missed merge, also an override: "Umar hazratlari" (1 essay) → "Umar" (the caliph). checked and correct: Hoshimov → Zafar Hoshimov (korzinka), Hazrati Umar → Umar, Umar ibn Abdulaziz kept separate.
+- this STATUS.md update is not committed yet. impl commits it with task 05.
+- worktree: `/Users/azam_turgunboev/coding-vault-pmkb` (feat/pm-kb). the main checkout has symlinks to STATUS.md and TASK_04.
