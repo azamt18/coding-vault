@@ -456,11 +456,19 @@ def cli_prompt(essay: dict) -> str:
 
 def call_model_cli(model_id: str, essay: dict) -> dict:
     """Run claude -p on the subscription and return the answer in the sdk's raw shape."""
+    return run_claude_cli(model_id, SYSTEM, cli_prompt(essay))
+
+
+def run_claude_cli(model_id: str, system: str, prompt: str) -> dict:
+    """One isolated `claude -p` call (CLI_FLAGS, CLI_ENV_DROP, empty temp cwd), in the sdk's raw shape.
+
+    Shared by extraction and merge_names.py. Raises CliError on any failure of the cli itself.
+    """
     env = {k: v for k, v in os.environ.items() if k not in CLI_ENV_DROP}
-    args = ["claude", *CLI_FLAGS, "--model", model_id, "--system-prompt", SYSTEM]
+    args = ["claude", *CLI_FLAGS, "--model", model_id, "--system-prompt", system]
     with tempfile.TemporaryDirectory(prefix="pm-extract-") as cwd:
         try:
-            proc = subprocess.run(args, input=cli_prompt(essay), capture_output=True, text=True,
+            proc = subprocess.run(args, input=prompt, capture_output=True, text=True,
                                   env=env, cwd=cwd, timeout=CLI_TIMEOUT_S)
         except subprocess.TimeoutExpired as exc:
             raise CliError(f"timeout after {CLI_TIMEOUT_S} s") from exc
