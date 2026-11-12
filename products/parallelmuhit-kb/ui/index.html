@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>parallelmuhit graph</title>
+  </head>
+  <body>
+    <aside id="controls">
+      <h1>parallelmuhit graph</h1>
+      <div class="search">
+        <input id="search" type="search" placeholder="search names and aliases" autocomplete="off" />
+        <ul id="results"></ul>
+      </div>
+      <div class="row">
+        <button id="clear">clear focus</button>
+        <button id="layout">layout: running</button>
+      </div>
+      <h2>essay</h2>
+      <select id="essay"><option value="">all essays</option></select>
+      <h2>node types</h2>
+      <div id="types"></div>
+      <h2>link kinds</h2>
+      <div id="kinds"></div>
+      <p id="count" class="muted"></p>
+    </aside>
+    <main id="stage"></main>
+    <aside id="details" class="empty"><p class="muted">click a node to see its links and quotes.</p></aside>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

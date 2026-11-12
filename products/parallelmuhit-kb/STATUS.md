@@ -47,11 +47,26 @@ a visual tool that shows how the people, works, ideas and organizations in Aziz 
 - shape: merge variants, then group the merged ideas under about 5–15 themes (theme nodes + `in_theme` links).
 - method: sonnet via `claude -p`, same as task 04, no embeddings.
 
-## next: task 05 (written, `TASK_05_group_ideas.md`)
+## done, task 05 group ideas: `df44bcd` (checked by plan 2026-11-12)
 
-- hand-off to impl: "do TASK_05_group_ideas.md".
+- 70 ideas in ≥2 essays → 69 (1 merge: SI → Sun'iy intellekt, correct). 14 themes, every idea has exactly 1 in_theme. `extract/graph_grouped.json`: 1961 nodes, 5035 links = 4966 − 0 − 0 folded + 69. 0 dangling, 114 tests, offline rerun byte-identical (`18df51b2ce8f`).
+- the 20-merge sample can't be drawn (only 1 merge). the model is cautious by design ("when unsure keep apart").
 
-- impl's question (19:3x), answered as option a: duplicate mentioned_in idea→essay links are folded (paragraphs unioned). balance = input − self-loops − folded + in_theme, now in the spec. 70 ideas → one merge call, as the spec allows.
-- small things for task 05 or the user: the "most essays" label rule picks uzbek spellings such as "Charli Manger", "Baffet", "Andryu Gryu". the user can fix a label in `merge_overrides.json` if they want. a missed merge, also an override: "Umar hazratlari" (1 essay) → "Umar" (the caliph). checked and correct: Hoshimov → Zafar Hoshimov (korzinka), Hazrati Umar → Umar, Umar ibn Abdulaziz kept separate.
-- this STATUS.md update is not committed yet. impl commits it with task 05.
-- worktree: `/Users/azam_turgunboev/coding-vault-pmkb` (feat/pm-kb). the main checkout has symlinks to STATUS.md and TASK_04.
+## open for the user (not blocking)
+
+- idea merges the model left apart, which could go into `idea_overrides.json`: hikmat + hikmat egasi, Mimesis + mimetik qaramlik, Status + Status o'yinlari, kutilma + Kichik kutuvlar. opposites stay apart (moliyaviy erkinlik / qaramlik).
+- themes that look off: omad and Serendipity under "Ish samaradorligi", "Asperger sindromi" under "Mustaqil fikr", "umumiy kontekst" under "Foydalilik", "Tasavvur" under "Hikmat". "Hasad" ← Ijtimoiy tarmoqlar / Qarz to'foni fits if the essays tie them to comparison.
+- name overrides from task 04: labels "Charli Manger", "Baffet", "Andryu Gryu", and the missed "Umar hazratlari" → Umar.
+
+## decisions, task 06 (user, 2026-11-12)
+
+- local only for now, publishing later (so: static site, one data-path constant).
+- features, all four: node details with quotes, filters (type/kind/essay), search, neighbourhood focus.
+- weak links shown as they are.
+- stack: user delegated, so vite + ts + graphology + sigma, vanilla, in `ui/`.
+
+## next: task 06 (written, `TASK_06_graph_ui.md`)
+
+- hand-off to impl: "do TASK_06_graph_ui.md".
+- this STATUS.md update is not committed. impl commits it with task 06.
+- worktree: `/Users/azam_turgunboev/coding-vault-pmkb` (feat/pm-kb), not pushed. a rebase onto main is needed before any pr.
