@@ -65,3 +65,7 @@ plan read the 5 random essays (043, 071, 091, 116, 120), 54 links. most read rig
 - `inspired_by` runs in both directions: "Aziz Rahimov inspired_by Adler" (person draws on a source) and "Ota-onaning ishonchi inspired_by Soloveychik" (idea comes from a person). both read as "draws on". task 04/ui has to treat it consistently.
 
 fix after the run (plan's call): 18 of 19 `unknown_entity` drops are the same name in another form (case, or base_name instead of name). the code resolves a link endpoint against `name` or `base_name`, case-insensitively, with no other fuzz, then rebuilds from the raw cache (no calls).
+
+## closed (plan, 2026-11-12)
+
+`d331b93`, 80 tests. endpoint matching by name/base_name, case-insensitive, offline rebuild with no calls. unknown_entity 19 → 0, drops 0.2%, links 2190, unlinked 21 → 8 (no link in the raw answer at all). all thresholds PASS. extraction for all 188 essays is the input for task 04.
