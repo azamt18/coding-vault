@@ -1,0 +1,56 @@
+/* root layout and basic styles */
+body {
+  margin: 0;
+  background: #fafaf8;
+  color: #222;
+}
+
+.app {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: system-ui, sans-serif;
+  line-height: 1.5;
+}
+
+.app-header h1 {
+  margin: 0 0 4px;
+}
+
+.app-subtitle {
+  margin: 0 0 20px;
+  color: #666;
+}
+
+.app section {
+  margin-bottom: 24px;
+}
+
+.app button {
+  padding: 8px 16px;
+  border: 1px solid #333;
+  border-radius: 6px;
+  background: #333;
+  color: #fff;
+  font: inherit;
+  cursor: pointer;
+}
+
+.app button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.app .start-over {
+  margin-top: 24px;
+  background: transparent;
+  color: #333;
+}
+
+.app pre {
+  padding: 12px;
+  overflow-x: auto;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  background: #fff;
+}
