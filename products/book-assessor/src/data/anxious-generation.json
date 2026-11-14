@@ -7,11 +7,11 @@
       "prompt": "according to haidt, roughly when did rates of teen anxiety and depression begin to surge?",
       "options": [
         "1990-1995",
-        "2010-2015",
         "2000-2003",
-        "2018-2020"
+        "2018-2020",
+        "2010-2015"
       ],
-      "correctAnswer": "B"
+      "correctAnswer": "D"
     },
     {
       "id": "intro-q2",
@@ -19,23 +19,23 @@
       "type": "application",
       "prompt": "a school notices its students are more anxious than a decade ago. which first question best fits haidt's framing?",
       "options": [
-        "did the curriculum get harder",
         "what changed in how students spend childhood, especially with phones",
+        "did the curriculum get harder",
         "did teachers become stricter",
         "did class sizes shrink"
       ],
-      "correctAnswer": "B"
+      "correctAnswer": "A"
     },
     {
       "id": "intro-q3",
       "chapter": 0,
       "type": "critical",
-      "prompt": "haidt's thesis is that the shift to a phone-based childhood is a main cause of rising teen distress. how far do you agree?",
+      "prompt": "which finding best supports haidt's claim that the surge is tied to phones rather than a local cause?",
       "options": [
-        "fully, the evidence is conclusive",
-        "largely, though other factors contribute",
-        "only partly, it is one factor among many",
-        "not at all, correlation is not causation"
+        "the rise occurred only in us schools after a curriculum change",
+        "the rise appeared in many countries at about the same time as smartphones spread",
+        "the rise began long before smartphones existed",
+        "the rise affected only adults"
       ],
       "correctAnswer": "B"
     }
@@ -61,11 +61,11 @@
       "prompt": "you see a graph where teen depression is flat until about 2010, then rises in many countries at once. what does this pattern most support?",
       "options": [
         "a local policy change",
-        "a shared global change in childhood around that time",
         "a measurement error in one country",
-        "a change in school start times"
+        "a change in school start times",
+        "a shared global change in childhood around that time"
       ],
-      "correctAnswer": "B"
+      "correctAnswer": "D"
     },
     {
       "id": "ch1-q3",
@@ -73,12 +73,12 @@
       "type": "critical",
       "prompt": "which is the strongest objection to using trend data alone to prove that phones caused the surge?",
       "options": [
-        "trends are always meaningless",
         "other simultaneous changes could also explain the trend",
+        "trends are always meaningless",
         "teens do not report symptoms honestly in any case",
         "mental health cannot be measured"
       ],
-      "correctAnswer": "B"
+      "correctAnswer": "A"
     }
   ],
   "2": [
@@ -102,11 +102,11 @@
       "prompt": "a parent wants to follow haidt's advice on independence. which step fits best?",
       "options": [
         "driving the child to every activity",
-        "giving more unsupervised outdoor play time",
         "tracking the child's location constantly",
+        "giving more unsupervised outdoor play time",
         "scheduling every free hour"
       ],
-      "correctAnswer": "B"
+      "correctAnswer": "C"
     }
   ],
   "3": [
@@ -116,12 +116,12 @@
       "type": "recall",
       "prompt": "which describes the 'great rewiring' of childhood haidt refers to?",
       "options": [
-        "a shift from play-based to phone-based childhood",
         "a shift from public to private schools",
         "a shift from rural to urban living",
-        "a shift from print to radio"
+        "a shift from print to radio",
+        "a shift from play-based to phone-based childhood"
       ],
-      "correctAnswer": "A"
+      "correctAnswer": "D"
     },
     {
       "id": "ch3-q2",
@@ -157,25 +157,25 @@
       "type": "application",
       "prompt": "a teen stays up late scrolling and is tired at school. which foundational harm does this best illustrate?",
       "options": [
-        "sleep deprivation",
         "spiritual elevation",
         "antifragility",
+        "sleep deprivation",
         "collective action"
       ],
-      "correctAnswer": "A"
+      "correctAnswer": "C"
     },
     {
       "id": "ch4-q3",
       "chapter": 4,
       "type": "critical",
-      "prompt": "is grouping social deprivation, sleep loss, attention fragmentation and addiction into 'four harms' a useful frame or an oversimplification?",
+      "prompt": "which best explains how the four foundational harms reinforce one another?",
       "options": [
-        "a useful frame that clarifies mechanisms",
-        "a frame that hides how the harms overlap",
-        "too simple, but still helpful as a starting point",
-        "unhelpful, because they cannot be separated"
+        "each harm is independent and unrelated to the others",
+        "only addiction matters, the others are side effects",
+        "the harms cancel each other out",
+        "phone time displaces sleep and in-person contact, which weakens attention and fuels compulsive use"
       ],
-      "correctAnswer": "C"
+      "correctAnswer": "D"
     }
   ],
   "5": [
@@ -198,12 +198,12 @@
       "type": "application",
       "prompt": "which behavior is most consistent with haidt's account of girls' social media harm?",
       "options": [
-        "constantly comparing appearance and popularity metrics",
         "building complex mechanical models",
+        "constantly comparing appearance and popularity metrics",
         "playing team sports outdoors",
         "reading long novels"
       ],
-      "correctAnswer": "A"
+      "correctAnswer": "B"
     }
   ],
   "6": [
@@ -214,11 +214,11 @@
       "prompt": "what does haidt say about sleep and phones?",
       "options": [
         "phones improve sleep through relaxation",
-        "phones displace sleep, and poor sleep worsens mood",
         "sleep is unrelated to mental health",
+        "phones displace sleep, and poor sleep worsens mood",
         "teens need less sleep than adults"
       ],
-      "correctAnswer": "B"
+      "correctAnswer": "C"
     },
     {
       "id": "ch6-q2",
@@ -226,12 +226,12 @@
       "type": "application",
       "prompt": "which household rule best matches haidt's recommendations about sleep?",
       "options": [
-        "phones charge outside the bedroom overnight",
         "phones stay on during dinner",
         "phones are used as alarm clocks at the bedside",
-        "phones are banned only on weekdays"
+        "phones are banned only on weekdays",
+        "phones charge outside the bedroom overnight"
       ],
-      "correctAnswer": "A"
+      "correctAnswer": "D"
     }
   ],
   "7": [
@@ -269,25 +269,25 @@
       "type": "recall",
       "prompt": "why does haidt compare platform design to addiction?",
       "options": [
-        "apps use variable rewards and social validation to keep users returning",
         "apps are expensive",
         "apps are physically habit forming like nicotine",
+        "apps use variable rewards and social validation to keep users returning",
         "apps are required by schools"
       ],
-      "correctAnswer": "A"
+      "correctAnswer": "C"
     },
     {
       "id": "ch8-q2",
       "chapter": 8,
       "type": "critical",
-      "prompt": "is it fair to call heavy social media use an 'addiction'?",
+      "prompt": "which design feature best explains why social platforms are hard to stop using?",
       "options": [
-        "yes, clinically identical to substance addiction",
-        "partly, it shares features like compulsion and withdrawal",
-        "no, it is just a bad habit",
-        "impossible to say without more data"
+        "high subscription fees that create commitment",
+        "chemical dependence caused by the screen",
+        "school rules requiring daily use",
+        "unpredictable rewards such as likes and notifications that keep users checking"
       ],
-      "correctAnswer": "B"
+      "correctAnswer": "D"
     }
   ],
   "9": [
@@ -310,12 +310,12 @@
       "type": "application",
       "prompt": "one parent refuses a smartphone, but the child is left out of the group chat. which idea does this illustrate?",
       "options": [
-        "a collective action trap",
         "antifragility",
+        "a collective action trap",
         "safetyism",
         "spiritual elevation"
       ],
-      "correctAnswer": "A"
+      "correctAnswer": "B"
     }
   ],
   "10": [
@@ -325,12 +325,12 @@
       "type": "recall",
       "prompt": "which is one of haidt's four proposed norms?",
       "options": [
-        "no smartphone before high school",
         "unlimited screen time on weekends",
         "social media from age 10",
+        "no smartphone before high school",
         "phones in every classroom"
       ],
-      "correctAnswer": "A"
+      "correctAnswer": "C"
     },
     {
       "id": "ch10-q2",
@@ -338,25 +338,25 @@
       "type": "application",
       "prompt": "a school wants to apply haidt's advice. which policy fits best?",
       "options": [
-        "phone-free school day with phones stored in lockers or pouches",
         "allowing phones during lunch only",
         "allowing phones for note-taking",
-        "letting each teacher decide"
+        "letting each teacher decide",
+        "phone-free school day with phones stored in lockers or pouches"
       ],
-      "correctAnswer": "A"
+      "correctAnswer": "D"
     },
     {
       "id": "ch10-q3",
       "chapter": 10,
       "type": "critical",
-      "prompt": "how realistic is it to expect families to adopt these norms without legislation?",
+      "prompt": "which strategy best addresses the collective action problem behind phone adoption?",
       "options": [
-        "very realistic, parents can do it alone",
-        "realistic only if many parents act together",
-        "unrealistic without law or platform change",
-        "irrelevant, norms do not matter"
+        "coordinated agreements among parents and schools so no child is left out",
+        "each parent acting alone and hoping for the best",
+        "waiting for teens to self-regulate",
+        "banning phones only at home"
       ],
-      "correctAnswer": "B"
+      "correctAnswer": "A"
     }
   ],
   "11": [
@@ -367,11 +367,11 @@
       "prompt": "what age does haidt suggest as a minimum for opening social media accounts?",
       "options": [
         "10",
-        "13",
         "16",
+        "13",
         "21"
       ],
-      "correctAnswer": "C"
+      "correctAnswer": "B"
     },
     {
       "id": "ch11-q2",
@@ -379,12 +379,12 @@
       "type": "application",
       "prompt": "how should a school measure whether a phone-free policy works?",
       "options": [
-        "track attention, behavior and student wellbeing before and after",
         "survey only teachers once",
         "ignore data and rely on opinion",
+        "track attention, behavior and student wellbeing before and after",
         "compare to a different country"
       ],
-      "correctAnswer": "A"
+      "correctAnswer": "C"
     }
   ],
   "12": [
@@ -394,12 +394,12 @@
       "type": "recall",
       "prompt": "which kind of childhood experience does haidt want to restore?",
       "options": [
-        "more unsupervised play and real-world independence",
         "more homework",
         "more screen-based learning",
-        "more structured activities only"
+        "more structured activities only",
+        "more unsupervised play and real-world independence"
       ],
-      "correctAnswer": "A"
+      "correctAnswer": "D"
     },
     {
       "id": "ch12-q2",
