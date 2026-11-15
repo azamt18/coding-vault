@@ -9,7 +9,7 @@ you answer a set of expert-written multiple-choice questions about the book. eac
 - 80% or more: skip
 - 50-79%: skim
 - under 50%: read
-- the introduction and chapter 1 are foundational, so they are always skim, whatever the score.
+- the introduction (chapter 0) and chapter 1 are foundational, so they are always skim, whatever the score.
 
 ## how to use
 
@@ -26,9 +26,9 @@ you answer a set of expert-written multiple-choice questions about the book. eac
 
 | chapter | score | recommendation |
 | --- | --- | --- |
-| 0. introduction: the great rewiring | 100% | skim |
-| 2. the backstory: overprotection in the real world | 67% | skim |
-| 3. the rise of the phone-based childhood | 33% | read |
+| 0. introduction: growing up on mars | 100% | skim |
+| 2. what children need to do in childhood | 67% | skim |
+| 5. the four basic harms | 33% | read |
 ```
 
 the real report also has an expandable section per chapter listing each question and your answer.
@@ -49,7 +49,8 @@ npm run build   # type-check + production build into dist
 
 ## known caveats
 
-- chapter titles and question themes were written from memory and must be verified against the real table of contents before launch.
+- chapter titles (chapters 1-13) were checked against the official companion site, anxiousgeneration.com/research/supplements-for-each-chapter. the introduction title ("growing up on mars") comes only from search-result snippets and is not confirmed against the book itself. the questions were re-keyed to those chapters by theme, but their wording was written from memory and has not been fact-checked page by page.
+- if open library is slow (8s) or fails, or returns a result whose author is not haidt, the app falls back to the built-in title, author and chapters and shows an "offline" note.
 - only "the anxious generation" is supported.
 - there are no tests for the ui, only for the scoring logic.
 

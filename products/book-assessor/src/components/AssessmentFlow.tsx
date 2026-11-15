@@ -1,8 +1,9 @@
-import type { QuestionBank } from "../types";
+import type { Chapter, QuestionBank } from "../types";
 import { QuestionCard } from "./QuestionCard";
 
 interface AssessmentFlowProps {
   questions: QuestionBank;
+  chapters: Chapter[];
   answers: Record<string, string>;
   setAnswer: (questionId: string, answer: string) => void;
   runAssessment: () => void;
@@ -13,6 +14,7 @@ interface AssessmentFlowProps {
  */
 export function AssessmentFlow({
   questions,
+  chapters: bookChapters,
   answers,
   setAnswer,
   runAssessment,
@@ -20,6 +22,8 @@ export function AssessmentFlow({
   const chapters = Object.keys(questions)
     .map(Number)
     .sort((a, b) => a - b);
+  const titleOf = (n: number) =>
+    bookChapters.find((ch) => ch.number === n)?.title.toLowerCase();
   const all = chapters.flatMap((c) => questions[c] ?? []);
   const answered = all.filter((q) => answers[q.id] !== undefined).length;
   const complete = all.length > 0 && answered === all.length;
@@ -31,7 +35,10 @@ export function AssessmentFlow({
       </p>
       {chapters.map((c) => (
         <section key={c}>
-          <h3>chapter {c}</h3>
+          <h3>
+            chapter {c}
+            {titleOf(c) ? `: ${titleOf(c)}` : ""}
+          </h3>
           {(questions[c] ?? []).map((q) => (
             <QuestionCard
               key={q.id}

@@ -54,7 +54,7 @@ export default function App() {
   return (
     <div className="app">
       <header className="app-header">
-        <h1>book assessor</h1>
+        <h1>kitoblab</h1>
         {book && (
           <p className="app-subtitle">
             {book.title} by {book.author}
@@ -67,6 +67,7 @@ export default function App() {
       {step === "assessing" && (
         <AssessmentFlow
           questions={questions}
+          chapters={book?.chapters ?? []}
           answers={answers}
           setAnswer={setAnswer}
           runAssessment={runAssessment}

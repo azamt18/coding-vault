@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import type { Book } from "../types";
 import { useOpenLibrary } from "../hooks";
+import { OFFLINE_NOTE } from "../utils/openLibrary";
 
 interface BookLoaderProps {
   title?: string;
@@ -15,7 +16,7 @@ export function BookLoader({
   title = "The Anxious Generation",
   onLoaded,
 }: BookLoaderProps) {
-  const { book, loading, error } = useOpenLibrary(title);
+  const { book, loading, error, offline } = useOpenLibrary(title);
 
   useEffect(() => {
     if (book && onLoaded) onLoaded(book);
@@ -24,5 +25,10 @@ export function BookLoader({
   if (loading) return <p role="status">loading book...</p>;
   if (error) return <p role="alert">could not load book: {error}</p>;
   if (!book) return null;
-  return <p>book loaded: {book.chapters.length} chapters</p>;
+  return (
+    <div>
+      <p>book loaded: {book.chapters.length} chapters</p>
+      {offline && <small role="note">{OFFLINE_NOTE}</small>}
+    </div>
+  );
 }

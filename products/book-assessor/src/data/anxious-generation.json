@@ -38,6 +38,19 @@
         "the rise affected only adults"
       ],
       "correctAnswer": "B"
+    },
+    {
+      "id": "intro-q4",
+      "chapter": 0,
+      "type": "recall",
+      "prompt": "which describes the 'great rewiring' of childhood haidt refers to?",
+      "options": [
+        "a shift from public to private schools",
+        "a shift from rural to urban living",
+        "a shift from print to radio",
+        "a shift from play-based to phone-based childhood"
+      ],
+      "correctAnswer": "D"
     }
   ],
   "1": [
@@ -113,34 +126,62 @@
     {
       "id": "ch3-q1",
       "chapter": 3,
-      "type": "recall",
-      "prompt": "which describes the 'great rewiring' of childhood haidt refers to?",
+      "type": "critical",
+      "prompt": "haidt argues children are 'antifragile' and need risk to grow. what is the strongest counterargument?",
       "options": [
-        "a shift from public to private schools",
-        "a shift from rural to urban living",
-        "a shift from print to radio",
-        "a shift from play-based to phone-based childhood"
+        "some protection is necessary because certain risks cause real harm",
+        "children should never face risk",
+        "antifragility only applies to adults",
+        "risk has no developmental value"
       ],
-      "correctAnswer": "D"
+      "correctAnswer": "A"
     },
     {
       "id": "ch3-q2",
       "chapter": 3,
       "type": "application",
-      "prompt": "which change is best described as part of the rewiring, as haidt sees it?",
+      "prompt": "a child hesitates to try anything unfamiliar and always stays with adults. which idea from haidt's discussion of 'discover mode' is relevant?",
       "options": [
-        "teens getting smartphones with constant internet and social media access",
-        "teens joining more sports clubs",
-        "teens reading more books",
-        "teens working more part-time jobs"
+        "kids learn best when every risk is removed",
+        "exploration is a distraction from schoolwork",
+        "kids learn and grow when they feel safe enough to explore and take small risks in play",
+        "children only need structured, adult-led activities"
       ],
-      "correctAnswer": "A"
+      "correctAnswer": "C"
     }
   ],
   "4": [
     {
       "id": "ch4-q1",
       "chapter": 4,
+      "type": "recall",
+      "prompt": "how does haidt describe puberty in the context of the phone-based childhood?",
+      "options": [
+        "a period when children are least affected by their environment",
+        "a sensitive period when the brain is especially attuned to peers, social learning and approval",
+        "a stage that ends the need for sleep",
+        "a phase unrelated to social experience"
+      ],
+      "correctAnswer": "B"
+    },
+    {
+      "id": "ch4-q2",
+      "chapter": 4,
+      "type": "application",
+      "prompt": "which experience best helps a teen move toward adulthood, in haidt's view?",
+      "options": [
+        "spending more hours alone online",
+        "having every task done by parents",
+        "taking on real responsibilities and challenges alongside peers in the physical world",
+        "avoiding all challenges until age 18"
+      ],
+      "correctAnswer": "C"
+    }
+  ],
+  "5": [
+    {
+      "id": "ch5-q1",
+      "chapter": 5,
       "type": "recall",
       "prompt": "which of these is one of haidt's 'four foundational harms' of a phone-based childhood?",
       "options": [
@@ -152,8 +193,8 @@
       "correctAnswer": "B"
     },
     {
-      "id": "ch4-q2",
-      "chapter": 4,
+      "id": "ch5-q2",
+      "chapter": 5,
       "type": "application",
       "prompt": "a teen stays up late scrolling and is tired at school. which foundational harm does this best illustrate?",
       "options": [
@@ -165,8 +206,8 @@
       "correctAnswer": "C"
     },
     {
-      "id": "ch4-q3",
-      "chapter": 4,
+      "id": "ch5-q3",
+      "chapter": 5,
       "type": "critical",
       "prompt": "which best explains how the four foundational harms reinforce one another?",
       "options": [
@@ -176,68 +217,10 @@
         "phone time displaces sleep and in-person contact, which weakens attention and fuels compulsive use"
       ],
       "correctAnswer": "D"
-    }
-  ],
-  "5": [
-    {
-      "id": "ch5-q1",
-      "chapter": 5,
-      "type": "recall",
-      "prompt": "how does haidt say the effects of heavy social media use differ between girls and boys?",
-      "options": [
-        "girls are more affected by social comparison and relational aggression, boys often withdraw into gaming",
-        "boys are more affected by social media, girls by gaming",
-        "there is no difference",
-        "girls are affected only by gaming"
-      ],
-      "correctAnswer": "A"
     },
     {
-      "id": "ch5-q2",
+      "id": "ch5-q4",
       "chapter": 5,
-      "type": "application",
-      "prompt": "which behavior is most consistent with haidt's account of girls' social media harm?",
-      "options": [
-        "building complex mechanical models",
-        "constantly comparing appearance and popularity metrics",
-        "playing team sports outdoors",
-        "reading long novels"
-      ],
-      "correctAnswer": "B"
-    }
-  ],
-  "6": [
-    {
-      "id": "ch6-q1",
-      "chapter": 6,
-      "type": "recall",
-      "prompt": "what does haidt say about sleep and phones?",
-      "options": [
-        "phones improve sleep through relaxation",
-        "sleep is unrelated to mental health",
-        "phones displace sleep, and poor sleep worsens mood",
-        "teens need less sleep than adults"
-      ],
-      "correctAnswer": "C"
-    },
-    {
-      "id": "ch6-q2",
-      "chapter": 6,
-      "type": "application",
-      "prompt": "which household rule best matches haidt's recommendations about sleep?",
-      "options": [
-        "phones stay on during dinner",
-        "phones are used as alarm clocks at the bedside",
-        "phones are banned only on weekdays",
-        "phones charge outside the bedroom overnight"
-      ],
-      "correctAnswer": "D"
-    }
-  ],
-  "7": [
-    {
-      "id": "ch7-q1",
-      "chapter": 7,
       "type": "recall",
       "prompt": "what does haidt mean by 'attention fragmentation'?",
       "options": [
@@ -249,15 +232,71 @@
       "correctAnswer": "A"
     },
     {
+      "id": "ch5-q5",
+      "chapter": 5,
+      "type": "critical",
+      "prompt": "which design feature best explains why social platforms are hard to stop using?",
+      "options": [
+        "high subscription fees that create commitment",
+        "chemical dependence caused by the screen",
+        "school rules requiring daily use",
+        "unpredictable rewards such as likes and notifications that keep users checking"
+      ],
+      "correctAnswer": "D"
+    }
+  ],
+  "6": [
+    {
+      "id": "ch6-q1",
+      "chapter": 6,
+      "type": "recall",
+      "prompt": "how does haidt say the effects of heavy social media use differ between girls and boys?",
+      "options": [
+        "girls are more affected by social comparison and relational aggression, boys often withdraw into gaming",
+        "boys are more affected by social media, girls by gaming",
+        "there is no difference",
+        "girls are affected only by gaming"
+      ],
+      "correctAnswer": "A"
+    },
+    {
+      "id": "ch6-q2",
+      "chapter": 6,
+      "type": "application",
+      "prompt": "which behavior is most consistent with haidt's account of girls' social media harm?",
+      "options": [
+        "building complex mechanical models",
+        "constantly comparing appearance and popularity metrics",
+        "playing team sports outdoors",
+        "reading long novels"
+      ],
+      "correctAnswer": "B"
+    }
+  ],
+  "7": [
+    {
+      "id": "ch7-q1",
+      "chapter": 7,
+      "type": "recall",
+      "prompt": "where does haidt say many boys withdraw to when they pull back from the real world?",
+      "options": [
+        "video games and other online activity",
+        "more team sports and clubs",
+        "paid part-time work",
+        "extra time in the library"
+      ],
+      "correctAnswer": "A"
+    },
+    {
       "id": "ch7-q2",
       "chapter": 7,
       "type": "application",
-      "prompt": "a student checks notifications every few minutes while studying. what is the most likely effect according to haidt?",
+      "prompt": "a teenage boy skips school and friends to play games for hours. which part of haidt's account of boys does this reflect?",
       "options": [
-        "deeper focus over time",
-        "reduced ability to sustain attention",
-        "faster learning",
-        "no meaningful effect"
+        "a healthy increase in independence",
+        "withdrawal from the real world into a virtual one",
+        "the effects of too much outdoor play",
+        "a normal result of having a landline"
       ],
       "correctAnswer": "B"
     }
@@ -267,25 +306,25 @@
       "id": "ch8-q1",
       "chapter": 8,
       "type": "recall",
-      "prompt": "why does haidt compare platform design to addiction?",
+      "prompt": "what does haidt mean by 'spiritual degradation'?",
       "options": [
-        "apps are expensive",
-        "apps are physically habit forming like nicotine",
-        "apps use variable rewards and social validation to keep users returning",
-        "apps are required by schools"
+        "a loss of interest in school subjects",
+        "a lack of money for religious services",
+        "a slide toward a shallower, more self-focused state, away from awe, reverence and connection with others",
+        "a rise in physical fitness"
       ],
       "correctAnswer": "C"
     },
     {
       "id": "ch8-q2",
       "chapter": 8,
-      "type": "critical",
-      "prompt": "which design feature best explains why social platforms are hard to stop using?",
+      "type": "application",
+      "prompt": "which activity is most likely to produce the awe and 'elevation' haidt values?",
       "options": [
-        "high subscription fees that create commitment",
-        "chemical dependence caused by the screen",
-        "school rules requiring daily use",
-        "unpredictable rewards such as likes and notifications that keep users checking"
+        "scrolling a feed alone before bed",
+        "arguing with strangers in comment threads",
+        "watching clips on autoplay",
+        "hiking with friends in nature with phones put away"
       ],
       "correctAnswer": "D"
     }
@@ -316,38 +355,10 @@
         "spiritual elevation"
       ],
       "correctAnswer": "B"
-    }
-  ],
-  "10": [
-    {
-      "id": "ch10-q1",
-      "chapter": 10,
-      "type": "recall",
-      "prompt": "which is one of haidt's four proposed norms?",
-      "options": [
-        "unlimited screen time on weekends",
-        "social media from age 10",
-        "no smartphone before high school",
-        "phones in every classroom"
-      ],
-      "correctAnswer": "C"
     },
     {
-      "id": "ch10-q2",
-      "chapter": 10,
-      "type": "application",
-      "prompt": "a school wants to apply haidt's advice. which policy fits best?",
-      "options": [
-        "allowing phones during lunch only",
-        "allowing phones for note-taking",
-        "letting each teacher decide",
-        "phone-free school day with phones stored in lockers or pouches"
-      ],
-      "correctAnswer": "D"
-    },
-    {
-      "id": "ch10-q3",
-      "chapter": 10,
+      "id": "ch9-q3",
+      "chapter": 9,
       "type": "critical",
       "prompt": "which strategy best addresses the collective action problem behind phone adoption?",
       "options": [
@@ -359,10 +370,10 @@
       "correctAnswer": "A"
     }
   ],
-  "11": [
+  "10": [
     {
-      "id": "ch11-q1",
-      "chapter": 11,
+      "id": "ch10-q1",
+      "chapter": 10,
       "type": "recall",
       "prompt": "what age does haidt suggest as a minimum for opening social media accounts?",
       "options": [
@@ -372,6 +383,34 @@
         "21"
       ],
       "correctAnswer": "B"
+    },
+    {
+      "id": "ch10-q2",
+      "chapter": 10,
+      "type": "application",
+      "prompt": "a legislator wants to act on haidt's advice. which proposal fits best?",
+      "options": [
+        "raise the minimum age for social media accounts and require real age verification",
+        "let each platform decide its own age rules",
+        "ban books from school libraries",
+        "make phones mandatory in classrooms"
+      ],
+      "correctAnswer": "A"
+    }
+  ],
+  "11": [
+    {
+      "id": "ch11-q1",
+      "chapter": 11,
+      "type": "application",
+      "prompt": "a school wants to apply haidt's advice. which policy fits best?",
+      "options": [
+        "allowing phones during lunch only",
+        "allowing phones for note-taking",
+        "letting each teacher decide",
+        "phone-free school day with phones stored in lockers or pouches"
+      ],
+      "correctAnswer": "D"
     },
     {
       "id": "ch11-q2",
@@ -392,6 +431,34 @@
       "id": "ch12-q1",
       "chapter": 12,
       "type": "recall",
+      "prompt": "which is one of haidt's four proposed norms?",
+      "options": [
+        "unlimited screen time on weekends",
+        "social media from age 10",
+        "no smartphone before high school",
+        "phones in every classroom"
+      ],
+      "correctAnswer": "C"
+    },
+    {
+      "id": "ch12-q2",
+      "chapter": 12,
+      "type": "application",
+      "prompt": "a parent of a 10-year-old wants to follow haidt. which plan fits best?",
+      "options": [
+        "a smartphone with unlimited social media",
+        "no smartphone yet, plus more unsupervised time outdoors with friends",
+        "constant location tracking and scheduled activities",
+        "banning all outdoor play for safety"
+      ],
+      "correctAnswer": "B"
+    }
+  ],
+  "13": [
+    {
+      "id": "ch13-q1",
+      "chapter": 13,
+      "type": "recall",
       "prompt": "which kind of childhood experience does haidt want to restore?",
       "options": [
         "more homework",
@@ -402,17 +469,17 @@
       "correctAnswer": "D"
     },
     {
-      "id": "ch12-q2",
-      "chapter": 12,
-      "type": "critical",
-      "prompt": "haidt argues children are 'antifragile' and need risk to grow. what is the strongest counterargument?",
+      "id": "ch13-q2",
+      "chapter": 13,
+      "type": "application",
+      "prompt": "which best summarizes the overall remedy haidt proposes in the book?",
       "options": [
-        "some protection is necessary because certain risks cause real harm",
-        "children should never face risk",
-        "antifragility only applies to adults",
-        "risk has no developmental value"
+        "give every child a smartphone earlier so they adapt",
+        "remove all rules and supervision at home and school",
+        "shift childhood back toward real-world play, independence and in-person relationships, and delay phones and social media",
+        "wait for teens to self-regulate"
       ],
-      "correctAnswer": "A"
+      "correctAnswer": "C"
     }
   ]
 }
